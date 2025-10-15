@@ -1,0 +1,21 @@
+def _Listado():
+    print("\n    Listado de bitacoras")
+    print(f"\n    Num.Control {"\u2501"*12} Asunto {"\u2501"*12} Destino {"\u2501"*12} Salida {"\u2501"*12} Entrada\n")
+    
+    print("    00000124567              Comprar material    Soriana                 +                    -  ")
+    print("    00000124567              Comprar material    Soriana                 +                    -  ")
+    print("    00000124567              Comprar material    Soriana                 +                    -  ")
+    print("    00000124567              Comprar material    Soriana                 +                    -  ")
+    print("    00000124567              Comprar material    Soriana                 +                    -  ")
+    print("    00000124567              Comprar material    Soriana                 +                    -  ")
+    print("    00000124567              Comprar material    Soriana                 +                    -  ")
+    print("    00000124567              Comprar material    Soriana                 +                    -  ")
+    print("    00000124567              Comprar material    Soriana                 +                    -  ")
+    print("    00000124567              Comprar material    Soriana                 +                    -  ")
+    print("    00000124567              Comprar material    Soriana                 +                    -  ")
+    print("    00000124567              Comprar material    Soriana                 +                    -  ")
+    print("    00000124567              Comprar material    Soriana                 +                    -  ")
+    print("    00000124567              Comprar material    Soriana                 +                    -  ")
+    print("    00000124567              Comprar material    Soriana                 +                    -  ")
+
+    input("\n    Presione ENTER para salir...")
