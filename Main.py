@@ -1,5 +1,8 @@
 import Menu, Validar, FunBitacora, SubMenus
 
+mantenimientos = []
+observaciones = []
+
 opc1 = 0
 while opc1 != 8:
     opc1: int = Validar._SelectMenu("    Ingrese una opcion: ", Menu._Principal, 1, 8)
@@ -111,14 +114,52 @@ while opc1 != 8:
                     case 6:
                         print("Volver al menu principal")
                 print()
-        case 7: # -> Observaciones
+        case 7:  # -> Observaciones
             opc14 = 0
             while opc14 != 6:
-                opc14 = Validar._SelectMenu("    Ingrese una opcion: ", Menu._Observaciones, 1, 6)
+                opc14 = Validar._SelectMenu("Ingrese una opcion: ", Menu._Observaciones, 1, 6)
                 match opc14:
                     case 1:
-                        print("Listado de observaciones")
-                        print("En construccion...")
+                        print("\n--- Listado de observaciones ---")
+                        if len(observaciones) == 0:
+                            print("No hay observaciones registradas.")
+                        else:
+                            for i, obs in enumerate(observaciones, 1):
+                                print(f"{i}. Vehiculo: {obs['vehiculo']} | Tipo: {obs['tipo']} | Descripcion: {obs['descripcion']} | Fecha: {obs['fecha']}")
+                    case 2:
+                        print("\n--- Registrar observacion ---")
+                        vehiculo = input("Ingrese el nombre o ID del vehiculo: ")
+                        tipo = input("Tipo de incidente/observacion (leve, media, grave): ")
+                        descripcion = input("Descripcion detallada del incidente: ")
+                        fecha = input("Ingrese la fecha (DD/MM/AAAA): ")
+
+                        obs = {
+                            "vehiculo": vehiculo,
+                            "tipo": tipo,
+                            "descripcion": descripcion,
+                            "fecha": fecha
+                        }
+                        observaciones.append(obs)
+                        print("Observacion registrada correctamente.")
+
+                        respuesta = input("¿Desea registrar un mantenimiento relacionado? (S/N): ").strip().upper()
+                        if respuesta == "S":
+                            print("\nRedirigiendo al registro de mantenimiento...\n")
+                            vehiculo_m = vehiculo
+                            tipo_m = input("Ingrese el tipo de mantenimiento (preventivo/correctivo): ")
+                            fecha_m = input("Ingrese la fecha del mantenimiento (DD/MM/AAAA): ")
+                            observ_m = input("Ingrese observaciones generales: ")
+
+                            mantenimiento = {
+                                "vehiculo": vehiculo_m,
+                                "tipo": tipo_m,
+                                "fecha": fecha_m,
+                                "observaciones": observ_m
+                            }
+                            mantenimientos.append(mantenimiento)
+                            print("Mantenimiento registrado correctamente.")
+                        else:
+                            print("No se registró mantenimiento adicional.")
                     case 6:
                         print("Volver al menu principal")
                 print()
