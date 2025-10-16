@@ -1,4 +1,5 @@
-from FunMenu import _Limpiar
+import Menu
+import re
 
 def _SelectMenu(msg: str, menu, inf: int, sup: int):
     """
@@ -21,7 +22,6 @@ def _SelectMenu(msg: str, menu, inf: int, sup: int):
         print()
 
         if opc:
-            _Limpiar()
             return opc
 
 def _Int(msg: str):
@@ -66,3 +66,11 @@ def _IntRange(msg: str, inf: int, sup: int):
     elif opc.isdigit() and int(opc) > sup or int(opc) < inf:
         print()
         print(f"Fuera de rango. Rango: {inf} - {sup}")
+
+
+def valTelefono(number):
+    pattern = r"^\d{10}$"
+    if re.fullmatch(pattern, number):
+        print(f"{number}: Numero valido")
+    else:
+        print(f"{number}: numero invalido")

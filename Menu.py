@@ -3,22 +3,27 @@ import Listas
 
 # 0
 def _Principal():
-    print("SISTEMA DE GESTION DE ENTRADA, SALIDA Y MANTENIMIENTO DE VEHICULOS")
-    for e in Listas._MenuPrincipal:
-        print(f"{Listas._MenuPrincipal.index(e) + 1}. {e}")
+    print("\n    SISTEMA DE GESTION DE ENTRADA, SALIDA Y MANTENIMIENTO DE VEHICULOS\n")
+    print("    1. Bitacoras")
+    print("    2. Vehiculos")
+    print("    3. Autorizar")
+    print("    4. Solicitudes")
+    print("    5. Usuarios")
+    print("    6. Mantenimiento")
+    print("    7. Observaciones")
+    print("    8. Salir\n")
 
 # 0.1
 def _Bitacoras():
-    print("\n    BITACORAS\n")
-    print("    1. Listado de bitacoras")
-    print("    2. Crear bitacora")
-    print("    3. Editar bitacora")
-    print("    4. Consultar bitacora")
-    print("    5. Volver")
+    print("    BITACORAS\n")
+    print("    1. Crear bitacora")
+    print("    2. Listado de bitacoras")
+    print("    3. Consultar bitacora")
+    print("    4. Volver")
 
 # 0.1.2
 def _CrearBitacora():
-    print("\n    CREAR BITACORA\n")
+    print("    CREAR BITACORA\n")
     print("    1. Registrar salida")
     print("    2. Registrar entrada")
     print("    3. Generar bitacora")
@@ -26,13 +31,13 @@ def _CrearBitacora():
 
 # 0.2
 def _Vehiculos():
-    print("- VEHICULOS -")
-    print("  1. Listado de vehiculos")
-    print("  2. Agregar vehiculo")
-    print("  3. Modificar informacion de vehiculo")
-    print("  4. Eliminar vehiculo")
-    print("  5. Suspender vehiculo")
-    print("  6. Volver")
+    print("\n    VEHICULOS")
+    print("    1. Listado de vehiculos")
+    print("    2. Agregar vehiculo")
+    print("    3. Modificar informacion de vehiculo")
+    print("    4. Eliminar vehiculo")
+    print("    5. Suspender vehiculo")
+    print("    6. Volver")
 
 # 0.3
 def _Mantenimiento():
