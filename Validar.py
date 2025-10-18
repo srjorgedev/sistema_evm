@@ -1,4 +1,3 @@
-import Menu
 import re
 
 def _SelectMenu(msg: str, menu, inf: int, sup: int):
