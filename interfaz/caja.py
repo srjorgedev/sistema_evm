@@ -13,10 +13,10 @@ vertical = "\u2503"
 conexionizq = "\u2523"
 conexionder = "\u252B"
 
-print(f"""
-     Alto: {alto}
-     Ancho: {ancho}
-     """)
+# print(f"""
+#      Alto: {alto}
+#      Ancho: {ancho}
+#      """)
 
 def _Linea():
      """
