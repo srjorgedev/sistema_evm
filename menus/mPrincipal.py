@@ -1,6 +1,8 @@
+from interfaz import caja as UI
+
 # 0
 def _Principal():
-    print("\n    SISTEMA DE GESTION DE ENTRADA, SALIDA Y MANTENIMIENTO DE VEHICULOS\n")
+    UI._Titulo("SISTEMA DE GESTION DE ENTRADA, SALIDA Y MANTENIMIENTO DE VEHICULOS")
     print("    1. Bitacoras")
     print("    2. Vehiculos")
     print("    3. Autorizar")
