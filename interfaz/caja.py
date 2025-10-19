@@ -1,4 +1,4 @@
-import shutil, sys
+import shutil, sys, os
 
 ancho = shutil.get_terminal_size().columns
 alto = shutil.get_terminal_size().lines
@@ -131,6 +131,13 @@ def _Lista(lista: list[str]):
      for i in lista:
           _Texto(str(lista.index(i) + 1) + ". " + i)
      
+
+def _Limpiar():
+     """ Limpia la pantalla de la terminal. """
+     if os.name == 'nt':
+          _ = os.system('cls')
+     else:
+          _ = os.system('clear')
 
 # _Linea()
 # _LineaInf()
