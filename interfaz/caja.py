@@ -129,7 +129,7 @@ def _Titulo(txt):
      
 def _Lista(lista: list[str]):
      for i in lista:
-          _Texto(i)
+          _Texto(str(lista.index(i) + 1) + ". " + i)
      
 
 # _Linea()
