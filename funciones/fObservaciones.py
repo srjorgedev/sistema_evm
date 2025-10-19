@@ -1,4 +1,4 @@
-from fMantenimiento import mantenimientos
+from . import fMantenimiento as m 
 
 observaciones = []
 
@@ -43,7 +43,7 @@ def _Agregar():
             "fecha": fecha_m,
             "observaciones": observ_m,
         }
-        mantenimientos.append(mantenimiento)
+        m.mantenimientos.append(mantenimiento)
         print("Mantenimiento registrado correctamente.")
     else:
         print("No se registró mantenimiento adicional.")

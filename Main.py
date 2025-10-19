@@ -21,15 +21,15 @@ from funciones import (
 
 opc1 = 0
 while opc1 != 8:
-    opc1: int = Validar._SelectMenu("    Ingrese una opcion: ", mPrincipal._Principal, 1, 8)
+    opc1: int = Validar._SelectMenu("    Ingrese una opcion: ",
+                                    mPrincipal._Principal, 1, 8)
 
     match opc1:
         case 1:  # -> Bitacoras
             opc11 = 0
             while opc11 != 4:
-                opc11 = Validar._SelectMenu(
-                    "\n    Ingrese una opcion: ", mBitacoras._Bitacoras, 1, 4
-                )
+                opc11 = Validar._SelectMenu("\n    Ingrese una opcion: ",
+                                            mBitacoras._Bitacoras, 1, 4)
                 match opc11:
                     case 1:
                         opc112 = 0
@@ -58,9 +58,8 @@ while opc1 != 8:
         case 2:  # -> Vehiculos
             opc12 = 0
             while opc12 != 6:
-                opc12 = Validar._SelectMenu(
-                    "    Ingrese una opcion: ", mVehiculos._Vehiculos, 1, 6
-                )
+                opc12 = Validar._SelectMenu("    Ingrese una opcion: ",
+                                            mVehiculos._Vehiculos, 1, 6)
                 match opc12:
                     case 1:
                         fVehiculos._Listado()
@@ -78,9 +77,9 @@ while opc1 != 8:
         case 6:  # -> Mantenimiento
             opc13 = 0
             while opc13 != 6:
-                opc13 = Validar._SelectMenu(
-                    "Ingrese una opcion: ", mMantenimiento._Mantenimiento, 1, 6
-                )
+                opc13 = Validar._SelectMenu("Ingrese una opcion: ",
+                                            mMantenimiento._Mantenimiento, 1,
+                                            6)
                 match opc13:
                     case 1:
                         fMantenimiento._Listado()
@@ -92,9 +91,9 @@ while opc1 != 8:
         case 7:  # -> Observaciones
             opc14 = 0
             while opc14 != 6:
-                opc14 = Validar._SelectMenu(
-                    "Ingrese una opcion: ", mObservaciones._Observaciones, 1, 6
-                )
+                opc14 = Validar._SelectMenu("Ingrese una opcion: ",
+                                            mObservaciones._Observaciones, 1,
+                                            6)
                 match opc14:
                     case 1:
                         fObservaciones._Listado()
@@ -106,9 +105,8 @@ while opc1 != 8:
         case 4:  # -> Solicitudes
             opc15 = 0
             while opc15 != 6:
-                opc15 = Validar._SelectMenu(
-                    "    Ingrese una opcion: ", mSolicitudes._Solicitudes, 1, 6
-                )
+                opc15 = Validar._SelectMenu("    Ingrese una opcion: ",
+                                            mSolicitudes._Solicitudes, 1, 6)
                 match opc15:
                     case 1:
                         fSolicitudes._Listado()
@@ -126,9 +124,8 @@ while opc1 != 8:
         case 5:  # -> Ususarios
             opc16 = 0
             while opc16 != 6:
-                opc16 = Validar._SelectMenu(
-                    "    Ingrese una opcion: ", mUsuarios._Usuarios, 1, 6
-                )
+                opc16 = Validar._SelectMenu("    Ingrese una opcion: ",
+                                            mUsuarios._Usuarios, 1, 6)
                 match opc16:
                     case 1:
                         fUsuarios._Listado()
@@ -140,9 +137,8 @@ while opc1 != 8:
         case 3:  # -> Autorizar Solicitudes
             opc17 = 0
             while opc17 != 6:
-                opc17 = Validar._SelectMenu(
-                    "    Ingrese una opcion: ", mAutorizar._Autorizar, 1, 6
-                )
+                opc17 = Validar._SelectMenu("    Ingrese una opcion: ",
+                                            mAutorizar._Autorizar, 1, 6)
                 match opc17:
                     case 1:
                         fAutorizar._ListadoSolicitudes()
