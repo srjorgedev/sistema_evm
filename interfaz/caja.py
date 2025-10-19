@@ -63,6 +63,17 @@ def _Conexion():
      print(" " * espacio + conexionizq + horizontal * (ancho - 2 - espacio * 2) + conexionder)
      
 
+def _Texto(txt):
+     """
+     Imprime un texto con BORDE LATERAL. 
+     """
+     
+     total_interno = ancho - (len(txt) + espacio * 2 + 4) 
+     if total_interno < 0:
+          total_interno = 0
+
+     print(" " * espacio + vertical + " " * (espacio // 2) + txt + " " * total_interno + vertical)
+
 def _TextoCentrado(txt):
      """
      Imprime un texto centrado. SIN BORDE LATERAL.
@@ -115,16 +126,22 @@ def _Titulo(txt):
      _TextoCentradoBorde(txt)
      _BordeV()
      _Conexion()
+     
+def _Lista(lista: list[str]):
+     for i in lista:
+          _Texto(i)
+     
 
-_Linea()
-_LineaInf()
-_LineaSup()
-_BordeV()
-_BordeVN(8)
-_TextoCentrado("Hola")
-_TextoCentradoBorde("Hola")
-_MoverCursor(10, 8)
-print("Hola sobrinos")
-_RecuperarCursor()
-_Conexion()
-_Titulo("PEPEEEEEEEEEEEEEA")
+# _Linea()
+# _LineaInf()
+# _LineaSup()
+# _BordeV()
+# _BordeVN(8)
+# _TextoCentrado("Hola")
+# _TextoCentradoBorde("Hola")
+# _MoverCursor(10, 8)
+# print("Hola sobrinos")
+# _RecuperarCursor()
+# _Conexion()
+# _Titulo("PEPEEEEEEEEEEEEEA")
+# _Lista(["HOla", "JORGE", "Roque"])
