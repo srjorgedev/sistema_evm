@@ -10,7 +10,7 @@ def _Listado():
           opc26=int(input("  Seleccione el tipo de usuario: "))
           match opc26:
                case 1:
-                    print(" No hay Aministradores.")
+                    print(" No hay Aministradores. HOLAAAA")
                     print()
                case 2:
                     print(" No hay choferes.")
