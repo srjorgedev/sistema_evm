@@ -2,7 +2,7 @@ import Validar, random
 from menus import mUsuarios
 
 
-#0.6.1 
+#0.6.1
 def _Listado():
      opc26=0
      while opc26 != 5:
@@ -43,22 +43,28 @@ def _Registrar():
                     number=input("Ingrese su numero telefonico (10 digitos): ")
                     Validar.valTelefono(number)
                     print()
-                    password=input("Inregese una contrasena: ")
-                    valpassword=input("Repita la contrasena: ")
-                    if valpassword!=password:
-                         print("Contrasena incorrecta")
-                         print()
-                    else:
-                         print("Administrador registrado exitosamente. ")
-                         numAdmin = random.randint(100000, 999999)
-                         print(f"Empleado: {nombre} | Número de Administrador: {numAdmin}")
-                         print()
+                    while True:
+                         password = input("Ingrese una contraseña: ")
+                         if Validar.validate_password(password):
+                              print(" Contraseña válida.")
+                              print("Administrador registrado exitosamente. ")
+                              numEmpleado = random.randint(100000, 999999)
+                              print(f"Empleado: {nombre} | Número de Administrador: {numEmpleado}")
+                              print()
+                              break
+                         else:
+                              print("- Contraseña inválida. Debe tener:")
+                              print("- Al menos 8 caracteres")
+                              print("- Una letra mayúscula")
+                              print("- Una letra minúscula")
+                              print("- Un número\n")
+                    print()
                case 2:
                     print()
                     nombrePila=input(" Ingrese su nombre de pila: ")
                     apellidoPaterno=input(" Ingrese su apellido paterno: ")
                     apellidoMaterno=input(" Ingrese su apellido materno: ")
-                    nombre=nombrePila+apellidoPaterno+apellidoMaterno
+                    nombre=nombrePila + " " + apellidoPaterno + " " + apellidoMaterno
                     print("Su nombre es: " + nombre)
                     print()
                     number=input("Ingrese su numero telefonico (10 digitos): ")
@@ -72,59 +78,84 @@ def _Registrar():
                     print("Tipo E (Servicios especializados y de carga pesada): Para transporte especializado, como pipas, o para carga pesada como tráileres y doble remolque. ")
                     licencia=input("Ingrese una opcion: ")
                     print("Eligio la opcion de licencia " + licencia +".")
+                    while True:
+                         numeroLicencia = input("Ingrese el número de licencia (Ejemplo: A123456789): ")
+                         if Validar.valLicencia(numeroLicencia):
+                              print(" Número de licencia válido.")
+                              break
+                         else:
+                              print(" Número de licencia inválido. Debe comenzar con una letra mayúscula seguida de 9 o 10 dígitos.\n")
                     print()
-                    password=input("Inregese una contrasena: ")
-                    valpassword=input("Repita la contrasena: ")
-                    if valpassword!=password:
-                         print("Contrasena incorrecta")
-                         print()
-                    else:
-                         print("Chofer registrado exitosamente. ")
-                         numChofer = random.randint(100000, 999999)
-                         print(f"Empleado: {nombre} | Número de Chofer: {numChofer}")
-                         print()
+                    while True:
+                         password = input("Ingrese una contraseña: ")
+                         if Validar.validate_password(password):
+                              print(" Contraseña válida.")
+                              print("Administrador registrado exitosamente. ")
+                              numEmpleado = random.randint(100000, 999999)
+                              print(f"Empleado: {nombre} | Número de Chofer: {numEmpleado}, numero de licencia: {numeroLicencia}")
+                              print()
+                              break
+                         else:
+                              print("- Contraseña inválida. Debe tener:")
+                              print("- Al menos 8 caracteres")
+                              print("- Una letra mayúscula")
+                              print("- Una letra minúscula")
+                              print("- Un número\n")
+                    print()
                case 3:
                     print()
                     nombrePila=input(" Ingrese su nombre de pila: ")
                     apellidoPaterno=input(" Ingrese su apellido paterno: ")
                     apellidoMaterno=input(" Ingrese su apellido materno: ")
-                    nombre=nombrePila+apellidoPaterno+apellidoMaterno
+                    nombre=nombrePila + " " + apellidoPaterno + " " + apellidoMaterno
                     print("Su nombre es: " + nombre)
                     print()
                     number=input("Ingrese su numero telefonico (10 digitos): ")
                     Validar.valTelefono(number)
                     print()
-                    password=input("Inregese una contrasena: ")
-                    valpassword=input("Repita la contrasena: ")
-                    if valpassword!=password:
-                         print("Contrasena incorrecta")
-                         print()
-                    else:
-                         print("Vigilante registrado exitosamente. ")
-                         numVig = random.randint(100000, 999999)
-                         print(f"Empleado: {nombre} | Número de Vigilante: {numVig}")
-                         print()
+                    while True:
+                         password = input("Ingrese una contraseña: ")
+                         if Validar.validate_password(password):
+                              print(" Contraseña válida.")
+                              print("Administrador registrado exitosamente. ")
+                              numEmpleado = random.randint(100000, 999999)
+                              print(f"Empleado: {nombre} | Número de Vigilante: {numEmpleado}")
+                              print()
+                              break
+                         else:
+                              print("- Contraseña inválida. Debe tener:")
+                              print("- Al menos 8 caracteres")
+                              print("- Una letra mayúscula")
+                              print("- Una letra minúscula")
+                              print("- Un número\n")
+                    print()
                case 4:
                     print()
                     nombrePila=input(" Ingrese su nombre de pila: ")
                     apellidoPaterno=input(" Ingrese su apellido paterno: ")
                     apellidoMaterno=input(" Ingrese su apellido materno: ")
-                    nombre=nombrePila+apellidoPaterno+apellidoMaterno
+                    nombre=nombrePila + " " + apellidoPaterno + " " + apellidoMaterno
                     print("Su nombre es: " + nombre)
                     print()
                     number=input("Ingrese su numero telefonico (10 digitos): ")
                     Validar.valTelefono(number)
                     print()
-                    password=input("Inregese una contrasena: ")
-                    valpassword=input("Repita la contrasena: ")
-                    if valpassword!=password:
-                         print("Contrasena incorrecta")
-                         print()
-                    else:
-                         print("Usuario registrado exitosamente. ")
-                         numUsuario = random.randint(100000, 999999)
-                         print(f"Empleado: {nombre} | Número de Usuario: {numUsuario}")
-                         print()
+                    while True:
+                         password = input("Ingrese una contraseña: ")
+                         if Validar.validate_password(password):
+                              print(" Contraseña válida.")
+                              print("Administrador registrado exitosamente. ")
+                              numEmpleado = random.randint(100000, 999999)
+                              print(f"Empleado: {nombre} | Número de Vigilante: {numEmpleado}")
+                              print()
+                              break
+                         else:
+                              print("- Contraseña inválida. Debe tener:")
+                              print("- Al menos 8 caracteres")
+                              print("- Una letra mayúscula")
+                              print("- Una letra minúscula")
+                              print("- Un número\n")
+                    print()
                case 5:
                     print("Volviendo al menu de Usuarios...")
      print()
