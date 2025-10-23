@@ -73,3 +73,31 @@ def valTelefono(number):
         print(f"{number}: Numero valido")
     else:
         print(f"{number}: numero invalido")
+
+def validate_password(password):
+    # define our regex pattern for validation
+    pattern = r"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$"
+
+    # We use the re.match function to test the password against the pattern
+    match = re.match(pattern, password)
+    return bool(match)
+
+
+def valLicencia(numeroLicencia):
+    regex_federal = r'^[A-Z]\d{9,10}$'
+    return re.match(regex_federal, numeroLicencia)
+
+
+def valTexto(texto):
+    """
+    Valida que el texto solo contenga letras (incluye acentos y espacios).
+    No permite números ni caracteres especiales.
+    """
+    patron = r'^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$'
+    
+    if re.match(patron, texto):
+        return True
+    else:
+        print(" El texto solo puede contener letras y espacios. Vuelva a intentar.")
+        return False
+
