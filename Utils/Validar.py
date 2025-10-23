@@ -88,3 +88,16 @@ def valLicencia(numeroLicencia):
     return re.match(regex_federal, numeroLicencia)
 
 
+def valTexto(texto):
+    """
+    Valida que el texto solo contenga letras (incluye acentos y espacios).
+    No permite números ni caracteres especiales.
+    """
+    patron = r'^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$'
+    
+    if re.match(patron, texto):
+        return True
+    else:
+        print(" El texto solo puede contener letras y espacios. Vuelva a intentar.")
+        return False
+

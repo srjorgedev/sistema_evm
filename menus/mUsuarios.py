@@ -1,6 +1,6 @@
 # 0.6
 def _Usuarios():
-    print("- CHOFERES -")
+    print("- USUARIOS -")
     print("  1. Listado de usuarios")
     print("  2. Registrar usuario")
     print("  6. Volver")
