@@ -1,4 +1,4 @@
-import Validar
+from Utils import Validar
 from menus import (
     mAutorizar,
     mBitacoras,
