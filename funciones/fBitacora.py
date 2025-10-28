@@ -1,3 +1,5 @@
+from datetime import datetime
+
 def _Listado():
     print("\n    LISTADO DE BITACORAS")
     print(f"\n    Num.Control {'─'*12} Asunto {'─'*12} Destino {'─'*12} Salida {'─'*12} Entrada \n")
@@ -28,8 +30,8 @@ def _Salida():
     destino = input("    Destino: ")
     usuario = input("    Empleado que sale: ")
     autorizador = input("    Autorizado por: ")
-    fecha = input("    Fecha de salida: ")
-    hora = input("    Hora de salida: ")
+    fecha = datetime.now().strftime("%d/%m/%Y")
+    hora = datetime.now().strftime("%H:%M:%S")
     kilometraje = input("    Kilometraje: ")
     gasolima = input("    Litros de gasolina: ")
     
@@ -63,7 +65,3 @@ def _Entrada():
     
     Volviendo al menu de crear bitacora...
 """)
-    
-def _Generar():
-    print("    GENERAR BITACORA\n")
-    print("    No es posible generar una bitacora")

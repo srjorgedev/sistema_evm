@@ -1,15 +1,30 @@
+from interfaz import caja as UI
+
+opcBitacoras = [
+    "Crear bitacora",
+    "Listado de bitacoras",
+    "Consultar bitacora",
+    "Volver",
+]
+
+CrearBitacora = [
+    "Registrar salida",
+    "Registrar entrada",
+    "Volver",
+]
+
 # 0.1
 def _Bitacoras():
-    print("    BITACORAS\n")
-    print("    1. Crear bitacora")
-    print("    2. Listado de bitacoras")
-    print("    3. Consultar bitacora")
-    print("    4. Volver")
+    UI._Titulo("BITACORAS")
+    UI._BordeV()
+    UI._Lista(opcBitacoras)
+    UI._BordeV()
+    UI._LineaInf()
 
 # 0.1.2
 def _CrearBitacora():
-    print("    CREAR BITACORA\n")
-    print("    1. Registrar salida")
-    print("    2. Registrar entrada")
-    print("    3. Generar bitacora")
-    print("    4. Volver")
+    UI._Titulo("CREAR BITACORA")
+    UI._BordeV()
+    UI._Lista(CrearBitacora)
+    UI._BordeV()
+    UI._LineaInf()

@@ -46,8 +46,6 @@ while opc1 != 8:
                                 case 2:
                                     fBitacora._Entrada()
                                 case 3:
-                                    fBitacora._Generar()
-                                case 4:
                                     print("Volver al menu de bitacora")
                     case 2:
                         fBitacora._Listado()

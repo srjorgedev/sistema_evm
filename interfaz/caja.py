@@ -1,4 +1,7 @@
 import shutil, sys, os
+from colorama import init
+
+init()
 
 ancho = shutil.get_terminal_size().columns
 alto = shutil.get_terminal_size().lines
