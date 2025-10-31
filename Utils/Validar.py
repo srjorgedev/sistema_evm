@@ -25,7 +25,7 @@ def _SelectMenu(msg: str, menu, inf: int, sup: int):
 
 def _Int(msg: str):
     """
-    Solicita un numero con un mensaje personalizado.
+    Solicita un numero con un mensaje personalizado..
     Retorna el numero ingresado.
 
     args:
