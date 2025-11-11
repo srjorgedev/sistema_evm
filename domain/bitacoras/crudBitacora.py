@@ -1,5 +1,5 @@
 from db.ConnB import Conn
-from domain.bitacoras.crudBitacora import Bitacora
+from domain.bitacoras.ClaseBitacora import Bitacora
 
 
 def listaGeneral():
