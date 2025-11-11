@@ -1,0 +1,57 @@
+import mysql.connector
+from mysql.connector import Error
+
+
+class conn:
+
+    def __init__(self):
+        try:
+            self.conexion = mysql.connector.connect(host="localhost",
+                                                    port=3306,
+                                                    user="root",
+                                                    password="root",
+                                                    db="evm")
+        except Error as variable:
+            print("   error en conexion")
+            print(variable)
+
+    #Create
+    def register(self, comando):
+        if self.conexion.is_connected():
+            try:
+                cursor = self.conexion.cursor()
+                cursor.execute(comando)
+                self.conexion.commit()
+                print("   registrado")
+                print("Nuevo ID:", cursor.lastrowid)
+
+            except Error as valError:
+                print(valError)
+
+    #READ - Select
+    def lista(self, comando):
+        if self.conexion.is_connected():
+            try:
+                cursor = self.conexion.cursor()
+                cursor.execute(comando)
+                resultados = cursor.fetchall()
+                return resultados
+
+            except Error as valError:
+                print(valError)
+        return 0
+
+    #Update
+    def actualizar(self, comando):
+        if self.conexion.is_connected():
+            try:
+                cursor = self.conexion.cursor()
+                cursor.execute(comando)
+                self.conexion.commit()
+                contador = cursor.rowcount
+                print("   Actualizado")
+
+            except Error as valError:
+                print(valError)
+                contador = -1
+        return contador
