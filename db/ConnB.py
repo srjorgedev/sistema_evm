@@ -30,7 +30,7 @@ class Conn:
 
         return 0
 
-    def registrar(self, query):
+    def registrar(self, query) -> int:
         lastid = 0
         if self.cnx.is_connected():
             try:
