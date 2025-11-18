@@ -63,3 +63,20 @@ INNER JOIN tipo_empleado AS tp ON e.tipo_empleado = tp.codigo
 INNER JOIN licencia AS lc ON lc.empleado = e.numero
 INNER JOIN tipo_licencia AS tl ON lc.tipo_licencia = tl.codigo
 WHERE tl.codigo = 'A'
+
+-- BITACORAS
+
+-- 0. Recuperar el total de bitacoras
+SELECT COUNT(*) as TotalBitacoras FROM bitacora;
+
+-- 1. Recuperar todas las bitacoras
+SELECT * FROM bitacora;
+
+-- 2. Recuperar lista general de bitacoras (No toda la informacion)
+SELECT 
+numero as id,
+asunto,
+destino, 
+entrada, 
+salida
+FROM bitacora
