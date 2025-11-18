@@ -74,6 +74,18 @@ CREATE TABLE empleado (
     FOREIGN KEY (tipo_empleado) REFERENCES tipo_empleado(codigo)
 );
 
+SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE empleado;
+SET FOREIGN_KEY_CHECKS = 1;
+
+CREATE TABLE empleado(
+    numero INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR (90) NOT NULL,
+    tipo_empleado VARCHAR(5) NOT NULL,
+    FOREIGN KEY (tipo_empleado) REFERENCES tipo_empleado(codigo)
+);
+ALTER TABLE empleado ADD activo TINYINT(1) NOT NULL DEFAULT 1;
+
 CREATE TABLE telefono (
     numero INT AUTO_INCREMENT PRIMARY KEY,
     numTelefono VARCHAR(16) UNIQUE NOT NULL,

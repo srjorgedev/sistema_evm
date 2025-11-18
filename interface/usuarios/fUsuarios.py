@@ -1,18 +1,12 @@
-from domain.usuarios.ClaseUsuarios import Usuario
+from domain.usuarios.ClaseUsuarios import Usuario, TipoEmpleado
 import domain.usuarios.crudUsers as crudUsers
 from interface.usuarios.Menu import _Tipos
 from interface.usuarios.Menu import licencias
 from interface.usuarios.Menu import datos
 from interface.usuarios import val
+import random
 '''
-create table usuario(
-    nombre varchar(15) not null,
-    telefono varchar(10) not null unique,
-    tipoEmpleado varchar(10) not null,
-    licencia varchar(15),
-    numeroLicencia varchar(20) unique,
-    numEmpleado int not null auto_increment primary key
-)
+def __init__(self, numEmpleado, nombre, activo):
 '''
 
 
@@ -46,10 +40,11 @@ def createUser():
     opcEmpleado = val.vInt("Seleccion el tipo de empleado:  ")
     match opcEmpleado:
         case 1:
-            tipoEmpleado = "Administrador"
-            newUser = Usuario(nombre, telefono, tipoEmpleado, None, None, None,
-                              None)
-            crudUsers.Create(newUser)
+            codigo = str(random.randint(10000, 99999))
+            descripcion = "Administrador"
+            newTipo = TipoEmpleado(codigo, descripcion)
+            newUser = Usuario(None, nombre, newTipo.get_codigo(), 1)
+            crudUsers.Create(newUser, newTipo)
         case 2:
             tipoEmpleado = "Chofer"
             licencias()

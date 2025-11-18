@@ -6,13 +6,15 @@ class conn:
 
     def __init__(self):
         try:
-            self.conexion = mysql.connector.connect(host="localhost",
-                                                    port=3306,
-                                                    user="root",
-                                                    password="root",
-                                                    db="evm")
+            self.conexion = mysql.connector.connect(
+                host="localhost",
+                port=3306,
+                user="root",
+                password="",
+                database="evm_db"
+                )
         except Error as variable:
-            print("   error en conexion")
+            print(" Error en conexion")
             print(variable)
 
     #Create
@@ -27,6 +29,17 @@ class conn:
 
             except Error as valError:
                 print(valError)
+
+    def register2(self, comando):
+            if self.conexion.is_connected():
+                try:
+                    cursor = self.conexion.cursor()
+                    cursor.execute(comando)
+                    self.conexion.commit()
+                    print("Registro Exitoso")
+
+                except Error as valError:
+                    print(valError)
 
     #READ - Select
     def lista(self, comando):

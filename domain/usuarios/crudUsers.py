@@ -1,5 +1,5 @@
 from db.connU import conn
-from domain.usuarios.ClaseUsuarios import Usuario
+from domain.usuarios.ClaseUsuarios import Usuario, TipoEmpleado
 
 #Create
 #Read
@@ -7,27 +7,26 @@ from domain.usuarios.ClaseUsuarios import Usuario
 #Delete
 #Buscar
 '''
-create table usuario(
-    nombre varchar(15) not null,
-    telefono varchar(10) not null unique,
-    tipoEmpleado varchar(10) not null,
-    licencia varchar(15),
-    numeroLicencia varchar(20) unique,
-    numEmpleado int not null auto_increment primary key
+#def __init__(self, numEmpleado, nombre, tipo_empleado, activo):
+def __init__(self, codigo, descripcion):
 )
 '''
 
 
 #Create insert
-def Create(newUser):
-    objUser = Usuario("", "", "", "", "", 0, "")
+def Create(newUser, newTipo):
+    objUser = Usuario(0, "", "", 0)
     objUser = newUser
+    objTipo = TipoEmpleado
+    objTipo = newTipo
     miConn = conn()
-    aux = "INSERT INTO usuario(nombre, telefono, tipoEmpleado, licencia, numeroLicencia) VALUES ('{0}','{1}','{2}','{3}','{4}')"
-    comando = aux.format(objUser.get_nombre(), objUser.get_telefono(),
-                         objUser.get_tipoEmpleado(), objUser.get_licencia(),
-                         objUser.get_numeroLicencia())
+    aux2 = "INSERT INTO tipo_empleado(codigo, descripcion) VALUES ('{0}','{1}')"
+    comando2 = aux2.format(objTipo.get_codigo(), objTipo.get_descripcion())
+    miConn.register2(comando2)
+    aux = "INSERT INTO empleado(nombre, tipo_empleado, activo) VALUES ('{0}','{1}','{2}')"
+    comando = aux.format(objUser.get_nombre(), objTipo.get_codigo(), objUser.get_activo())
     miConn.register(comando)
+
 
 
 #Read select
