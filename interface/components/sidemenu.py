@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QColor, QPalette
-from interface.ui.components.sidemenu_button import MenuButtonWidget
+from interface.components.sidemenu_button import MenuButtonWidget
 
 datos_menu = [
     ("Dashboard", "dashboard"),

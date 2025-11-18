@@ -1,5 +1,5 @@
 from db.ConnB import Conn
-from domain.bitacoras.ClaseBitacora import Bitacora
+from domain.bitacoras.Clase import Bitacora
 from mysql.connector import Error
 
 def listaGeneral() -> list[Bitacora]:

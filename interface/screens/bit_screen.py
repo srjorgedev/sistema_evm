@@ -1,12 +1,12 @@
 # NUEVO: Importaciones necesarias para el threading y los datos
 from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QScrollArea, QVBoxLayout, QHBoxLayout, QSizePolicy, QSpacerItem
 from PyQt6.QtCore import Qt, QThread
-import interface.bitacoras.fBitacora as FBitacora
-from interface.ui.components.bit_card import BitacoraCardWidget
-from domain.bitacoras.ClaseBitacora import Bitacora
-from interface.ui.components.button import ButtonWidget
-from interface.ui.components.button import ColorKeys
-from interface.ui.components.data_fetch import Fetch
+import controllers.bitacora_controller as FBitacora
+from interface.components.bit_card import BitacoraCardWidget
+from domain.bitacoras.Clase import Bitacora
+from interface.components.button import ButtonWidget
+from interface.components.button import ColorKeys
+from interface.components.data_fetch import Fetch
 
 class BITScreenWidget(QWidget):
     def __init__(self):

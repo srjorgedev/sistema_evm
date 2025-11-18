@@ -1,4 +1,4 @@
-from interface.ui.components.sidemenu import SidemenuWidget
+from interface.components.sidemenu import SidemenuWidget
 import sys
 from PyQt6.QtWidgets import (
     QApplication, QStackedWidget,
@@ -6,8 +6,8 @@ from PyQt6.QtWidgets import (
     QHBoxLayout, QLabel
 )
 from PyQt6.QtCore import Qt
-from interface.ui.components.screen import ScreenWidget
-from interface.ui.components.bit_screen import BITScreenWidget
+from interface.screens.screen import ScreenWidget
+from interface.screens.bit_screen import BITScreenWidget
 
 class VentanaPrincipal(QMainWindow):
     def __init__(self):

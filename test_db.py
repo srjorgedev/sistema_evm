@@ -1,4 +1,4 @@
-from domain.bitacoras.crudBitacora import listaGeneral
+from domain.bitacoras.CRUD import listaGeneral
 
 print("Ejecutando listaGeneral en hilo principal (prueba)...")
 try:

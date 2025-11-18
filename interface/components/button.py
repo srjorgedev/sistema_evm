@@ -7,7 +7,7 @@ from pathlib import Path
 from enum import Enum
 
 direction = Path(__file__)
-folder = direction.parent.parent.parent.parent
+folder = direction.parent.parent
 
 class ColorKeys(Enum):
     CREAR = "crear"
@@ -26,42 +26,51 @@ class ButtonWidget(QWidget):
     def __init__(self, icono, texto, color: ColorKeys):
         super().__init__()
         
-        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        # Asignacion de atributos
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)  # Atributo: FONDO TRANSPARENTE
+        self.setAttribute(Qt.WidgetAttribute.WA_Hover, True)            # Atributo: HOVER 
         
-        self.setAttribute(Qt.WidgetAttribute.WA_Hover, True)
-        self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-        self.setMinimumHeight(64)
-        self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        # Asignacion de dimensiones
+        # Reglas de las dimensiones. Anchura - Preferred: se expande si hay espacio. Altura - Fixed: No se expande
+        self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed) 
+        self.setMinimumHeight(64) # Minimo de altura de 64 unidades
         
-        self.main_layout = QVBoxLayout(self)
-        self.main_layout.setContentsMargins(0, 0, 0, 0)
-        self.main_layout.setSpacing(0)
+        # Cambia el cursor 
+        self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor)) # Cursor del puntero
+        
+        # Creacion de elementos hijos
+        self.main_layout = QVBoxLayout(self)                        # Layout vertical
+        self.button_frame = QFrame()                                # Un contenedor     
+        self.inner_layout = QHBoxLayout(self.button_frame)          # layout horizontal
+        self.icon_widget = QSvgWidget()                             # SVG para iconos
+        self.text_label = QLabel(texto)                             # Texto
+        
+        # Propiedadess y atributos                      
+        self.main_layout.setContentsMargins(0, 0, 0, 0)             # Margenes entre el borde y los hijos en 0
+        self.main_layout.setSpacing(0)                              # Espaciado entre los elementos hijos en 0
 
-        self.button_frame = QFrame()
-        self.button_frame.setObjectName("btnFrame") 
+        self.button_frame.setObjectName("btnFrame")                 # Nombre para los estilos
         
-        self.inner_layout = QHBoxLayout(self.button_frame)
-        self.inner_layout.setContentsMargins(24, 0, 16, 0)
-        self.inner_layout.setSpacing(16)
+        self.inner_layout.setContentsMargins(24, 0, 16, 0)          # Margenes entre el borde y los hijos
+        self.inner_layout.setSpacing(16)                            # Espaciado entre los elementos hijos en 16
 
-        self.icon_widget = QSvgWidget()
-        self.icon_widget.setFixedSize(24, 24) 
+        self.icon_widget.setFixedSize(24, 24)                       # Tamaño inmutable para el icono
         
-        icon_path = folder / "public" / "icons" / f"{icono}.svg"
+        # Estilos
+        self.text_label.setStyleSheet("font-size: 18px; font-weight: 500; color: #C1C1C1; border: none;")
+        
+        icon_path = folder / "assets" / "icons" / f"{icono}.svg"    # Ruta del svg
         if icon_path.exists():
             self.icon_widget.load(str(icon_path))
         else:
             print(f"Warning: Icono no encontrado en {icon_path}")
 
-        self.text_label = QLabel(texto)
-        self.text_label.setObjectName("btnText")
-
-        self.text_label.setStyleSheet("font-size: 18px; font-weight: 500; color: #C1C1C1; border: none;")
-
+        # Acomodar los elementos en el layout horizontal
         self.inner_layout.addWidget(self.icon_widget)
         self.inner_layout.addWidget(self.text_label)
         self.inner_layout.addStretch() 
 
+        # Acomodar el layout horizontal en el layout vertical
         self.main_layout.addWidget(self.button_frame)
 
         c = QColor(colors[color])
@@ -82,7 +91,6 @@ class ButtonWidget(QWidget):
                 background-color: rgba({r}, {g}, {b}, {alpha_hover});
             }}
 
-            /* Estilos de texto e iconos */
             QLabel {{
                 background-color: transparent;
                 border: none;

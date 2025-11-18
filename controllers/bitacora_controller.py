@@ -1,5 +1,5 @@
-import domain.bitacoras.crudBitacora as CRUD
-from domain.bitacoras.ClaseBitacora import Bitacora
+import domain.bitacoras.CRUD as CRUD
+from domain.bitacoras.Clase import Bitacora
 import interface.bitacoras.Val as Val
 
 def lista():

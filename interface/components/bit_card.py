@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QSizePolicy
 from PyQt6.QtCore import Qt
 
-from domain.bitacoras.ClaseBitacora import Bitacora
+from domain.bitacoras.Clase import Bitacora
 
 class BitacoraCardWidget(QFrame):
     def __init__(self, data: Bitacora):

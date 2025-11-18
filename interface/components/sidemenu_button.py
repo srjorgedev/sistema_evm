@@ -8,7 +8,7 @@ from PyQt6.QtSvgWidgets import QSvgWidget
 from pathlib import Path
 
 direction = Path(__file__)
-folder = direction.parent.parent.parent.parent
+folder = direction.parent.parent
 
 class MenuButtonWidget(QFrame):
     clicked = pyqtSignal()
@@ -35,7 +35,7 @@ class MenuButtonWidget(QFrame):
         self.icon = QSvgWidget()
         self.label_texto = QLabel(texto)
         
-        icon_path = folder / "public" / "icons" / f"{icono}.svg"
+        icon_path = folder / "assets" / "icons" / f"{icono}.svg"
         self.icon.load(str(icon_path))
         
         self.icon.setFixedSize(24, 24) 
