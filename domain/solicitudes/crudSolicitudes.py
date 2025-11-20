@@ -18,40 +18,39 @@ def agregarSolicitud(nuevaSolicitud):
     objSolicitud=nuevaSolicitud
     miConn = conn()
     aux = "insert into solicitud (asunto, horaSolicitada, fechaSolicitada, vehiculo, edo_solicitud, solicitante, autorizador) VALUES('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', {8}, '{9}', '{10}')"
-    comando = aux.format(objSolicitud.get_num_serie(), 
-    objSolicitud.get_matricula(), objSolicitud.get_marca(), 
-    objSolicitud.get_modelo(), objSolicitud.get_color(), 
-    objSolicitud.get_fecha_adquision(), objSolicitud.get_tipo(), 
-    objSolicitud.get_tipo_licencia(), objSolicitud.get_capacidad_pasajeros(), 
-    objSolicitud.get_utilidad(), objSolicitud.get_comentarios())
+    comando = aux.format(objSolicitud.get_numero(), 
+    objSolicitud.get_asunto(), objSolicitud.get_horaSolicitud(), 
+    objSolicitud.get_fechaSolicitud(), objSolicitud.get_vehiculo(), 
+    objSolicitud.get_edoSolicitud(), objSolicitud.get_solicitante(), 
+    objSolicitud.get_autorizador())
     lastid = miConn.registrar(comando)
     return lastid
 
-def estadoSolicitud(existeVehiculo):
-    objVehiculo=existeVehiculo
+def estadoSolicitud(existeSolicitud):
+    objSolicitud=existeSolicitud
     miConn = conn()
-    aux = "delete from vehiculos where id_vehiculo={0}"
-    comando = aux.format(objVehiculo.get_id())
+    aux = "update from solicitud where edo_solicitud='En Proceso'"
+    comando = aux.format(objSolicitud.get_edoSolicitud())
     contador = miConn.actualizar(comando)
-    if existeVehiculo is False:
-        print("El vehiculo no existe")
+    if existeSolicitud is False:
+        print("La solicitud no existe")
         
     if contador ==1:
-        print("Vehiculo eliminado correctamente")
+        print("Estado de la solicitud modificado correctamente correctamente")
     elif contador ==0:
-        print("Datos del vehiculo no encontrados")
+        print("Datos de la solicitud no encontrados")
     else:
-        print("Error al eliminar el vehiculo")
+        print("Error al cambiar el estado de la solicitud")
         
         
-def modificarSolicitud(existeVehiculo):
-    objVehiculo = existeVehiculo
+def modificarSolicitud(existeSolicitud):
+    objSolicitud = existeSolicitud
     miConn = conn()
     aux = "UPDATE vehiculos SET matricula = '{0}' WHERE id_vehiculo = {1}"
-    comando = aux.format(objVehiculo.get_matricula(), int(objVehiculo.get_id()))
+    comando = aux.format(objSolicitud.get_matricula(), int(objVehiculo.get_id()))
     contador = miConn.actualizar(comando)
-    if existeVehiculo is False:
-        print("El vehiculo no existe")
+    if existeSolicitud is False:
+        print("La solicitud no existe")
         
     if contador == 1:
         print("Vehículo modificado correctamente")
