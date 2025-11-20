@@ -26,11 +26,12 @@ class MenuButtonWidget(QFrame):
         self.inner_frame = QFrame()
         self.inner_frame.setObjectName("InnerButton")
         self.inner_frame.setFrameShape(QFrame.Shape.StyledPanel)
-        self.inner_frame.setFixedSize(240, 44) 
+        self.inner_frame.setFixedSize(208, 44) 
         
         self.layout_interno = QHBoxLayout(self.inner_frame)
         self.layout_interno.setContentsMargins(12, 0, 12, 0)
         self.layout_interno.setSpacing(8)
+        self.layout_interno.setAlignment(Qt.AlignmentFlag.AlignHCenter)
         
         self.icon = QSvgWidget()
         self.label_texto = QLabel(texto)
@@ -45,6 +46,9 @@ class MenuButtonWidget(QFrame):
         self.layout_interno.addWidget(self.label_texto, 1) 
         
         self.layout_externo = QHBoxLayout(self)
+        
+        self.setFixedSize(256, 44) 
+        
         self.layout_externo.setContentsMargins(0, 0, 0, 0)
         self.layout_externo.addStretch()
         self.layout_externo.addWidget(self.inner_frame)
@@ -55,38 +59,36 @@ class MenuButtonWidget(QFrame):
         self.inner_frame.setProperty("active", self._active)
 
         self.setStyleSheet("""
-            /* Widget Padre (256px) */
             MenuButtonWidget {
                 background-color: transparent;
             }
+            
             MenuButtonWidget[active="true"] {
-                background-color: #C030C0; /* Fondo morado activo */
+                background-color: #009AD3;
+                border-right: 3px solid #9fd9ef;
             }
 
-            /* Widget Hijo (240px) */
             MenuButtonWidget #InnerButton {
                 background-color: none;
-                border: 1px solid #5A5F6B; /* Borde inactivo */
+                border: 1px solid #5A5F6B;
                 border-radius: 2px;
             }
+            
             MenuButtonWidget[active="true"] #InnerButton {
-                border-color: transparent; /* Oculta el borde si está activo */
+                border-color: transparent; 
             }
 
-            /* Reglas de Hover (SOLO para botones INACTIVOS) */
             MenuButtonWidget[active="false"]:hover {
-                background-color: #009AD3; /* Fondo azul en hover */
+                background-color: #C030C0; 
             }
             MenuButtonWidget[active="false"]:hover #InnerButton {
-                border-color: transparent; /* Oculta el borde en hover */
+                border-color: transparent; 
             }
 
-            /* Reglas de Texto */
             MenuButtonWidget #InnerButton QLabel {
-                color: #f1f1f1; /* Texto blanco (default e inactivo) */
+                color: #f1f1f1;
             }
             
-            /* Texto activo (blanco, como en tu imagen) */
             MenuButtonWidget[active="true"] #InnerButton QLabel {
                 color: #f1f1f1;
             }

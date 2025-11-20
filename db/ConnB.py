@@ -11,6 +11,9 @@ class Conn:
             db="evm_db",
             use_pure=True
         )
+        
+    def comprobarConexion(self) -> bool:
+        return self.conectar().is_connected()
 
     def lista(self, comando):
         try:
