@@ -18,9 +18,9 @@ class InputWidget(QWidget):
         label = QLabel(text)
         label.setStyleSheet("color: #f1f1f1; font-size: 16px;")
 
-        input_field = QLineEdit()
+        self.input_field = QLineEdit()
 
-        input_field.setStyleSheet("""
+        self.input_field.setStyleSheet("""
             QLineEdit {
                 background-color: #0f172a; 
                 border: 1px solid #334155;
@@ -33,11 +33,17 @@ class InputWidget(QWidget):
                 border: 1px solid #3b82f6;
             }
         """)
-        input_field.setFixedHeight(40) 
+        self.input_field.setFixedHeight(40) 
         
         if pattern: 
             regex = QRegularExpressionValidator(QRegularExpression(pattern), self)
-            input_field.setValidator(regex)
+            self.input_field.setValidator(regex)
         
         self.main_layout.addWidget(label)
-        self.main_layout.addWidget(input_field)
+        self.main_layout.addWidget(self.input_field)
+        
+    def get_text(self):
+        return self.input_field.text()
+        
+    def set_text(self, text):
+        self.input_field.setText(text)

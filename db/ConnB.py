@@ -2,55 +2,102 @@ import mysql.connector
 from mysql.connector import Error
 
 class Conn:
+    def __init__(self):
+        self.config = {
+            "host": "localhost",
+            "port": 3306,
+            "user": "root",
+            "password": "root",
+            "db": "evm_db",
+            "use_pure": True
+        }
+
     def conectar(self):
-        return mysql.connector.connect(
-            host="localhost",
-            port=3306,
-            user="root",
-            password="root",
-            db="evm_db",
-            use_pure=True
-        )
+        return mysql.connector.connect(**self.config)
         
     def comprobarConexion(self) -> bool:
-        return self.conectar().is_connected()
-
-    def lista(self, comando):
         try:
             cnx = self.conectar()
-            cursor = cnx.cursor()
-            cursor.execute(comando)
-            res = cursor.fetchall()
-            cursor.close()
+            is_connected = cnx.is_connected()
             cnx.close()
-            return res
-        except Error as error:
-            return -1, error
+            return is_connected
+        except Error:
+            return False
 
-    def registrar(self, query) -> int:
+    def lista(self, query, params=None):
+        """
+        Ejecuta un SELECT y retorna resultados.
+        Soporta parámetros para evitar Inyección SQL.
+        """
+        cnx = None
+        cursor = None
         try:
             cnx = self.conectar()
             cursor = cnx.cursor()
-            cursor.execute(query)
+            
+            # Ejecución segura con parámetros
+            if params:
+                cursor.execute(query, params)
+            else:
+                cursor.execute(query)
+                
+            res = cursor.fetchall()
+            return res
+            
+        except Error as error:
+            print(f"[BD ERROR - LISTA]: {error}")
+            return [] # Retornamos lista vacía en vez de error tupla para no romper la UI
+            
+        finally:
+            # ESTO ES LO QUE EVITA EL CONGELAMIENTO
+            # Se ejecuta siempre, haya error o no.
+            if cursor: cursor.close()
+            if cnx and cnx.is_connected(): cnx.close()
+
+    def registrar(self, query, params=None) -> int:
+        cnx = None
+        cursor = None
+        try:
+            cnx = self.conectar()
+            cursor = cnx.cursor()
+            
+            if params:
+                cursor.execute(query, params)
+            else:
+                cursor.execute(query)
+                
             cnx.commit()
             lastid = cursor.lastrowid
-            cursor.close()
-            cnx.close()
             return lastid
+            
         except Error as error:
-            print("Error:", error)
+            print(f"[BD ERROR - REGISTRAR]: {error}")
             return -1
+            
+        finally:
+            if cursor: cursor.close()
+            if cnx and cnx.is_connected(): cnx.close()
 
-    def actualizar(self, query):
+    def actualizar(self, query, params=None):
+        cnx = None
+        cursor = None
         try:
             cnx = self.conectar()
             cursor = cnx.cursor()
-            cursor.execute(query)
+            
+            if params:
+                cursor.execute(query, params)
+            else:
+                cursor.execute(query)
+                
             cnx.commit()
             count = cursor.rowcount
-            cursor.close()
-            cnx.close()
             return count
+            
         except Error as error:
-            print("Error:", error)
-            return -1
+            print(f"[BD ERROR - ACTUALIZAR]: {error}")
+            return 0
+            
+        finally:
+            if cursor: cursor.close()
+            if cnx and cnx.is_connected(): cnx.close()

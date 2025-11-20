@@ -13,6 +13,7 @@ def listaGeneral() -> list[Bitacora]:
             entrada, 
             salida
         FROM bitacora
+        WHERE visible = TRUE
     """
     
     # print("CRUD.listaGeneral ejecutándose...")
@@ -34,6 +35,21 @@ def listaGeneral() -> list[Bitacora]:
         bitacoras.append(listaItem)
 
     return bitacoras
+
+def archivar(data: Bitacora):
+    conn = Conn()
+    
+    query = """
+        UPDATE bitacora 
+        SET visible = FALSE
+        WHERE numero = %s
+    """
+    
+    params = (data.get_numControl(),)
+    
+    r = conn.actualizar(query, params)
+    
+    return r
 
 def bitacoraSinEntrada():
     conn = Conn()

@@ -1,6 +1,6 @@
 # NUEVO: Importaciones necesarias para el threading y los datos
 from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QScrollArea, QVBoxLayout, QHBoxLayout, QSizePolicy, QSpacerItem
-from PyQt6.QtCore import Qt, QThread
+from PyQt6.QtCore import Qt, QThread, pyqtSignal
 
 import controllers.bitacora_controller as FBitacora
 from domain.bitacoras.Clase import Bitacora
@@ -15,6 +15,8 @@ from interface.components.modal import ModalWidget
 from interface.components.salida_form import SalidaFormWidget
 
 class BITScreenWidget(QWidget):
+    btn_archivar = pyqtSignal()
+    
     def __init__(self):
         super().__init__()
         
@@ -147,11 +149,11 @@ class BITScreenWidget(QWidget):
 
     def fetch_bitacoras(self):
         self.thread = QThread()  
-        self.worker = Fetch()    
+        self.worker = Fetch(FBitacora.lista)    
         
         self.worker.moveToThread(self.thread) 
 
-        self.thread.started.connect(lambda: self.worker.run(FBitacora.lista))
+        self.thread.started.connect(self.worker.run)
         
         self.worker.finished.connect(self.handle_data)
         self.worker.error.connect(self.handle_error)
