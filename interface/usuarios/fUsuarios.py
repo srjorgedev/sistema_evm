@@ -5,6 +5,26 @@ from interface.usuarios.Menu import licencias
 from interface.usuarios.Menu import datos
 from interface.usuarios import val
 import random
+import bcrypt
+
+'''
+////Codigo verificacion de hash de password
+entered_password = input("Contraseña: ").encode('utf-8')
+stored_hash = resultado_sql[0]["password_hash"].encode('utf-8')
+
+if bcrypt.checkpw(entered_password, stored_hash):
+    print("Login correcto")
+else:
+    print("Contraseña incorrecta")
+    
+    
+ #000
+ if bcrypt.checkpw(passwordIngresada.encode('utf-8'), hash_guardado):
+    print("Correcto")
+else:
+    print("Incorrecto")
+
+    '''
 '''
 def __init__(self, numEmpleado, nombre, activo):
 '''
@@ -42,9 +62,24 @@ def createUser():
         case 1:
             codigo = str(random.randint(10000, 99999))
             descripcion = "Administrador"
+            while True:
+                password = input("Cree una contraseña: ")
+                if val.validate_password(password):
+                    password = password.encode('utf-8')
+                    hashed = bcrypt.hashpw(password, bcrypt.gensalt())
+                    print("Contraseña Valida")
+                    break
+                else:
+                    print("Contraseña Invalida. Intente de nuevo")
+                    print("La contraseña debe cumplir con los siguientes requisitos para ser válida:")
+                    print(" 1. Tener al menos 8 caracteres.")
+                    print(" 2. Incluir al menos una letra mayúscula (A-Z).")
+                    print(" 3. Incluir al menos una letra minúscula (a-z).")
+                    print(" 4. Incluir al menos un número (0-9).")
+            email = val.vEmail("Ingrese su Correo Electronico: ")
             newTipo = TipoEmpleado(codigo, descripcion)
-            newUser = Usuario(None, nombre, newTipo.get_codigo(), 1)
-            crudUsers.Create(newUser, newTipo)
+            newUser = Usuario(None, nombre, newTipo.get_codigo(), 1, hashed, email)
+            crudUsers.Create2(newUser, newTipo)
         case 2:
             tipoEmpleado = "Chofer"
             licencias()

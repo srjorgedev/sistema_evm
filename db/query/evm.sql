@@ -85,6 +85,8 @@ CREATE TABLE empleado(
     FOREIGN KEY (tipo_empleado) REFERENCES tipo_empleado(codigo)
 );
 ALTER TABLE empleado ADD activo TINYINT(1) NOT NULL DEFAULT 1;
+ALTER TABLE empleado ADD COLUMN password_hash VARCHAR(255) NOT NULL;
+ALTER TABLE empleado ADD COLUMN email VARCHAR(100) NOT NULL;
 
 CREATE TABLE telefono (
     numero INT AUTO_INCREMENT PRIMARY KEY,
