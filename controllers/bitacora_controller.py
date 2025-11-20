@@ -1,17 +1,17 @@
-import domain.bitacoras.crudBitacora as CRUD
-from domain.bitacoras.ClaseBitacora import Bitacora
+import domain.bitacoras.CRUD as CRUD
+from domain.bitacoras.Clase import Bitacora
 import interface.bitacoras.Val as Val
 
-
 def lista():
-    print("   \n-- Lista de bitacoras --")
-    print(
-        f"{'N.Ctrl':<8}{'Asunto':<35}{'Destino':<15}{'Salida':<10}{'Entrada':<10}"
-    )
-
-    CRUD.listaGeneral()
-    print()
-
+    # print("Entré a FBitacora.lista")
+    try:
+        # print("Ejecutando CRUD.listaGeneral...")
+        resultado = CRUD.listaGeneral()
+        # print("Resultado:", resultado)
+        return resultado
+    except Exception as e:
+        # print("ERROR dentro de lista():", e)
+        raise
 
 def registrarSalida():
     print("   \n-- Registrar salida --")

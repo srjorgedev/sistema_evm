@@ -2,7 +2,7 @@ import interface.usuarios.Menu as _Usuarios
 from interface.usuarios import fUsuarios
 
 import interface.bitacoras.Menu as _Bitacoras
-from interface.bitacoras import fBitacora
+from controllers import bitacora_controller
 
 import interface.vehiculos.Menu as _Vehiculos
 from interface.vehiculos import fVehiculo
@@ -27,15 +27,15 @@ while True and opc1 != 9:
                 opc11 = Val._SelectMenu("    Opcion: ", _Bitacoras.principal, 1, 6)
                 match opc11:
                     case 1:
-                        fBitacora.lista()
+                        bitacora_controller.lista()
                     case 2:
-                        fBitacora.registrarSalida()
+                        bitacora_controller.registrarSalida()
                     case 3:
-                        fBitacora.registrarEntrada()
+                        bitacora_controller.registrarEntrada()
                     case 4:
-                        fBitacora.modificar()
+                        bitacora_controller.modificar()
                     case 5:
-                        fBitacora.eliminar()
+                        bitacora_controller.eliminar()
                     case 6:
                         print("   Saliendo...")
                         break

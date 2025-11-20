@@ -1,23 +1,39 @@
 from db.ConnB import Conn
-from domain.bitacoras.ClaseBitacora import Bitacora
+from domain.bitacoras.Clase import Bitacora
+from mysql.connector import Error
 
-
-def listaGeneral():
+def listaGeneral() -> list[Bitacora]:
     conn = Conn()
 
-    query = 'SELECT numControl as "Numero de control", asunto as Asunto, destino as Destino, salida as Salida, entrada as Entrada FROM bitacora WHERE status = 1'
+    query = """
+        SELECT 
+            numero as id,
+            asunto,
+            destino, 
+            entrada, 
+            salida
+        FROM bitacora
+    """
+    
+    # print("CRUD.listaGeneral ejecutándose...")
     lista = conn.lista(query)
 
-    if lista == 0 or len(lista) == 0:
-        print("   No se puede mostrar.")
-        return
+    # print("CRUD LISTA EJECUTADO")
 
+    bitacoras = []
     for fila in lista:
-        numCtrl, asunto, destino, salida, entrada = fila
-        if entrada == None: entrada = 0
+        id, asunto, destino, entrada, salida = fila
+        
+        listaItem = Bitacora()
+        listaItem.set_numControl(id)
+        listaItem.set_asunto(asunto)
+        listaItem.set_destino(destino)
+        listaItem.set_entradaBool(entrada)
+        listaItem.set_salidaBool(salida)
 
-        print(f"{numCtrl:<8}{asunto:<35}{destino:<15}{salida:<12}{entrada}")
+        bitacoras.append(listaItem)
 
+    return bitacoras
 
 def bitacoraSinEntrada():
     conn = Conn()
