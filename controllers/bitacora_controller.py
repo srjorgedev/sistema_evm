@@ -12,6 +12,19 @@ def lista():
     except Exception as e:
         # print("ERROR dentro de lista():", e)
         raise
+    
+# Logica similar al de eliminar
+def archivar(data: Bitacora):
+    print("[CTRL BIT]: Funcion -> ARCHIVAR")
+    try: 
+        print("[CTRL BIT]: Iniciando...")
+        r = CRUD.archivar(data)
+        print("[CTRL BIT]: Terminado.")
+        print(f"[CTRL BIT]: Retorno -> {r}")
+    except Exception as e:
+        print("[CTRL BIT]: Error ->")
+        print(e)
+    
 
 def registrarSalida():
     print("   \n-- Registrar salida --")
