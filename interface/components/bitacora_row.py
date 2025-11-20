@@ -35,7 +35,7 @@ class BitacoraCardWidget(QFrame):
         # Funciones de botones
         archivar.clicked.connect(lambda: bitcora_controller.archivar(data))
         
-        acciones_layout.setAlignment(Qt.AlignmentFlag.AlignRight)
+        acciones_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
         
         layout.setContentsMargins(8, 0, 8, 0)
         
