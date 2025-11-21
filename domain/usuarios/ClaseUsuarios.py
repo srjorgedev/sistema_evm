@@ -55,13 +55,13 @@ class Telefono:
     def get_num(self):
         return self.__num
 
-    def set_(self, num):
+    def set_num(self, num):
         self.__num = num
 
     def get_empleado(self):
         return self.__empleado
 
-    def set_(self, empleado):
+    def set_empleado(self, empleado):
         self.__empleado = empleado
 
     def get_numTelefono(self):
@@ -99,7 +99,7 @@ class Licencia:
     def get_empleado(self):
         return self.__empleado
 
-    def set_(self, empleado):
+    def set_empleado(self, empleado):
         self.__empleado = empleado
 
     def get_tipoLicencia(self):
@@ -124,3 +124,21 @@ class TipoEmpleado:
 
     def set_descripcion(self, descripcion):
         self.__descripcion = descripcion
+
+
+class TipoLicencia:
+    def __init__(self, codigoLic, descripcionLic):
+        self.__codigoLic = codigoLic
+        self.__descripcionLic = descripcionLic
+
+    def get_codigoLic(self):
+        return self.__codigoLic
+
+    def set_codigoLic(self, codigoLic):
+        self.__codigoLic = codigoLic
+
+    def get_descripcionLic(self):
+        return self.__descripcionLic
+
+    def set_descripcionLic(self, descripcionLic):
+        self.__descripcionLic = descripcionLic

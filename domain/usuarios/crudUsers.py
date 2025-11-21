@@ -28,7 +28,7 @@ def Create(newUser, newTipo):
     miConn.register(comando)
 '''
 
-def Create2(newUser, newTipo):
+def Create(newUser, newTipo, newTel, newTLic, newLic):
     miConn = conn()
 
     cursor = miConn.conexion.cursor()
@@ -56,9 +56,47 @@ def Create2(newUser, newTipo):
         newUser.get_email()
     ))
 
+    idEmpleado = cursor.lastrowid
+    print("Numero de Empleado:", idEmpleado)
+    newTel.set_empleado(idEmpleado)
+    newLic.set_empleado(idEmpleado)
+    
+    #INSERT telefono
+    comando3 = """
+    INSERT INTO telefono (numTelefono, empleado)
+    VALUES (%s, %s)
+    """
+    cursor.execute(comando3, (
+        newTel.get_numTelefono(),
+        newTel.get_empleado()
+    ))
+    
+    idTelefono = cursor.lastrowid
+    
+    comando4 = """
+    INSERT INTO tipo_licencia ()
+    VALUES (%s, %s)
+    """
+    cursor.execute(comando4, (
+        newTLic.get_codigoLic(),
+        newTLic.get_descripcionLic()
+    ))
+    
+    comando5 = """
+    INSERT INTO licencia (numero, fechaExpedicion, fechaVencimiento, empleado, tipo_licencia)
+    VALUES (%s, %s, %s, %s, %s)
+    """
+    cursor.execute(comando5, (
+        newLic.get_num(),
+        newLic.get_fechaExpedicion(),
+        newLic.get_fechaVencimiento(),
+        newLic.get_empleado(),
+        newLic.get_tipoLicencia()
+    ))
+
     miConn.conexion.commit()
+    print("ID Telefono", idTelefono)
     print("Registro Exitoso")
-    print("Numero de Empleado:", cursor.lastrowid)
 
 
 #Read select
