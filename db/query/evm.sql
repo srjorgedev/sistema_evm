@@ -175,6 +175,12 @@ CREATE TABLE bitacora (
     FOREIGN KEY (vehiculo) REFERENCES vehiculo(numSerie)
 );
 
+ALTER TABLE bitacora
+ADD COLUMN visible BOOLEAN;
+
+UPDATE bitacora
+SET visible = 1;
+
 CREATE TABLE empleado_bitacora (
     bitacora INT NOT NULL,
     empleado INT NOT NULL,

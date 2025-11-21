@@ -7,7 +7,7 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import Qt
 from interface.screens.screen import ScreenWidget
-from interface.screens.bit_screen import BITScreenWidget
+from interface.screens.bitacora_screen import BITScreenWidget
 
 class VentanaPrincipal(QMainWindow):
     def __init__(self):
@@ -21,7 +21,7 @@ class VentanaPrincipal(QMainWindow):
         
         self.sidemenu = SidemenuWidget()
         self.stack = QStackedWidget()
-        self.stack.setStyleSheet("background-color: #1D1D1D;")
+        self.stack.setStyleSheet("background-color: #0f181f;")
         
         self.stack.addWidget(ScreenWidget("VISTA DASHBOARD", "#2c3e50"))
         self.stack.addWidget(BITScreenWidget())

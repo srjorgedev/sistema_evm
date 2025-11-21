@@ -1,34 +1,33 @@
+
 from db.connV import conn
-from domain.vehiculos.ClaseVehiculo import Vehiculo
+from domain.solicitudes.ClaseSolicitudes import Vehiculo as SolicitudVehiculo
 
-
-
-def listarVehiculos():
+def listarSolicitudes():
     miConn = conn()
-    comando = "select id_vehiculo as ID, num_serie AS 'Num Serie', matricula as Matricula, marca as Marca, modelo as Modelo, color as Color , fecha_adquision as 'Fecha de adquision', tipo as 'Tipo de Vehiculo', tipo_licencia as 'Tipo Licencia', capacidad_pasajeros as 'Capcidad Pasajeros', utilidad as 'Utilidad del vehiculo', comentarios as Comentarios from vehiculos"
+    comando = "select numero as ID, asunto as Asunto, horaSolicitada as Hora, fechaSolicitada as Fecha, vehicul as Vehiculo, edo_solicitud as Estado_Solicitud , solicitante as Solicitante, autorizador as Autorizador, from solicitud"
     lista = miConn.lista(comando)
     
     if not lista:
-        print("No hay vehiculos registrados, para mostrar")
+        print("No hay solicitudes registradas, para mostrar")
     else:
         if len(lista)>0:
             for fila in lista:
                 print(fila)
                 
-def agregarVehiculo(nuevoVehiculo):
-    objVehiculo=nuevoVehiculo
+def agregarSolicitud(nuevaSolicitud):
+    objSolicitud=nuevaSolicitud
     miConn = conn()
-    aux = "insert into vehiculos (num_serie, matricula, marca, modelo, color, fecha_adquision, tipo, tipo_licencia, capacidad_pasajeros, utilidad, comentarios) VALUES('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', {8}, '{9}', '{10}')"
-    comando = aux.format(objVehiculo.get_num_serie(), 
-    objVehiculo.get_matricula(), objVehiculo.get_marca(), 
-    objVehiculo.get_modelo(), objVehiculo.get_color(), 
-    objVehiculo.get_fecha_adquision(), objVehiculo.get_tipo(), 
-    objVehiculo.get_tipo_licencia(), objVehiculo.get_capacidad_pasajeros(), 
-    objVehiculo.get_utilidad(), objVehiculo.get_comentarios())
+    aux = "insert into solicitud (asunto, horaSolicitada, fechaSolicitada, vehiculo, edo_solicitud, solicitante, autorizador) VALUES('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', {8}, '{9}', '{10}')"
+    comando = aux.format(objSolicitud.get_num_serie(), 
+    objSolicitud.get_matricula(), objSolicitud.get_marca(), 
+    objSolicitud.get_modelo(), objSolicitud.get_color(), 
+    objSolicitud.get_fecha_adquision(), objSolicitud.get_tipo(), 
+    objSolicitud.get_tipo_licencia(), objSolicitud.get_capacidad_pasajeros(), 
+    objSolicitud.get_utilidad(), objSolicitud.get_comentarios())
     lastid = miConn.registrar(comando)
     return lastid
 
-def borrarVehiculo(existeVehiculo):
+def estadoSolicitud(existeVehiculo):
     objVehiculo=existeVehiculo
     miConn = conn()
     aux = "delete from vehiculos where id_vehiculo={0}"
@@ -45,7 +44,7 @@ def borrarVehiculo(existeVehiculo):
         print("Error al eliminar el vehiculo")
         
         
-def modificarVehiculo(existeVehiculo):
+def modificarSolicitud(existeVehiculo):
     objVehiculo = existeVehiculo
     miConn = conn()
     aux = "UPDATE vehiculos SET matricula = '{0}' WHERE id_vehiculo = {1}"
