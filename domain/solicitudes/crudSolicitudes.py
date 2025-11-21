@@ -47,7 +47,7 @@ def modificarSolicitud(existeSolicitud):
     objSolicitud = existeSolicitud
     miConn = conn()
     aux = "UPDATE vehiculos SET matricula = '{0}' WHERE id_vehiculo = {1}"
-    comando = aux.format(objSolicitud.get_matricula(), int(objVehiculo.get_id()))
+    comando = aux.format(objSolicitud.get_matricula(), int(objSolicitud.get_id()))
     contador = miConn.actualizar(comando)
     if existeSolicitud is False:
         print("La solicitud no existe")

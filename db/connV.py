@@ -6,11 +6,12 @@ class conn:
 
     def __init__(self):
         try:
-            self.conexion = mysql.connector.connect(host="localhost",
-                                                    port=3306,
-                                                    user="root",
-                                                    password="root",
-                                                    db="evm")
+            self.conexion = mysql.connector.connect(
+            host="localhost",
+            port=3306,
+            user="root",
+            password="",
+            db="evm")
             print("   conectado")
         except Error as variable:
             print("   error en conexion")
