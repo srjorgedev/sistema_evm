@@ -2,7 +2,7 @@
 from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QScrollArea, QVBoxLayout, QHBoxLayout, QSizePolicy, QSpacerItem
 from PyQt6.QtCore import Qt, QThread
 import controllers.bitacora_controller as FBitacora
-from interface.components.bit_card import BitacoraCardWidget
+from interface.components.bitacora_row import BitacoraCardWidget
 from domain.bitacoras.Clase import Bitacora
 from interface.components.button import ButtonWidget
 from interface.components.button import ColorKeys
