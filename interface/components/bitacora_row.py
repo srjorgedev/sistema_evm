@@ -2,29 +2,28 @@ from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QSizePolicy, QWidget
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QCursor
 
-import controllers.bitacora_controller as bitcora_controller 
-
 from domain.bitacoras.Clase import Bitacora
 from interface.components.square_button import SquareButtonWidget
 
 class BitacoraCardWidget(QFrame):
-    btn_archivo = pyqtSignal()
+    btn_archivo = pyqtSignal(object)
     btn_modificar = pyqtSignal()
     btn_entrada = pyqtSignal()
     btn_salida = pyqtSignal()
     
     def __init__(self, data: Bitacora):
         super().__init__()
+        self.data = data
         
         self.setAttribute(Qt.WidgetAttribute.WA_Hover, True)
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
         layout = QHBoxLayout(self)
-        lbl_id = QLabel(f"#{data.get_numControl()}")
-        lbl_titulo = QLabel(data.get_asunto())
-        lbl_entrada = QLabel("Si" if data.get_entradaBool() == 1 else "No")
-        lbl_salida = QLabel("Si" if data.get_salidaBool() == 1 else "No")
-        lbl_destino = QLabel(data.get_destino())
+        lbl_id = QLabel(f"#{self.data.get_numControl()}")
+        lbl_titulo = QLabel(self.data.get_asunto())
+        lbl_entrada = QLabel("Si" if self.data.get_entradaBool() == 1 else "No")
+        lbl_salida = QLabel("Si" if self.data.get_salidaBool() == 1 else "No")
+        lbl_destino = QLabel(self.data.get_destino())
         acciones = QWidget()
         acciones_layout = QHBoxLayout(acciones)
         
@@ -33,7 +32,7 @@ class BitacoraCardWidget(QFrame):
         archivar = SquareButtonWidget("archive", "#1f4355", 32)
         
         # Funciones de botones
-        archivar.clicked.connect(lambda: bitcora_controller.archivar(data))
+        archivar.clicked.connect(self.emit_archivar)
         
         acciones_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
         
@@ -56,8 +55,8 @@ class BitacoraCardWidget(QFrame):
         
         lbl_entrada.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter)
         
-        if not (data.get_salidaBool()): acciones_layout.addWidget(SquareButtonWidget("out", "#1f4355", 32))
-        if not (data.get_entradaBool()): acciones_layout.addWidget(SquareButtonWidget("in", "#1f4355", 32))
+        if not (self.data.get_salidaBool()): acciones_layout.addWidget(SquareButtonWidget("out", "#1f4355", 32))
+        if not (self.data.get_entradaBool()): acciones_layout.addWidget(SquareButtonWidget("in", "#1f4355", 32))
         acciones_layout.addWidget(modificar)
         acciones_layout.addWidget(archivar)
 
@@ -69,4 +68,4 @@ class BitacoraCardWidget(QFrame):
         layout.addWidget(acciones, 1)
     
     def emit_archivar(self):
-        self.btn_archivo.emit()
+        self.btn_archivo.emit(self.data)

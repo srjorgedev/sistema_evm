@@ -148,25 +148,11 @@ class BITScreenWidget(QWidget):
         self.button_recargar.clicked.connect(self.form_salida)
 
     def fetch_bitacoras(self):
-        self.thread = QThread()  
-        self.worker = Fetch(FBitacora.lista)    
-        
-        self.worker.moveToThread(self.thread) 
-
-        self.thread.started.connect(self.worker.run)
-        
-        self.worker.finished.connect(self.handle_data)
-        self.worker.error.connect(self.handle_error)
-        
-        self.worker.finished.connect(self.thread.quit)
-        self.thread.finished.connect(self.thread.deleteLater)
-        self.worker.finished.connect(self.worker.deleteLater)
-
-        self.thread.start()
-        print("Iniciando fetch de bitácoras...")
+        print("[BITACORAS]: Iniciando fetch...")
+        self.obtener(FBitacora.lista, self.handle_data, self.handle_error)
 
     def handle_data(self, data: list[Bitacora]):
-        print(f"Datos recibidos: {len(data)} bitácoras.")
+        print(f"[BITACORAS]: Datos recibidos -> {len(data)} bitácoras.")
         
         while self.scroll_layout.count():
             child = self.scroll_layout.takeAt(0)
@@ -181,9 +167,53 @@ class BITScreenWidget(QWidget):
         else:
             for bitacora in data:
                 card = BitacoraCardWidget(bitacora) 
+                card.btn_archivo.connect(self.handle_archivar)
                 self.scroll_layout.addWidget(card)
         
         self.scroll_layout.addStretch()
 
     def handle_error(self, error_message):
         print(f"Error al hacer fetch: {error_message}")
+        
+    def handle_archivar(self, data: Bitacora):
+        print(f"DATOS TRAIDOS: {data.get_numControl()}")
+        activado_por = self.sender()
+        if activado_por: 
+            activado_por.setEnabled(False)
+            
+        # self.thread = QThread()  
+        # self.worker = Fetch(FBitacora.archivar, )    
+        
+        # self.worker.moveToThread(self.thread) 
+
+        # self.thread.started.connect(self.worker.run)
+        
+        # self.worker.finished.connect(self.handle_data)
+        # self.worker.error.connect(self.handle_error)
+        
+        # self.worker.finished.connect(self.thread.quit)
+        # self.thread.finished.connect(self.thread.deleteLater)
+        # self.worker.finished.connect(self.worker.deleteLater)
+
+        # self.thread.start()
+        
+    def obtener(self, funcion, callback_exito, callback_error=None, *args, **kwargs):
+        self.thread = QThread()
+        self.worker = Fetch(funcion, *args, **kwargs)
+        
+        self.worker.moveToThread(self.thread)
+        
+        self.thread.started.connect(self.worker.run)
+        self.worker.finished.connect(self.thread.quit)
+        
+        self.worker.finished.connect(callback_exito)
+        
+        if callback_error:
+            self.worker.error.connect(callback_error)
+        else:
+            self.worker.error.connect(lambda e: print(f"[ASYNC ERROR]: {e}"))
+            
+        self.worker.finished.connect(self.worker.deleteLater)
+        self.thread.finished.connect(self.thread.deleteLater)
+        
+        self.thread.start()

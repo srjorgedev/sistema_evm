@@ -45,7 +45,7 @@ class Conn:
             return res
             
         except Error as error:
-            print(f"[BD ERROR - LISTA]: {error}")
+            print(f"[BD ERROR - LISTA]: {error.errno}")
             return [] # Retornamos lista vacía en vez de error tupla para no romper la UI
             
         finally:

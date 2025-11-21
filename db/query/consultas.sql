@@ -80,3 +80,14 @@ destino,
 entrada, 
 salida
 FROM bitacora
+
+-- VEHICULOS
+SELECT 
+    v.numSerie, 
+    ma.nombre as marca,
+    mo.nombre as modelo,
+    v.disponibilidad 
+FROM vehiculo AS v
+INNER JOIN marca AS ma ON v.marca = ma.codigo
+INNER JOIN modelo AS mo ON v.modelo = mo.codigo
+WHERE v.disponibilidad = TRUE
