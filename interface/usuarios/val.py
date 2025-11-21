@@ -147,3 +147,20 @@ def vNombre(nombre):
     # Permite letras (con acentos y ñ) y espacios, sin números ni símbolos
     patron = r'^[A-Za-zÁÉÍÓÚáéíóúÑñ]+(?:\s[A-Za-zÁÉÍÓÚáéíóúÑñ]+)*$'
     return bool(re.match(patron, nombre.strip()))
+
+def validar_correo(email):
+    patron = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+    if re.match(patron, email):
+        return True
+    else:
+        return False
+    
+    
+def vEmail(msg):
+    while True:
+        email = input(msg)
+        patron = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+        if re.match(patron, email):
+            return email
+        else:
+            print("Ingresa un correo electrónico válido (ejemplo: usuario@dominio.com).")

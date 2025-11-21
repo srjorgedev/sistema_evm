@@ -1,9 +1,11 @@
 class Usuario:
-    def __init__(self, numEmpleado, nombre, tipo_empleado, activo):
+    def __init__(self, numEmpleado, nombre, tipo_empleado,activo, password, email):
         self.__numEmpleado = numEmpleado
         self.__tipo_empleado = tipo_empleado
         self.__nombre = nombre
         self.__activo = activo
+        self.__password = password
+        self.__email = email
 
     def __str__(self):
         return f" Numero de Empleado: {self.__numEmpleado}\n Nombre: {self.__nombre}\n  "
@@ -13,7 +15,7 @@ class Usuario:
 
     def set_numEmpleado(self, numEmpleado):
         self.__numEmpleado = numEmpleado
-        
+
     def get_nombre(self):
         return self.__nombre
 
@@ -31,6 +33,18 @@ class Usuario:
 
     def set_activo(self, activo):
         self.__activo = activo
+        
+    def get_password(self):
+        return self.__password
+    
+    def set_password(self, password):
+        self.__password = password
+        
+    def get_email(self):
+        return self.__email
+    
+    def set_email(self, email):
+        self.__email = email
 
 class Telefono:
     def __init__(self, num, numTelefono, empleado):
