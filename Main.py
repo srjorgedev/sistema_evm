@@ -9,6 +9,7 @@ from PyQt6.QtCore import Qt, QThread, pyqtSignal
 
 from interface.screens.screen import ScreenWidget
 from interface.screens.bitacora_screen import BITScreenWidget
+from interface.screens.vehi_screen import VEHIScreenWidget
 from interface.components.notifications import NotificationContainerWidget
 
 from db.ConnB import Conn
@@ -47,7 +48,7 @@ class VentanaPrincipal(QMainWindow):
         self.stack.addWidget(self.pantalla_bitacora)
         self.stack.addWidget(ScreenWidget("VISTA SOLICITUDES", "#8e44ad"))
         self.stack.addWidget(ScreenWidget("VISTA EMPLEADOS", "#16a085"))
-        self.stack.addWidget(ScreenWidget("VISTA VEHICULOS", "#c0392b"))
+        self.stack.addWidget(VEHIScreenWidget())
         self.stack.addWidget(ScreenWidget("VISTA MANTENIMIENTOS", "#2980b9"))
         
         self.sidemenu.current_page.connect(self.stack.setCurrentIndex)
