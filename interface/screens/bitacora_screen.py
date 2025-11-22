@@ -162,7 +162,7 @@ class BITScreenWidget(QWidget):
         self.main_layout.addWidget(label_table_subtitulo, 6, 0)
         self.main_layout.addWidget(self.table_head_widget, 7, 0)
         self.main_layout.addWidget(table_scroll_area, 8, 0)
-        self.main_layout.setRowStretch(9, 1) 
+
 
         self.fetch_bitacoras()
         #self.buttons_actions()
@@ -181,7 +181,7 @@ class BITScreenWidget(QWidget):
         print("[BITACORAS]: Iniciando fetch...")
         self.obtener(FBitacora.lista, self.handle_data, self.handle_error)
 
-    def handle_data(self, data: list[Bitacora]):
+    def handle_data(self, data: list[tuple]):
         print(f"[BITACORAS]: Datos recibidos -> {len(data)} bitácoras.")
         
         while self.table_scroll_layout.count():
@@ -207,9 +207,9 @@ class BITScreenWidget(QWidget):
     def handle_error(self, error_message):
         print(f"[BITACORAS]: Error al hacer fetch -> {error_message}")
         
-    def handle_archivar(self, data: Bitacora):
+    def handle_archivar(self, data: int):
         print(f"[BITACORAS]: Iniciando proceso de archivado...")
-        print(f"[BITACORAS]: DATOS -> {data.get_numControl()}")
+        print(f"[BITACORAS]: DATOS -> {data}")
         
         activado_por = self.sender()
         if activado_por: 
@@ -217,7 +217,7 @@ class BITScreenWidget(QWidget):
             
         self.h_thread = QThread()
         
-        self.h_worker = Fetch(FBitacora.archivar, data.get_numControl()) 
+        self.h_worker = Fetch(FBitacora.archivar, data) 
         
         self.h_worker.moveToThread(self.h_thread) 
 

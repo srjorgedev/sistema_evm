@@ -1,7 +1,7 @@
 from PyQt6.QtCore import Qt, QAbstractTableModel
 
 class TableModel(QAbstractTableModel):
-    def __init__(self, *titulos, datos):
+    def __init__(self, titulos, datos):
         super().__init__()
         self._datos = datos
         # Nombres de las columnas

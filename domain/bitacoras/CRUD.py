@@ -2,7 +2,7 @@ from db.ConnB import Conn
 from domain.bitacoras.Clase import Bitacora
 from mysql.connector import Error
 
-def listaGeneral() -> list[Bitacora]:
+def listaGeneral() -> list[tuple]:
     conn = Conn()
 
     query = """
@@ -13,7 +13,7 @@ def listaGeneral() -> list[Bitacora]:
             entrada, 
             salida
         FROM bitacora
-        WHERE visible = TRUE
+        WHERE visible = FALSE
     """
     
     # print("CRUD.listaGeneral ejecutándose...")
@@ -25,14 +25,9 @@ def listaGeneral() -> list[Bitacora]:
     for fila in lista:
         id, asunto, destino, entrada, salida = fila
         
-        listaItem = Bitacora()
-        listaItem.set_numControl(id)
-        listaItem.set_asunto(asunto)
-        listaItem.set_destino(destino)
-        listaItem.set_entradaBool(entrada)
-        listaItem.set_salidaBool(salida)
+        bitacora = (id, asunto, destino, entrada, salida)
 
-        bitacoras.append(listaItem)
+        bitacoras.append(bitacora)
 
     return bitacoras
 

@@ -4,6 +4,7 @@ from PyQt6.QtGui import QCursor
 
 from domain.bitacoras.Clase import Bitacora
 from interface.components.square_button import SquareButtonWidget
+from interface.components.button import ButtonWidget
 
 class BitacoraRowWidget(QFrame):
     btn_archivo = pyqtSignal(object)
@@ -11,7 +12,7 @@ class BitacoraRowWidget(QFrame):
     btn_entrada = pyqtSignal()
     btn_salida = pyqtSignal()
     
-    def __init__(self, data: Bitacora):
+    def __init__(self, data: tuple):
         super().__init__()
         self.data = data
         
@@ -19,11 +20,11 @@ class BitacoraRowWidget(QFrame):
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
         layout = QHBoxLayout(self)
-        lbl_id = QLabel(f"#{self.data.get_numControl()}")
-        lbl_titulo = QLabel(self.data.get_asunto())
-        lbl_entrada = QLabel("Si" if self.data.get_entradaBool() == 1 else "No")
-        lbl_salida = QLabel("Si" if self.data.get_salidaBool() == 1 else "No")
-        lbl_destino = QLabel(self.data.get_destino())
+        lbl_id = QLabel(f"#{self.data[0]}")
+        lbl_titulo = QLabel(self.data[1])
+        lbl_entrada = QLabel("Si" if self.data[3] == 1 else "No")
+        lbl_salida = QLabel("Si" if self.data[4] == 1 else "No")
+        lbl_destino = QLabel(self.data[2])
         acciones = QWidget()
         acciones_layout = QHBoxLayout(acciones)
         
@@ -55,8 +56,8 @@ class BitacoraRowWidget(QFrame):
         
         lbl_entrada.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter)
         
-        if not (self.data.get_salidaBool()): acciones_layout.addWidget(SquareButtonWidget("out", "#1f4355", 32))
-        if not (self.data.get_entradaBool()): acciones_layout.addWidget(SquareButtonWidget("in", "#1f4355", 32))
+        if not (self.data[3]): acciones_layout.addWidget(SquareButtonWidget("out", "#1f4355", 32))
+        if not (self.data[4]): acciones_layout.addWidget(SquareButtonWidget("in", "#1f4355", 32))
         acciones_layout.addWidget(modificar)
         acciones_layout.addWidget(archivar)
 
@@ -68,4 +69,4 @@ class BitacoraRowWidget(QFrame):
         layout.addWidget(acciones, 1)
     
     def emit_archivar(self):
-        self.btn_archivo.emit(self.data)
+        self.btn_archivo.emit(self.data[0])

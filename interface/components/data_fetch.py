@@ -1,4 +1,4 @@
-from PyQt6.QtCore import QObject, pyqtSignal, pyqtSlot
+from PyQt6.QtCore import QObject, pyqtSignal, pyqtSlot, QThread
 
 # Definicion del worker
 # El objetivo de un worker es ejecutar una tarea en un hilo
@@ -40,3 +40,34 @@ class Fetch(QObject): # Para poder usar Signal y Slot debemos heredar de QObject
             print(f"[FETCH]: Error con el worker -> {e}")
             # El worker emite el error  al hilo principal
             self.error.emit(str(e))
+
+class TaskRunner(QObject):
+    """Gestor centralizado de tareas asíncronas"""
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._threads = [] # Referencia para que el GC no los mate
+
+    def run(self, func, on_success, on_error=None, *args, **kwargs):
+        thread = QThread()
+        worker = Fetch(func, *args, **kwargs)
+        worker.moveToThread(thread)
+
+        # Conexiones
+        thread.started.connect(worker.run)
+        worker.finished.connect(lambda res: self._cleanup(thread, worker))
+        worker.finished.connect(on_success)
+        
+        if on_error:
+            worker.error.connect(on_error)
+        else:
+            worker.error.connect(lambda e: print(f"Error asíncrono: {e}"))
+
+        # Iniciar
+        thread.start()
+        self._threads.append((thread, worker))
+
+    def _cleanup(self, thread, worker):
+        thread.quit()
+        thread.wait()
+        # Remover de la lista de referencias
+        self._threads = [t for t in self._threads if t[0] != thread]
