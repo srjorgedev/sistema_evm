@@ -17,7 +17,7 @@ def _Listado():
 
 
 def _Tipos():
-    print("     Tipos de Usuario: ")
+    print("     Tipos de Empleado: ")
     print("     1. Administradores ")
     print("     2. Choferes")
     print("     3. Vigilante ")
@@ -45,7 +45,7 @@ def licencias():
     )
     print()
     print(
-        "   5. Tipo E (Servicios especializados y de carga pesada): Para transporte especializado, como pipas, o para carga pesada como tráileres y doble remolque. "
+        "   5. Tipo E (Servicios especializados  y carga): Para transporte especializado, como pipas, o para carga pesada como tráileres y doble remolque. "
     )
     print()
 
