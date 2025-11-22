@@ -1,11 +1,11 @@
 # NUEVO: Importaciones necesarias para el threading y los datos
-from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QScrollArea, QVBoxLayout, QHBoxLayout, QSizePolicy, QSpacerItem
+from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QScrollArea, QVBoxLayout, QHBoxLayout, QSizePolicy, QSpacerItem, QFrame
 from PyQt6.QtCore import Qt, QThread, pyqtSignal
 
 import controllers.bitacora_controller as FBitacora
 from domain.bitacoras.Clase import Bitacora
 
-from interface.components.bitacora_row import BitacoraCardWidget
+from interface.components.bitacora_row import BitacoraRowWidget
 from interface.components.button import ButtonWidget
 from interface.components.square_button import SquareButtonWidget
 from interface.components.button import ColorKeys
@@ -23,16 +23,18 @@ class BITScreenWidget(QWidget):
         super().__init__()
         
         # Creacion de elementos
+        
         self.main_layout = QGridLayout(self)
         label_titulo = QLabel("BITACORAS")
         button_layout = QHBoxLayout()
         label_subtitulo = QLabel("Panel de Control")
         label_buttons = QLabel("Acciones rapidas")
         label_table_subtitulo = QLabel("Registros")
-        table_head = QHBoxLayout()
-        scroll_area = QScrollArea()
-        scroll_widget = QWidget() 
-        self.scroll_layout = QVBoxLayout(scroll_widget) 
+        self.table_head_widget = QFrame()
+        table_head = QHBoxLayout(self.table_head_widget)
+        table_scroll_area = QScrollArea()
+        table_scroll_widget = QWidget() 
+        self.table_scroll_layout = QVBoxLayout(table_scroll_widget) 
         
         # Elementos espaciadores
         v_spacer = QSpacerItem(20, 32, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
@@ -82,9 +84,24 @@ class BITScreenWidget(QWidget):
         button_layout.addItem(h_spacer)
         button_layout.addWidget(self.button_recargar)
         
+        self.table_head_widget.setObjectName("headerContainer")
+        
+        table_head.setContentsMargins(4, 8, 0, 8) 
+        table_head.setSpacing(0)
+        
         # Estilos a la tabla
-        scroll_widget.setStyleSheet("""
-            background-color: red;
+        table_scroll_widget.setStyleSheet("""
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        """)
+        
+        self.table_head_widget.setStyleSheet("""
+        #headerContainer {
+            background-color: #17272f;  
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            border-bottom: 1px solid #15313e; 
+        }
         """)
         
         # Agregamos titulos a la tabla 
@@ -95,8 +112,8 @@ class BITScreenWidget(QWidget):
         table_head.addWidget(TableHeadWidget("Entrada registrada"), 1)
         table_head.addWidget(TableHeadWidget("Acciones"), 1)
 
-        scroll_area.setWidgetResizable(True)
-        scroll_area.setStyleSheet("""
+        table_scroll_area.setWidgetResizable(True)
+        table_scroll_area.setStyleSheet("""
             QScrollArea { 
                 border: none; 
                 background-color: transparent; 
@@ -131,10 +148,10 @@ class BITScreenWidget(QWidget):
             }
         """)
 
-        self.scroll_layout.setContentsMargins(0, 0, 0, 0)
-        self.scroll_layout.setSpacing(0)
+        self.table_scroll_layout.setContentsMargins(0, 0, 0, 0)
+        self.table_scroll_layout.setSpacing(0)
         
-        scroll_area.setWidget(scroll_widget)
+        table_scroll_area.setWidget(table_scroll_widget)
 
         self.main_layout.addWidget(label_subtitulo, 0, 0)
         self.main_layout.addWidget(label_titulo, 1, 0)
@@ -143,9 +160,9 @@ class BITScreenWidget(QWidget):
         self.main_layout.addLayout(button_layout, 4, 0)
         self.main_layout.addItem(v_spacer, 5, 0)
         self.main_layout.addWidget(label_table_subtitulo, 6, 0)
-        self.main_layout.addLayout(table_head, 7, 0)
-        self.main_layout.addWidget(scroll_area, 8, 0)
-        self.main_layout.setRowStretch(8, 1) 
+        self.main_layout.addWidget(self.table_head_widget, 7, 0)
+        self.main_layout.addWidget(table_scroll_area, 8, 0)
+        self.main_layout.setRowStretch(9, 1) 
 
         self.fetch_bitacoras()
         #self.buttons_actions()
@@ -167,23 +184,25 @@ class BITScreenWidget(QWidget):
     def handle_data(self, data: list[Bitacora]):
         print(f"[BITACORAS]: Datos recibidos -> {len(data)} bitácoras.")
         
-        while self.scroll_layout.count():
-            child = self.scroll_layout.takeAt(0)
+        while self.table_scroll_layout.count():
+            child = self.table_scroll_layout.takeAt(0)
             if child.widget():
                 child.widget().deleteLater()
 
         if not data:
             no_data_label = QLabel("No hay bitácoras para mostrar.")
             no_data_label.setStyleSheet("font-size: 16px; color: #888888;")
+            no_data_label.setContentsMargins(0, 16, 0, 0)
+            
             no_data_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            self.scroll_layout.addWidget(no_data_label)
+            self.table_scroll_layout.addWidget(no_data_label)
         else:
             for bitacora in data:
-                card = BitacoraCardWidget(bitacora) 
+                card = BitacoraRowWidget(bitacora) 
                 card.btn_archivo.connect(self.handle_archivar)
-                self.scroll_layout.addWidget(card)
+                self.table_scroll_layout.addWidget(card)
         
-        self.scroll_layout.addStretch()
+        self.table_scroll_layout.addStretch()
 
     def handle_error(self, error_message):
         print(f"[BITACORAS]: Error al hacer fetch -> {error_message}")

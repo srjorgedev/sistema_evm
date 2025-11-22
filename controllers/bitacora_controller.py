@@ -13,6 +13,18 @@ def lista():
         # print("ERROR dentro de lista():", e)
         raise
     
+def lista_archivados():
+    # print("Entré a FBitacora.lista")
+    try:
+        # print("Ejecutando CRUD.listaGeneral...")
+        resultado = CRUD.listaArchivados()
+        # print("Resultado:", resultado)
+        return resultado
+    except Exception as e:
+        # print("ERROR dentro de lista():", e)
+        raise
+        
+
 # Logica similar al de eliminar
 def archivar(data: int):
     print("[CTRL BIT]: Funcion -> ARCHIVAR")

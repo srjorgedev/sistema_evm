@@ -5,7 +5,7 @@ from PyQt6.QtGui import QCursor
 from domain.bitacoras.Clase import Bitacora
 from interface.components.square_button import SquareButtonWidget
 
-class BitacoraCardWidget(QFrame):
+class BitacoraRowWidget(QFrame):
     btn_archivo = pyqtSignal(object)
     btn_modificar = pyqtSignal()
     btn_entrada = pyqtSignal()

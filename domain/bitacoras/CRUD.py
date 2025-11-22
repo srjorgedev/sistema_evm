@@ -36,6 +36,40 @@ def listaGeneral() -> list[Bitacora]:
 
     return bitacoras
 
+def listaArchivados() -> list[Bitacora]:
+    conn = Conn()
+
+    query = """
+        SELECT 
+            numero as id,
+            asunto,
+            destino, 
+            entrada, 
+            salida
+        FROM bitacora
+        WHERE visible = FALSE
+    """
+    
+    # print("CRUD.listaGeneral ejecutándose...")
+    lista = conn.lista(query)
+
+    # print("CRUD LISTA EJECUTADO")
+
+    bitacoras = []
+    for fila in lista:
+        id, asunto, destino, entrada, salida = fila
+        
+        listaItem = Bitacora()
+        listaItem.set_numControl(id)
+        listaItem.set_asunto(asunto)
+        listaItem.set_destino(destino)
+        listaItem.set_entradaBool(entrada)
+        listaItem.set_salidaBool(salida)
+
+        bitacoras.append(listaItem)
+
+    return bitacoras
+
 def archivar(data: int):
     conn = Conn()
     
