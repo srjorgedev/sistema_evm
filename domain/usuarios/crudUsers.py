@@ -12,21 +12,91 @@ def __init__(self, codigo, descripcion):
 )
 '''
 
-
+'''
 #Create insert
 def Create(newUser, newTipo):
-    objUser = Usuario(0, "", "", 0)
+    objUser = Usuario(0, "", "", 0, "", "")
     objUser = newUser
-    objTipo = TipoEmpleado
+    objTipo = TipoEmpleado("", "")
     objTipo = newTipo
     miConn = conn()
     aux2 = "INSERT INTO tipo_empleado(codigo, descripcion) VALUES ('{0}','{1}')"
     comando2 = aux2.format(objTipo.get_codigo(), objTipo.get_descripcion())
     miConn.register2(comando2)
-    aux = "INSERT INTO empleado(nombre, tipo_empleado, activo) VALUES ('{0}','{1}','{2}')"
-    comando = aux.format(objUser.get_nombre(), objTipo.get_codigo(), objUser.get_activo())
+    aux = "INSERT INTO empleado(nombre, tipo_empleado, activo, password_hash, email) VALUES ('{0}','{1}','{2}','{3}','{4}')"
+    comando = aux.format(objUser.get_nombre(), objTipo.get_codigo(), objUser.get_activo(), objUser.get_password(), objUser.get_email())
     miConn.register(comando)
+'''
 
+def Create(newUser, newTipo, newTel, newTLic, newLic):
+    miConn = conn()
+
+    cursor = miConn.conexion.cursor()
+
+    # INSERT tipo_empleado
+    comando2 = """
+    INSERT INTO tipo_empleado (codigo, descripcion)
+    VALUES (%s, %s)
+    """
+    cursor.execute(comando2, (
+        newTipo.get_codigo(),
+        newTipo.get_descripcion()
+    ))
+
+    # INSERT empleado
+    comando = """
+    INSERT INTO empleado (nombre, tipo_empleado, activo, password_hash, email)
+    VALUES (%s, %s, %s, %s, %s)
+    """
+    cursor.execute(comando, (
+        newUser.get_nombre(),
+        newTipo.get_codigo(),
+        newUser.get_activo(),
+        newUser.get_password(),
+        newUser.get_email()
+    ))
+
+    idEmpleado = cursor.lastrowid
+    print("Numero de Empleado:", idEmpleado)
+    newTel.set_empleado(idEmpleado)
+    newLic.set_empleado(idEmpleado)
+    
+    #INSERT telefono
+    comando3 = """
+    INSERT INTO telefono (numTelefono, empleado)
+    VALUES (%s, %s)
+    """
+    cursor.execute(comando3, (
+        newTel.get_numTelefono(),
+        newTel.get_empleado()
+    ))
+    
+    idTelefono = cursor.lastrowid
+    
+    comando4 = """
+    INSERT INTO tipo_licencia ()
+    VALUES (%s, %s)
+    """
+    cursor.execute(comando4, (
+        newTLic.get_codigoLic(),
+        newTLic.get_descripcionLic()
+    ))
+    
+    comando5 = """
+    INSERT INTO licencia (numero, fechaExpedicion, fechaVencimiento, empleado, tipo_licencia)
+    VALUES (%s, %s, %s, %s, %s)
+    """
+    cursor.execute(comando5, (
+        newLic.get_num(),
+        newLic.get_fechaExpedicion(),
+        newLic.get_fechaVencimiento(),
+        newLic.get_empleado(),
+        newLic.get_tipoLicencia()
+    ))
+
+    miConn.conexion.commit()
+    print("ID Telefono", idTelefono)
+    print("Registro Exitoso")
 
 
 #Read select

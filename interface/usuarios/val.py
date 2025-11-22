@@ -1,5 +1,5 @@
+import datetime
 import re
-
 
 def vInt(msg):
     while True:
@@ -147,3 +147,52 @@ def vNombre(nombre):
     # Permite letras (con acentos y ñ) y espacios, sin números ni símbolos
     patron = r'^[A-Za-zÁÉÍÓÚáéíóúÑñ]+(?:\s[A-Za-zÁÉÍÓÚáéíóúÑñ]+)*$'
     return bool(re.match(patron, nombre.strip()))
+
+def validar_correo(email):
+    patron = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+    if re.match(patron, email):
+        return True
+    else:
+        return False
+
+def vEmail(msg):
+    while True:
+        email = input(msg)
+        patron = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+        if re.match(patron, email):
+            return email
+        else:
+            print("Ingresa un correo electrónico válido (ejemplo: usuario@dominio.com).")
+
+
+def val_exp():
+    while True:
+        fecha_str = input("Fecha de expedición (aaaa-mm-dd): ").strip()
+
+        try:
+            fecha = datetime.datetime.strptime(fecha_str, "%Y-%m-%d").date()
+
+            if fecha > datetime.date.today():
+                print("   La fecha de expedición no puede ser futura.")
+                continue
+
+            return fecha
+
+        except ValueError:
+            print("   Fecha inválida. Debes usar el formato aaaa-mm-dd (por ejemplo: 2024-03-15).")
+
+def val_ven(expedicion):
+    while True:
+        fecha_str = input("Fecha de vencimiento (aaaa-mm-dd): ").strip()
+
+        try:
+            fecha = datetime.datetime.strptime(fecha_str, "%Y-%m-%d").date()
+
+            if fecha <= expedicion:
+                print("   La fecha de vencimiento debe ser posterior a la fecha de expedición.")
+                continue
+
+            return fecha
+
+        except ValueError:
+            print("   Fecha inválida. Debes usar el formato aaaa-mm-dd (por ejemplo: 2028-03-15).")
