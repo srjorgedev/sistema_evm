@@ -14,7 +14,7 @@ def lista():
         raise
     
 # Logica similar al de eliminar
-def archivar(data: Bitacora):
+def archivar(data: int):
     print("[CTRL BIT]: Funcion -> ARCHIVAR")
     try: 
         print("[CTRL BIT]: Iniciando...")

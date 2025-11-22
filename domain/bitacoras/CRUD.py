@@ -36,7 +36,7 @@ def listaGeneral() -> list[Bitacora]:
 
     return bitacoras
 
-def archivar(data: Bitacora):
+def archivar(data: int):
     conn = Conn()
     
     query = """
@@ -45,7 +45,7 @@ def archivar(data: Bitacora):
         WHERE numero = %s
     """
     
-    params = (data.get_numControl(),)
+    params = (data,)
     
     r = conn.actualizar(query, params)
     

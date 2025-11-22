@@ -17,6 +17,8 @@ from interface.components.salida_form import SalidaFormWidget
 class BITScreenWidget(QWidget):
     btn_archivar = pyqtSignal()
     
+    notificar = pyqtSignal(str,str,str)
+    
     def __init__(self):
         super().__init__()
         
@@ -32,6 +34,7 @@ class BITScreenWidget(QWidget):
         scroll_widget = QWidget() 
         self.scroll_layout = QVBoxLayout(scroll_widget) 
         
+        # Elementos espaciadores
         v_spacer = QSpacerItem(20, 32, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
         h_spacer = QSpacerItem(128, 16, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
         
@@ -51,28 +54,40 @@ class BITScreenWidget(QWidget):
         self.main_layout.setSpacing(0)
         
         self.modal = ModalWidget(self, SalidaFormWidget())
+        
+        # Asignacion de eventos en botones        
         self.button_salida.clicked.connect(self.modal.show_modal)
+        self.button_recargar.clicked.connect(self.handle_refresh)
         
         # Asignacion de estilos
         label_titulo.setStyleSheet("font-size: 48px; font-weight: bold; color: white;")
         label_buttons.setStyleSheet("font-size: 18px; color: #c1c1c1;")
         label_subtitulo.setStyleSheet("font-size: 18px; color: #c1c1c1;")
-        
-        label_table_subtitulo.setContentsMargins(0, 0, 0, 8)
         label_table_subtitulo.setStyleSheet("font-size: 18px; color: #c1c1c1;")
         
+        # Alineamos la posicion de elementos 
         label_subtitulo.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         label_buttons.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         
+        # Espacios en otros elementos
+        label_table_subtitulo.setContentsMargins(0, 0, 0, 8)
         button_layout.setContentsMargins(0, 8, 0, 0)
         button_layout.setSpacing(16)
+        
+        # Agragamos los botones al contenedor de botones
         button_layout.addWidget(self.button_salida)
         button_layout.addWidget(self.button_entrada)
         button_layout.addWidget(self.button_modificar)
         button_layout.addWidget(self.button_archivar)
         button_layout.addItem(h_spacer)
         button_layout.addWidget(self.button_recargar)
-                
+        
+        # Estilos a la tabla
+        scroll_widget.setStyleSheet("""
+            background-color: red;
+        """)
+        
+        # Agregamos titulos a la tabla 
         table_head.addWidget(TableHeadWidget("N°"))
         table_head.addWidget(TableHeadWidget("Asunto"), 1)
         table_head.addWidget(TableHeadWidget("Destino"), 1)
@@ -81,7 +96,6 @@ class BITScreenWidget(QWidget):
         table_head.addWidget(TableHeadWidget("Acciones"), 1)
 
         scroll_area.setWidgetResizable(True)
-        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         scroll_area.setStyleSheet("""
             QScrollArea { 
                 border: none; 
@@ -91,8 +105,8 @@ class BITScreenWidget(QWidget):
             
             QScrollBar:vertical {
                 border: none;
-                background: #2D2D2D;    /* Fondo de la barra (gris oscuro) */
-                width: 10px;            /* IMPORTANTE: Ancho, no altura */
+                background: #2D2D2D;    
+                width: 16px;            
                 margin: 0px 0px 0px 0px;
             }
 
@@ -117,7 +131,6 @@ class BITScreenWidget(QWidget):
             }
         """)
 
-        
         self.scroll_layout.setContentsMargins(0, 0, 0, 0)
         self.scroll_layout.setSpacing(0)
         
@@ -173,29 +186,42 @@ class BITScreenWidget(QWidget):
         self.scroll_layout.addStretch()
 
     def handle_error(self, error_message):
-        print(f"Error al hacer fetch: {error_message}")
+        print(f"[BITACORAS]: Error al hacer fetch -> {error_message}")
         
     def handle_archivar(self, data: Bitacora):
-        print(f"DATOS TRAIDOS: {data.get_numControl()}")
+        print(f"[BITACORAS]: Iniciando proceso de archivado...")
+        print(f"[BITACORAS]: DATOS -> {data.get_numControl()}")
+        
         activado_por = self.sender()
         if activado_por: 
             activado_por.setEnabled(False)
             
-        # self.thread = QThread()  
-        # self.worker = Fetch(FBitacora.archivar, )    
+        self.h_thread = QThread()
         
-        # self.worker.moveToThread(self.thread) 
+        self.h_worker = Fetch(FBitacora.archivar, data.get_numControl()) 
+        
+        self.h_worker.moveToThread(self.h_thread) 
 
-        # self.thread.started.connect(self.worker.run)
+        self.h_thread.started.connect(self.h_worker.run)
         
-        # self.worker.finished.connect(self.handle_data)
-        # self.worker.error.connect(self.handle_error)
+        self.h_worker.finished.connect(lambda result: self.on_archivado_finalizado(activado_por))
         
-        # self.worker.finished.connect(self.thread.quit)
-        # self.thread.finished.connect(self.thread.deleteLater)
-        # self.worker.finished.connect(self.worker.deleteLater)
+        self.h_worker.error.connect(self.handle_error)
+        self.h_worker.error.connect(lambda: activado_por.setEnabled(True) if activado_por else None)
+        
+        self.h_worker.finished.connect(self.h_thread.quit)
+        self.h_worker.finished.connect(self.h_worker.deleteLater)
+        self.h_thread.finished.connect(self.h_thread.deleteLater)
 
-        # self.thread.start()
+        self.h_thread.start()
+
+    def on_archivado_finalizado(self, boton):
+        self.notificar.emit("Archivado", "Bitacora archivada exitosamente", "#2ecc71") 
+        
+        if boton:
+            boton.setEnabled(True)
+            
+        self.fetch_bitacoras()
         
     def obtener(self, funcion, callback_exito, callback_error=None, *args, **kwargs):
         self.thread = QThread()
@@ -211,9 +237,17 @@ class BITScreenWidget(QWidget):
         if callback_error:
             self.worker.error.connect(callback_error)
         else:
-            self.worker.error.connect(lambda e: print(f"[ASYNC ERROR]: {e}"))
+            self.worker.error.connect(lambda e: print(f"[OBTENER ERROR]: {e}"))
             
         self.worker.finished.connect(self.worker.deleteLater)
         self.thread.finished.connect(self.thread.deleteLater)
         
         self.thread.start()
+        
+        
+    def handle_refresh(self):
+        print("[BITACORAS]: Refrescando datos...")
+        self.obtener(FBitacora.lista, 
+            lambda data: (self.handle_data(data), self.notificar.emit("Datos recargados", "Las bitacoras fueron recargadas correctamente.", "#2ecc71")),
+            lambda err: self.notificar.emit("Error", f"Fallo: {err}", "#cc2e2e")
+        )

@@ -15,12 +15,14 @@ from db.ConnB import Conn
 
 class DBTest(QThread):
     finished = pyqtSignal(bool)
+    notification = pyqtSignal(object)
 
     def run(self):
         status = Conn().comprobarConexion()
         self.finished.emit(status)
 
 class VentanaPrincipal(QMainWindow):
+    notification = pyqtSignal(object)
     
     def __init__(self):
         super().__init__()
@@ -31,14 +33,18 @@ class VentanaPrincipal(QMainWindow):
         self.layout_principal.setSpacing(0)
         self.layout_principal.setContentsMargins(0, 0, 0, 0)
         
+        self.pantalla_bitacora = BITScreenWidget()
+        
         self.sidemenu = SidemenuWidget()
         self.stack = QStackedWidget()
         self.notification_container = NotificationContainerWidget(self)
         
+        self.pantalla_bitacora.notificar.connect(self.notification_container.nueva_notificacion)
+        
         self.stack.setStyleSheet("background-color: #0f181f;")
         
         self.stack.addWidget(ScreenWidget("VISTA DASHBOARD", "#2c3e50"))
-        self.stack.addWidget(BITScreenWidget())
+        self.stack.addWidget(self.pantalla_bitacora)
         self.stack.addWidget(ScreenWidget("VISTA SOLICITUDES", "#8e44ad"))
         self.stack.addWidget(ScreenWidget("VISTA EMPLEADOS", "#16a085"))
         self.stack.addWidget(ScreenWidget("VISTA VEHICULOS", "#c0392b"))

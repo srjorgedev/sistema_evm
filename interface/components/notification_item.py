@@ -10,9 +10,9 @@ class NotificacionItemWidget(QFrame):
         
         self.layout_principal = QHBoxLayout(self)
         self.layout_principal.setContentsMargins(0, 0, 0, 0) 
-        self.layout_principal.setSpacing(0) 
+        self.layout_principal.setSpacing(8) 
         
-        self.setFixedWidth(320)
+        self.setFixedSize(320, 60)
         self.setObjectName("FondoNotificacion")
         
         self.setStyleSheet("""
@@ -23,7 +23,7 @@ class NotificacionItemWidget(QFrame):
         """)
 
         self.franja = QFrame()
-        self.franja.setFixedWidth(8) 
+        self.franja.setFixedWidth(4) 
         self.franja.setStyleSheet(f"""
             background-color: {self.color};
             border-top-left-radius: 4px;    
@@ -36,11 +36,11 @@ class NotificacionItemWidget(QFrame):
         self.layout_contenido.setSpacing(4)
         
         lbl_titulo = QLabel(titulo)
-        lbl_titulo.setStyleSheet("color: white; font-weight: bold; font-size: 14px; background: transparent;")
+        lbl_titulo.setStyleSheet("color: white; font-weight: bold; font-size: 18px; background: transparent;")
         
         lbl_mensaje = QLabel(mensaje)
         lbl_mensaje.setWordWrap(True)
-        lbl_mensaje.setStyleSheet("color: #bdc3c7; font-size: 12px; background: transparent;")
+        lbl_mensaje.setStyleSheet("color: #bdc3c7; font-size: 14px; background: transparent;")
 
         self.layout_contenido.addWidget(lbl_titulo)
         self.layout_contenido.addWidget(lbl_mensaje)
@@ -49,7 +49,7 @@ class NotificacionItemWidget(QFrame):
         self.layout_principal.addWidget(self.contenido_widget)
         
         shadow = QGraphicsDropShadowEffect(self)
-        shadow.setBlurRadius(15)
+        shadow.setBlurRadius(24)
         shadow.setYOffset(4)
         shadow.setColor(QColor(0, 0, 0, 80))
         self.setGraphicsEffect(shadow)
