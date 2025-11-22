@@ -1,4 +1,4 @@
-from domain.usuarios.ClaseUsuarios import Usuario, TipoEmpleado
+from domain.usuarios.ClaseUsuarios import Usuario, TipoEmpleado, Telefono, Licencia, TipoLicencia
 import domain.usuarios.crudUsers as crudUsers
 from interface.usuarios.Menu import _Tipos
 from interface.usuarios.Menu import licencias
@@ -16,8 +16,7 @@ if bcrypt.checkpw(entered_password, stored_hash):
     print("Login correcto")
 else:
     print("Contraseña incorrecta")
-    
-    
+
  #000
  if bcrypt.checkpw(passwordIngresada.encode('utf-8'), hash_guardado):
     print("Correcto")
@@ -79,42 +78,67 @@ def createUser():
             email = val.vEmail("Ingrese su Correo Electronico: ")
             newTipo = TipoEmpleado(codigo, descripcion)
             newUser = Usuario(None, nombre, newTipo.get_codigo(), 1, hashed, email)
-            crudUsers.Create2(newUser, newTipo)
+            newTel = Telefono(None, telefono ,None)
+            crudUsers.Create(newUser, newTipo, newTel)
         case 2:
-            tipoEmpleado = "Chofer"
+            codigo = str(random.randint(10000, 99999))
+            descripcion = "Chofer"
             licencias()
             opclicencia = int(input("   Ingrese una opcion: "))
             match opclicencia:
                 case 1:
-                    licencia = "Tipo A"
-                    print("    Eligio la opcion de licencia " + licencia + ".")
+                    codigoLic = "A"
+                    print("    Eligio la opcion de licencia " + codigoLic + ".")
+                    descripcionLic = "Automovilista"
                 case 2:
-                    licencia = "Tipo B"
-                    print("    Eligio la opcion de licencia " + licencia + ".")
+                    codigoLic = "B"
+                    print("    Eligio la opcion de licencia " + codigoLic + ".")
+                    descripcionLic = "Taxis y Aplicaciones"
                 case 3:
-                    licencia = "Tipo C"
-                    print("    Eligio la opcion de licencia " + licencia + ".")
+                    codigoLic = "C"
+                    print("    Eligio la opcion de licencia " + codigoLic + ".")
+                    descripcionLic = "Transporte público"
                 case 4:
-                    licencia = "Tipo D"
-                    print("    Eligio la opcion de licencia " + licencia + ".")
+                    codigoLic = "D"
+                    print("    Eligio la opcion de licencia " + codigoLic + ".")
+                    descripcionLic = "Transporte de carga"
                 case 5:
-                    licencia = "Tipo E"
-                    print("    Eligio la opcion de licencia " + licencia + ".")
+                    codigoLic = "E"
+                    print("    Eligio la opcion de licencia " + codigoLic + ".")
+                    descripcionLic = "Servicios especializados  y carga"
             print()
-            numeroLicencia = input("   Ingrese su numero de licencia: ")
             while True:
+                numeroLicencia = input("   Ingrese su numero de licencia: ")
                 if val.valLicencia(numeroLicencia):
                     print("    Número de licencia válido.")
                     break
                 else:
                     print(
-                        "    Número de licencia inválido. Debe comenzar con una letra y tener 9 o 10 dígitos."
+                        "    Número de licencia inválido. Debe comenzar con una letra mayuscula y tener 9 o 10 dígitos."
                     )
-                    numeroLicencia = input(
-                        "   Ingrese su numero de licencia: ")
-            newUser = Usuario(nombre, telefono, tipoEmpleado, licencia,
-                              numeroLicencia, None, None)
-            crudUsers.Create(newUser)
+            exp = val.val_exp()
+            ven = val.val_ven(exp)
+            while True:
+                password = input("Cree una contraseña: ")
+                if val.validate_password(password):
+                    password = password.encode('utf-8')
+                    hashed = bcrypt.hashpw(password, bcrypt.gensalt())
+                    print("Contraseña Valida")
+                    break
+                else:
+                    print("Contraseña Invalida. Intente de nuevo")
+                    print("La contraseña debe cumplir con los siguientes requisitos para ser válida:")
+                    print(" 1. Tener al menos 8 caracteres.")
+                    print(" 2. Incluir al menos una letra mayúscula (A-Z).")
+                    print(" 3. Incluir al menos una letra minúscula (a-z).")
+                    print(" 4. Incluir al menos un número (0-9).")
+            email = val.vEmail("Ingrese su Correo Electronico: ")
+            newTipo = TipoEmpleado(codigo, descripcion)
+            newUser = Usuario(None, nombre, newTipo.get_codigo(), 1, hashed, email)
+            newTel = Telefono(None, telefono ,None)
+            newTLic = TipoLicencia(codigoLic, descripcionLic)
+            newLic = Licencia(numeroLicencia, exp, ven, None, newTLic.get_codigoLic())
+            crudUsers.Create(newUser, newTipo, newTel, newTLic, newLic)
         case 3:
             tipoEmpleado = "Vigilante"
             newUser = Usuario(nombre, telefono, tipoEmpleado, None, None, None,
