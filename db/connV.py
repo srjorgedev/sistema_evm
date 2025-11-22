@@ -12,9 +12,9 @@ class conn:
             user="root",
             password="",
             db="evm")
-            print("   conectado")
+            print("conectado")
         except Error as variable:
-            print("   error en conexion")
+            print("error en conexion")
             print(variable)
 
     #READ - SELECT

@@ -9,7 +9,7 @@ class VehiculoCardWidget(QWidget):
 
         layout.addWidget(QLabel(f"Marca: {vehiculo.get_marca()}"))
         layout.addWidget(QLabel(f"Modelo: {vehiculo.get_modelo()}"))
-        layout.addWidget(QLabel(f"Placa: {vehiculo.get_matricula()}"))
+        layout.addWidget(QLabel(f"Matricula: {vehiculo.get_matricula()}"))
 
 
         self.setStyleSheet("""
