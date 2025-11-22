@@ -8,6 +8,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt
 from interface.screens.screen import ScreenWidget
 from interface.screens.bitacora_screen import BITScreenWidget
+from interface.screens.vehi_screen import VEHIScreenWidget
 
 class VentanaPrincipal(QMainWindow):
     def __init__(self):
@@ -27,7 +28,7 @@ class VentanaPrincipal(QMainWindow):
         self.stack.addWidget(BITScreenWidget())
         self.stack.addWidget(ScreenWidget("VISTA SOLICITUDES", "#8e44ad"))
         self.stack.addWidget(ScreenWidget("VISTA EMPLEADOS", "#16a085"))
-        self.stack.addWidget(ScreenWidget("VISTA VEHICULOS", "#c0392b"))
+        self.stack.addWidget(VEHIScreenWidget())
         self.stack.addWidget(ScreenWidget("VISTA MANTENIMIENTOS", "#2980b9"))
         
         self.sidemenu.current_page.connect(self.stack.setCurrentIndex)
