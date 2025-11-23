@@ -5,9 +5,23 @@ CREATE DATABASE evm_db;
 USE evm_db;
 
 CREATE TABLE tipo_licencia (
-    codigo CHAR(1) PRIMARY KEY,
+    numero INT(15) PRIMARY KEY AUTO_INCREMENT,
+    codigo CHAR(1) NOT NULL,
     descripcion VARCHAR(30) NOT NULL
 );
+ALTER TABLE tipo_licencia
+DROP PRIMARY KEY;
+
+ALTER TABLE tipo_licencia
+ADD COLUMN numero INT NOT NULL AUTO_INCREMENT FIRST;
+
+ALTER TABLE tipo_licencia
+ADD PRIMARY KEY (numero);
+
+SHOW CREATE TABLE tipo_licencia;
+
+DROP TABLE tipo_licencia;
+
 
 CREATE TABLE marca (
     codigo VARCHAR(4) PRIMARY KEY,
@@ -96,14 +110,28 @@ CREATE TABLE telefono (
 );
 
 CREATE TABLE licencia (
-    numero VARCHAR(14),
+    numero VARCHAR(14), #tendria que ser pk
     fechaExpedicion DATE NOT NULL,
     fechaVencimiento DATE NOT NULL,
     empleado INT NOT NULL,
-    tipo_licencia CHAR(1) NOT NULL,
+    tipo_licencia INT NOT NULL,
     FOREIGN KEY (empleado) REFERENCES empleado(numero),
-    FOREIGN KEY (tipo_licencia) REFERENCES tipo_licencia(codigo)
+    FOREIGN KEY (tipo_licencia) REFERENCES tipo_licencia(numero)
 );
+SHOW CREATE TABLE licencia;
+
+ALTER TABLE licencia
+DROP FOREIGN KEY licencia_ibfk_2;
+
+ALTER TABLE licencia
+MODIFY tipo_licencia INT(15) NOT NULL;
+
+ALTER TABLE licencia
+ADD CONSTRAINT fk_tipoLicencia
+FOREIGN KEY (tipo_licencia) REFERENCES tipo_licencia(numero);
+
+DROP TABLE licencia;
+
 
 CREATE TABLE seguro (
     numero INT AUTO_INCREMENT PRIMARY KEY,
@@ -124,11 +152,25 @@ CREATE TABLE vehiculo (
     disponibilidad BOOLEAN DEFAULT TRUE,
     marca VARCHAR(4) NOT NULL,
     modelo VARCHAR(4) NOT NULL,
-    licencia_requerida CHAR(1) NOT NULL,
+    licencia_requerida INT NOT NULL,
     FOREIGN KEY (marca) REFERENCES marca(codigo),
     FOREIGN KEY (modelo) REFERENCES modelo(codigo),
-    FOREIGN KEY (licencia_requerida) REFERENCES tipo_licencia(codigo)
+    FOREIGN KEY (licencia_requerida) REFERENCES tipo_licencia(numero)
 );
+SHOW CREATE TABLE vehiculo;
+ALTER TABLE vehiculo
+DROP FOREIGN KEY vehiculo_ibfk_3;
+ALTER TABLE vehiculo
+DROP FOREIGN KEY vehiculo_ibfk_2;
+ALTER TABLE vehiculo
+DROP FOREIGN KEY vehiculo_ibfk_1;
+
+SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE vehiculo;
+SET FOREIGN_KEY_CHECKS = 1;
+
+
+DROP TABLE vehiculo;
 
 CREATE TABLE vehiculo_seguro (
     vehiculo VARCHAR(17) NOT NULL UNIQUE,

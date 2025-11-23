@@ -1,5 +1,5 @@
 class Usuario:
-    def __init__(self, numEmpleado, nombre, tipo_empleado,activo, password, email):
+    def __init__(self, numEmpleado, nombre, tipo_empleado, activo, password, email):
         self.__numEmpleado = numEmpleado
         self.__tipo_empleado = tipo_empleado
         self.__nombre = nombre
@@ -8,7 +8,7 @@ class Usuario:
         self.__email = email
 
     def __str__(self):
-        return f" Numero de Empleado: {self.__numEmpleado}\n Nombre: {self.__nombre}\n  "
+        return f" Numero de Empleado: {self.__numEmpleado}\n Nombre: {self.__nombre}\n Tipo de Empleado: {self.__tipo_empleado} "
 
     def get_numEmpleado(self):
         return self.__numEmpleado
@@ -127,7 +127,8 @@ class TipoEmpleado:
 
 
 class TipoLicencia:
-    def __init__(self, codigoLic, descripcionLic):
+    def __init__(self, numeroLic, codigoLic, descripcionLic):
+        self.__numeroLic = numeroLic
         self.__codigoLic = codigoLic
         self.__descripcionLic = descripcionLic
 
@@ -136,7 +137,13 @@ class TipoLicencia:
 
     def set_codigoLic(self, codigoLic):
         self.__codigoLic = codigoLic
+        
+    def get_numeroLic(self):
+        return self.__numeroLic
 
+    def set_numeroLic(self, numeroLic):
+        self.__numeroLic = numeroLic
+        
     def get_descripcionLic(self):
         return self.__descripcionLic
 
