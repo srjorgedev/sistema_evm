@@ -5,7 +5,7 @@ from PyQt6.QtCore import Qt, QThread, pyqtSignal
 import controllers.bitacora_controller as FBitacora
 from domain.bitacoras.Clase import Bitacora
 
-from interface.components.bitacora_row import BitacoraRowWidget
+from interface.components.bitacoras.bitacora_row import BitacoraRowWidget
 from interface.components.button import ButtonWidget
 from interface.components.square_button import SquareButtonWidget
 from interface.components.button import ColorKeys
@@ -13,8 +13,26 @@ from interface.components.data_fetch import TaskRunner
 from interface.components.table_head import TableHeadWidget
 from interface.components.modal import ModalWidget
 from interface.components.salida_form import SalidaFormWidget
+from interface.components.bitacoras.bitacora_table import BITTableWidget
 
-from interface.components.styles.table_style import scrollbar_style
+from interface.components.styles.table_style import scrollbar_style, scroll_widget_style, scroll_area_style
+from utils.log import log
+
+# NUEVO: Importaciones necesarias para el threading y los datos
+from PyQt6.QtWidgets import QWidget, QLabel, QScrollArea, QVBoxLayout, QHBoxLayout, QSizePolicy, QSpacerItem, QTabWidget
+from PyQt6.QtCore import Qt, pyqtSignal
+
+import controllers.bitacora_controller as FBitacora
+
+from interface.components.bitacoras.bitacora_row import BitacoraRowWidget
+from interface.components.button import ButtonWidget
+from interface.components.square_button import SquareButtonWidget
+from interface.components.button import ColorKeys
+from interface.components.data_fetch import TaskRunner
+from interface.components.modal import ModalWidget
+from interface.components.salida_form import SalidaFormWidget
+from interface.components.bitacoras.bitacora_table import BITTableWidget
+
 from utils.log import log
 
 class BITScreenWidget(QWidget):
@@ -25,24 +43,29 @@ class BITScreenWidget(QWidget):
     def __init__(self):
         super().__init__()
         
+        table_headers = ["N°", "Asunto", "Destino", "Salida", "Entrada", "Acciones"]
+        
         # Creacion de elementos
-        self.main_layout = QGridLayout(self)
+        self.main_layout = QVBoxLayout(self) # <-- CAMBIO: QVBoxLayout
         label_titulo = QLabel("BITACORAS")
         button_layout = QHBoxLayout()
         label_subtitulo = QLabel("Panel de Control")
         label_buttons = QLabel("Acciones rapidas")
-        label_table_subtitulo = QLabel("Registros")
-        self.table_head_widget = QFrame()
-        table_head = QHBoxLayout(self.table_head_widget)
-        table_scroll_area = QScrollArea()
-        table_scroll_widget = QWidget() 
-        self.table_scroll_layout = QVBoxLayout(table_scroll_widget) 
         
+        # Las tablas ahora estarán dentro de las pestañas
+        self.table = BITTableWidget(table_headers)
+        self.archivadas = BITTableWidget(table_headers)
+        
+        # Creación del QTabWidget
+        self.tabs = QTabWidget()
+        self.tabs.addTab(self.table, "Registros Activos")
+        self.tabs.addTab(self.archivadas, "Registros Archivados")
+
         # Instancia del objeto para realizar operaciones con la BD en segundo plano.
         self.runner = TaskRunner(self)
         
         # Elementos espaciadores
-        v_spacer = QSpacerItem(20, 32, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+        v_spacer = QSpacerItem(20, 24, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
         h_spacer = QSpacerItem(128, 16, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
         
         # Botones
@@ -53,16 +76,9 @@ class BITScreenWidget(QWidget):
         self.button_recargar = SquareButtonWidget("reload", "#f1f1f1")
         
         # Asignacion de atributos 
-
-        # Asignamos espacios del layout principal
-        # Margins es el espacios entre el contenedor padre y el layout
-        # Spacing es el espacio entre elementos hijos del layout
         self.main_layout.setContentsMargins(48, 52, 48, 0) 
         self.main_layout.setSpacing(0)
         
-        # La ventana popup que aparece:
-        # Self es el elemento padre, este archivo.
-        # SalidaFormWidget es lo que se muestra dentro de este popup.
         self.modal = ModalWidget(self, SalidaFormWidget())
         
         # Asignacion de eventos en los botones cuando se hace clic        
@@ -73,14 +89,12 @@ class BITScreenWidget(QWidget):
         label_titulo.setStyleSheet("font-size: 48px; font-weight: bold; color: white;")
         label_buttons.setStyleSheet("font-size: 18px; color: #c1c1c1;")
         label_subtitulo.setStyleSheet("font-size: 18px; color: #c1c1c1;")
-        label_table_subtitulo.setStyleSheet("font-size: 18px; color: #c1c1c1;")
         
         # Alineamos la posicion de elementos 
         label_subtitulo.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         label_buttons.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         
         # Espacios en otros elementos
-        label_table_subtitulo.setContentsMargins(0, 0, 0, 8)
         button_layout.setContentsMargins(0, 8, 0, 0)
         button_layout.setSpacing(16)
         
@@ -91,55 +105,55 @@ class BITScreenWidget(QWidget):
         button_layout.addWidget(self.button_archivar)
         button_layout.addItem(h_spacer)
         button_layout.addWidget(self.button_recargar)
-        
-        self.table_head_widget.setObjectName("headerContainer")
-        
-        table_head.setContentsMargins(4, 8, 0, 8) 
-        table_head.setSpacing(0)
-        
-        # Estilos a la tabla
-        table_scroll_widget.setStyleSheet("""
-            border-bottom-left-radius: 8px;
-            border-bottom-right-radius: 8px;
-        """)
-        
-        self.table_head_widget.setStyleSheet("""
-        #headerContainer {
-            background-color: #17272f;  
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-            border-bottom: 1px solid #15313e; 
-        }
-        """)
-        
-        # Agregamos titulos a la tabla 
-        table_head.addWidget(TableHeadWidget("N°"))
-        table_head.addWidget(TableHeadWidget("Asunto"), 1)
-        table_head.addWidget(TableHeadWidget("Destino"), 1)
-        table_head.addWidget(TableHeadWidget("Salida registrada"), 1)
-        table_head.addWidget(TableHeadWidget("Entrada registrada"), 1)
-        table_head.addWidget(TableHeadWidget("Acciones"), 1)
 
-        table_scroll_area.setWidgetResizable(True)
-        table_scroll_area.setStyleSheet(scrollbar_style)
+        self.main_layout.addWidget(label_subtitulo)
+        self.main_layout.addWidget(label_titulo)
+        self.main_layout.addSpacerItem(v_spacer)
+        self.main_layout.addWidget(label_buttons)
+        self.main_layout.addLayout(button_layout)
+        self.main_layout.addSpacerItem(v_spacer)
+        self.main_layout.addWidget(self.tabs)
+        self.main_layout.addSpacerItem(v_spacer)
 
-        self.table_scroll_layout.setContentsMargins(0, 0, 0, 0)
-        self.table_scroll_layout.setSpacing(0)
-        
-        table_scroll_area.setWidget(table_scroll_widget)
-
-        self.main_layout.addWidget(label_subtitulo, 0, 0)
-        self.main_layout.addWidget(label_titulo, 1, 0)
-        self.main_layout.addItem(v_spacer, 2, 0)
-        self.main_layout.addWidget(label_buttons, 3, 0)
-        self.main_layout.addLayout(button_layout, 4, 0)
-        self.main_layout.addItem(v_spacer, 5, 0)
-        self.main_layout.addWidget(label_table_subtitulo, 6, 0)
-        self.main_layout.addWidget(self.table_head_widget, 7, 0)
-        self.main_layout.addWidget(table_scroll_area, 8, 0)
+        # Aplicamos los estilos a las pestañas
+        self.apply_tab_styles()
 
         # Llamamos a la funcion que pide los datos.
         self.fetch_bitacoras()
+        self.fetch_archivadas()
+
+    def apply_tab_styles(self):
+        style = """
+            QTabWidget::pane {
+                background-color: #f1f1f1;
+            }
+            QTabBar::tab {
+                background: transparent;
+                color: #f1f1f1;
+                border: 2px solid #17272f;
+                border-bottom: none;
+                padding: 8px 24px;
+                font-size: 14px;
+                border-top-left-radius: 8px; /* Redondeado en la esquina superior izquierda */
+                border-top-right-radius: 8px; /* Redondeado en la esquina superior derecha */
+                margin-right: 4px; /* Pequeño espacio entre pestañas */
+            }
+            QTabBar::tab:selected {
+                background: #17272f; /* Verde vibrante para la pestaña seleccionada */
+                color: #f1f1f1;
+                border-color: #17272f; /* Borde del mismo color para coherencia */
+                border-bottom-color: #0f181f; /* Para que parezca un botón "flotante" */
+            }
+            QTabBar::tab:hover:!selected {
+                background: #283a45; /* Un tono un poco más claro al pasar el ratón por encima */
+                color: #c1c1c1;
+            }
+            QTabBar::tab:!selected {
+                margin-top: 2px; /* Ligeramente más bajo que el seleccionado para el efecto flotante */
+                color: #c1c1c1;
+            }
+        """
+        self.tabs.setStyleSheet(style)
         
     # Funcion para pedir los datos 
     def fetch_bitacoras(self):
@@ -151,30 +165,38 @@ class BITScreenWidget(QWidget):
         # Lo que se debe hacer si hay un error: on_error
         # Aqui no se utiliza, pero tambien esta args, para cuando se le pasen tuplas
         # tampoco se utiliza, kwargs, para cuando se le pasen objetos o clave = valor
-        self.runner.run(func=FBitacora.lista, on_success=self.handle_data, on_error=self.handle_error)
+        self.runner.run(
+            func=FBitacora.lista, 
+            on_success=lambda data: self.handle_data(data, self.table), 
+            on_error=self.handle_error
+        )
+        
+    # Funcion para pedir los datos 
+    def fetch_archivadas(self):
+        log("[BITACORAS]: Iniciando fetch...")
+        self.runner.run(
+            func=FBitacora.lista_archivados, 
+            on_success=lambda data: self.handle_data(data, self.archivadas), 
+            on_error=self.handle_error
+        )
 
-    def handle_data(self, data: list[tuple]):
+    def handle_data(self, data: list[tuple], parent: BITTableWidget):
         log(f"[BITACORAS]: Datos recibidos -> {len(data)} bitácoras.")
         
-        while self.table_scroll_layout.count():
-            child = self.table_scroll_layout.takeAt(0)
-            if child.widget():
-                child.widget().deleteLater()
+        parent.clearRows()
 
         if not data:
             no_data_label = QLabel("No hay bitácoras para mostrar.")
-            no_data_label.setStyleSheet("font-size: 16px; color: #888888;")
+            no_data_label.setStyleSheet("background-color: transparent; font-size: 16px; color: #888888;")
             no_data_label.setContentsMargins(0, 16, 0, 0)
             
             no_data_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            self.table_scroll_layout.addWidget(no_data_label)
+            parent.addRow(no_data_label)
         else:
             for bitacora in data:
                 card = BitacoraRowWidget(bitacora) 
                 card.btn_archivo.connect(self.handle_archivar)
-                self.table_scroll_layout.addWidget(card)
-        
-        self.table_scroll_layout.addStretch()
+                parent.addRow(card)
 
     def handle_error(self, error_message):
         log(f"[BITACORAS]: Error al hacer fetch -> {error_message}")
@@ -200,11 +222,9 @@ class BITScreenWidget(QWidget):
             boton.setEnabled(True)
             
         self.fetch_bitacoras()
+        self.fetch_archivadas()
         
     def handle_refresh(self):
         print("[BITACORAS]: Refrescando datos...")
-        self.runner.run(
-            func=FBitacora.lista_archivados,
-            on_success=self.handle_data,
-            on_error=self.handle_error
-        )
+        self.fetch_bitacoras()
+        self.fetch_archivadas()

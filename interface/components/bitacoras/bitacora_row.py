@@ -40,7 +40,7 @@ class BitacoraRowWidget(QFrame):
         layout.setContentsMargins(8, 0, 8, 0)
         
         self.setFixedHeight(56) 
-        self.setStyleSheet("BitacoraCardWidget {background-color: #131e24;} BitacoraCardWidget:hover {background-color: #162229;}")
+        self.setStyleSheet("BitacoraRowWidget {background-color: transparent;} BitacoraRowWidget:hover {background-color: #162229;}")
         
         lbl_strong_style = "font-size: 18px; color: #009AD3; font-weight: bold; background: transparent;"
         lbl_normal_style = "font-size: 18px; color: #f1f1f1; font-weight: normal; background: transparent;"

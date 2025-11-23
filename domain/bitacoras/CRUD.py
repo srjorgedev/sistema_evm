@@ -15,7 +15,7 @@ def listaGeneral() -> list[tuple]:
             entrada, 
             salida
         FROM bitacora
-        WHERE visible = FALSE
+        WHERE visible = TRUE
     """
     
     lista = conn.lista(query)

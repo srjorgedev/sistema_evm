@@ -32,3 +32,31 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
     background: none;
 }
 """
+
+scroll_widget_style = """
+#scrollContent {
+    background-color: #131e24;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+"""
+
+scroll_area_style = """
+QScrollArea {
+    border: none;
+    background: transparent;
+}
+
+QScrollArea QWidget#tableWidget {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    background-color: #131e24;
+}
+
+QScrollArea > QWidget {      
+    border: none;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    background-color: #19272c;
+}
+"""
