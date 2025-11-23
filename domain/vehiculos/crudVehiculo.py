@@ -1,17 +1,17 @@
 from db.connV import conn
+from db.ConnB import Conn
 from domain.vehiculos.ClaseVehiculo import Vehiculo
 
 def listarVehiculos():
-    miConn = conn()
-    comando = "select id_vehiculo as ID, num_serie AS 'Num Serie', matricula as Matricula, marca as Marca, modelo as Modelo, color as Color , fecha_adquision as 'Fecha de adquision', tipo as 'Tipo de Vehiculo', tipo_licencia as 'Tipo Licencia', capacidad_pasajeros as 'Capcidad Pasajeros', utilidad as 'Utilidad del vehiculo', comentarios as Comentarios from vehiculos"
+    miConn = Conn()
+    comando = "select * from vehiculo"
     lista = miConn.lista(comando)
     
     if not lista:
         print("No hay vehiculos registrados, para mostrar")
     else:
         if len(lista)>0:
-            for fila in lista:
-                print(fila)
+            return lista
                 
 def listaCorta():
     miConn = conn()

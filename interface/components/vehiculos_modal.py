@@ -2,13 +2,15 @@
 
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel
 from PyQt6.QtCore import QThread
-from interface.components.data_fetch import Fetch
+from interface.components.data_fetch import TaskRunner
 from interface.components.vehiculo_row import VehiculoCardWidget
 from controllers import vehiculo_controller 
 
 class VehiculosModal(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
+        
+        self.runner = TaskRunner(self)
 
         self.layout = QVBoxLayout(self)
         self.label = QLabel("Cargando vehículos...")
@@ -18,20 +20,7 @@ class VehiculosModal(QWidget):
         self.fetch_data()
 
     def fetch_data(self):
-        self.thread = QThread()
-        self.worker = Fetch(vehiculo_controller.lista)
-        self.worker.moveToThread(self.thread)
-
-        self.thread.started.connect(self.worker.run)
-
-        self.worker.finished.connect(self.handle_data)
-        self.worker.error.connect(self.handle_error)
-
-        self.worker.finished.connect(self.thread.quit)
-        self.thread.finished.connect(self.thread.deleteLater)
-        self.worker.finished.connect(self.worker.deleteLater)
-
-        self.thread.start()
+        self.runner.run(vehiculo_controller.lista, self.handle_data, self.handle_error)
 
     def handle_data(self, data):
         self.label.hide()

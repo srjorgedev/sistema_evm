@@ -1,5 +1,6 @@
 import mysql.connector
 from mysql.connector import Error
+from utils.log import log
 
 class Conn:
     def __init__(self):
@@ -46,6 +47,7 @@ class Conn:
             
         except Error as error:
             log(f"[BD ERROR - LISTA]: {error.errno}")
+            log(f"[BD ERROR - LISTA]: {error.msg}")
             return [] # Retornamos lista vacía en vez de error tupla para no romper la UI
             
         finally:

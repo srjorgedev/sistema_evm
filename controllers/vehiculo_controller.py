@@ -4,5 +4,5 @@ import db
 
 
 def lista():
-    lista= crud.listarVehiculos  ("SELECT matricula FROM vehiculo")
+    lista= crud.listarVehiculos()
     return [Vehiculo(*lista) for lista in lista]
