@@ -1,6 +1,6 @@
 from domain.usuarios.ClaseUsuarios import Usuario, TipoEmpleado, Telefono, Licencia, TipoLicencia
 import domain.usuarios.crudUsers as crudUsers
-from interface.usuarios.Menu import _Tipos
+from interface.usuarios.Menu import _Tipos, _Usuarios
 from interface.usuarios.Menu import licencias
 from interface.usuarios.Menu import datos
 from interface.usuarios import val
@@ -56,7 +56,7 @@ def createUser():
     print()
     telefono = val.valTelefono()
     _Tipos()
-    opcEmpleado = val.vInt("Seleccion el tipo de empleado:  ")
+    opcEmpleado = val.vInt("Seleccion una opcion:  ")
     match opcEmpleado:
         case 1:
             codigo = str(random.randint(10000, 99999))
@@ -84,7 +84,7 @@ def createUser():
             codigo = str(random.randint(10000, 99999))
             descripcion = "Chofer"
             licencias()
-            opclicencia = int(input("   Ingrese una opcion: "))
+            opclicencia = val._IntRange("   Ingrese una opcion de Licencia: ", 1, 5)
             match opclicencia:
                 case 1:
                     codigoLic = "A"
@@ -136,19 +136,53 @@ def createUser():
             newTipo = TipoEmpleado(codigo, descripcion)
             newUser = Usuario(None, nombre, newTipo.get_codigo(), 1, hashed, email)
             newTel = Telefono(None, telefono ,None)
-            newTLic = TipoLicencia(codigoLic, descripcionLic)
+            newTLic = TipoLicencia(None, codigoLic, descripcionLic)
             newLic = Licencia(numeroLicencia, exp, ven, None, newTLic.get_codigoLic())
             crudUsers.Create(newUser, newTipo, newTel, newTLic, newLic)
         case 3:
-            tipoEmpleado = "Vigilante"
-            newUser = Usuario(nombre, telefono, tipoEmpleado, None, None, None,
-                              None)
-            crudUsers.Create(newUser)
+            codigo = str(random.randint(10000, 99999))
+            descripcion = "Vigilante"
+            while True:
+                password = input("Cree una contraseña: ")
+                if val.validate_password(password):
+                    password = password.encode('utf-8')
+                    hashed = bcrypt.hashpw(password, bcrypt.gensalt())
+                    print("Contraseña Valida")
+                    break
+                else:
+                    print("Contraseña Invalida. Intente de nuevo")
+                    print("La contraseña debe cumplir con los siguientes requisitos para ser válida:")
+                    print(" 1. Tener al menos 8 caracteres.")
+                    print(" 2. Incluir al menos una letra mayúscula (A-Z).")
+                    print(" 3. Incluir al menos una letra minúscula (a-z).")
+                    print(" 4. Incluir al menos un número (0-9).")
+            email = val.vEmail("Ingrese su Correo Electronico: ")
+            newTipo = TipoEmpleado(codigo, descripcion)
+            newUser = Usuario(None, nombre, newTipo.get_codigo(), 1, hashed, email)
+            newTel = Telefono(None, telefono ,None)
+            crudUsers.Create2(newUser, newTipo, newTel)
         case 4:
-            tipoEmpleado = "Usuario"
-            newUser = Usuario(nombre, telefono, tipoEmpleado, None, None, None,
-                              None)
-            crudUsers.Create(newUser)
+            codigo = str(random.randint(10000, 99999))
+            descripcion = "Empleado-User"
+            while True:
+                password = input("Cree una contraseña: ")
+                if val.validate_password(password):
+                    password = password.encode('utf-8')
+                    hashed = bcrypt.hashpw(password, bcrypt.gensalt())
+                    print("Contraseña Valida")
+                    break
+                else:
+                    print("Contraseña Invalida. Intente de nuevo")
+                    print("La contraseña debe cumplir con los siguientes requisitos para ser válida:")
+                    print(" 1. Tener al menos 8 caracteres.")
+                    print(" 2. Incluir al menos una letra mayúscula (A-Z).")
+                    print(" 3. Incluir al menos una letra minúscula (a-z).")
+                    print(" 4. Incluir al menos un número (0-9).")
+            email = val.vEmail("Ingrese su Correo Electronico: ")
+            newTipo = TipoEmpleado(codigo, descripcion)
+            newUser = Usuario(None, nombre, newTipo.get_codigo(), 1, hashed, email)
+            newTel = Telefono(None, telefono ,None)
+            crudUsers.Create2(newUser, newTipo, newTel)
 
 
 def selectUser():
@@ -162,55 +196,71 @@ def selectUser():
 
 def updateUser():
     print("   Actualizar Usuario: ")
-    numEmpleado = val.vInt(
-        "Ingrese el numero de Empeleado del empleado que desea modificar: ")
-    oldUser = Usuario("", "", "", "", "", numEmpleado, "")
-    crudUsers.buscar(oldUser)
+    # buscar3 ya pide el número e imprime los datos
+    oldUser = crudUsers.buscar3() 
+    # preparar objetos relacionados
+    oldTel = Telefono("", "", oldUser.get_numEmpleado())
     datos()
-    opcMod = int(
-        input("   Seleccione el dato del usuario que desea modificar: "))
+    opcMod = int(input("   Seleccione el dato del usuario que desea modificar: "))
     match opcMod:
         case 1:
-            nombrePila = val.vTexto("Ingrese su nombre(s) de pila: ")
-            primerApell = val.vTexto("Ingrese su primer apellido: ")
-            segundoApell = val.vTexto(
-                "En caso de contar con uno, ingrese su segundo apellido, si no, de ENTER: "
-            )
-            nombre = nombrePila + " " + primerApell + " " + segundoApell
+            nombrePila = input("Ingrese su nombre(s) de pila: ")
+            apellidos = input("Ingrese su(s) apellido(s): ")
+            val.vNombre(nombrePila)
+            val.vNombre(apellidos)
+            nombre = nombrePila + " " + apellidos
             oldUser.set_nombre(nombre)
             crudUsers.UpdateNombre(oldUser)
         case 2:
             telefono = val.valTelefono()
-            oldUser.set_telefono(telefono)
-            crudUsers.UpdateTelefono(oldUser)
+            oldTel.set_numTelefono(telefono)
+            crudUsers.UpdateTelefono(oldTel)
         case 3:
+            oldTipo = crudUsers.buscarTipoEmpleado()
             _Tipos()
-            opcEmpleado = val.vInt("Seleccion el nuevo tipo de empleado:  ")
+
+            opcEmpleado = val.vInt("Seleccion el nuevo tipo de empleado: ")
+
             match opcEmpleado:
                 case 1:
-                    tipoEmpleado = "Administrador"
-                    oldUser.set_tipoEmpleado(tipoEmpleado)
-                    crudUsers.UpdateTipoEmpleado(oldUser)
+                    descripcion = "Administrador"
                 case 2:
-                    tipoEmpleado = "Chofer"
-                    oldUser.set_tipoEmpleado(tipoEmpleado)
-                    crudUsers.UpdateTipoEmpleado(oldUser)
+                    crudUsers.registrarLicencia(oldUser.get_numEmpleado())
+                    descripcion = "Chofer"
                 case 3:
-                    tipoEmpleado = "Vigilante"
-                    oldUser.set_tipoEmpleado(tipoEmpleado)
-                    crudUsers.UpdateTipoEmpleado(oldUser)
+                    descripcion = "Vigilante"
                 case 4:
-                    tipoEmpleado = "Usuario"
-                    oldUser.set_tipoEmpleado(tipoEmpleado)
-                    crudUsers.UpdateTipoEmpleado(oldUser)
+                    descripcion = "Empleado-User"
 
+            oldTipo.set_descripcion(descripcion)
+            crudUsers.UpdateTipoEmpleado(oldTipo)
+        case 4:
+            email = val.vEmail("Ingrese su Correo Electronico: ")
+            oldUser.set_email(email)
+            crudUsers.UpdateEmail(oldUser)
+        case 5:
+            _Usuarios()
 
 def deleteUser():
-    print("   Inhabilitar Customer: ")
-    numEmpleado = val.vInt(
-        "Ingrese el numero de Empleado del empleado que desea inhabilitar: ")
-    oldUser = Usuario("", "", "", "", "", numEmpleado, "")
-    crudUsers.Deactive(oldUser)
-    activo = 0
-    oldUser.set_activo(activo)
+    print("\n   Inhabilitar Empleado \n")
+
+    numEmpleado = val.vInt("   Ingrese el número de empleado que desea inhabilitar: ")
+
+    oldUser = Usuario(numEmpleado, "", "", 0, "", "")
+
+    existe = crudUsers.Deactive(oldUser)  
+
+    if not existe:
+        print("   ERROR: El empleado no existe.\n")
+        return False
+
+    confirmar = input("\n   ¿Seguro que desea inhabilitar este empleado? (s/n): ").strip().lower()
+
+    if confirmar != "s":
+        print("   Operación cancelada. No se realizaron cambios.\n")
+        return False
+    
     crudUsers.Delete(oldUser)
+
+
+
