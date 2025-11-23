@@ -9,6 +9,8 @@ from PyQt6.QtSvgWidgets import QSvgWidget
 from utils.load_resource import ruta_svg
 from interface.components.sidemenu_button import MenuButtonWidget
 
+from utils.log import log
+
 datos_menu = [
     ("Dashboard", "dashboard"),
     ("Bitacoras", "register"),
@@ -56,7 +58,7 @@ class SidemenuWidget(QWidget):
         if icon_path.exists():
             sidebar_icon.load(str(icon_path))
         else:
-            print(f"Advertencia: Icono no encontrado en {icon_path}")
+            log(f"Advertencia: Icono no encontrado en {icon_path}")
 
         for i, boton in enumerate(self.botones_menu):
             boton.clicked.connect(self.manejar_clic_menu)

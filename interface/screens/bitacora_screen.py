@@ -9,10 +9,12 @@ from interface.components.bitacora_row import BitacoraRowWidget
 from interface.components.button import ButtonWidget
 from interface.components.square_button import SquareButtonWidget
 from interface.components.button import ColorKeys
-from interface.components.data_fetch import Fetch
+from interface.components.data_fetch import Fetch, TaskRunner
 from interface.components.table_head import TableHeadWidget
 from interface.components.modal import ModalWidget
 from interface.components.salida_form import SalidaFormWidget
+
+from utils.log import log
 
 class BITScreenWidget(QWidget):
     btn_archivar = pyqtSignal()
@@ -23,7 +25,6 @@ class BITScreenWidget(QWidget):
         super().__init__()
         
         # Creacion de elementos
-        
         self.main_layout = QGridLayout(self)
         label_titulo = QLabel("BITACORAS")
         button_layout = QHBoxLayout()
@@ -35,6 +36,9 @@ class BITScreenWidget(QWidget):
         table_scroll_area = QScrollArea()
         table_scroll_widget = QWidget() 
         self.table_scroll_layout = QVBoxLayout(table_scroll_widget) 
+        
+        # Instancia del objeto para realizar operaciones con la BD 
+        self.runner = TaskRunner(self)
         
         # Elementos espaciadores
         v_spacer = QSpacerItem(20, 32, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
@@ -178,11 +182,11 @@ class BITScreenWidget(QWidget):
         self.button_recargar.clicked.connect(self.form_salida)
 
     def fetch_bitacoras(self):
-        print("[BITACORAS]: Iniciando fetch...")
-        self.obtener(FBitacora.lista, self.handle_data, self.handle_error)
+        log("[BITACORAS]: Iniciando fetch...")
+        self.runner.run(func=FBitacora.lista, on_success=self.handle_data, on_error=self.handle_error)
 
     def handle_data(self, data: list[tuple]):
-        print(f"[BITACORAS]: Datos recibidos -> {len(data)} bitácoras.")
+        log(f"[BITACORAS]: Datos recibidos -> {len(data)} bitácoras.")
         
         while self.table_scroll_layout.count():
             child = self.table_scroll_layout.takeAt(0)
@@ -205,34 +209,21 @@ class BITScreenWidget(QWidget):
         self.table_scroll_layout.addStretch()
 
     def handle_error(self, error_message):
-        print(f"[BITACORAS]: Error al hacer fetch -> {error_message}")
+        log(f"[BITACORAS]: Error al hacer fetch -> {error_message}")
         
     def handle_archivar(self, data: int):
-        print(f"[BITACORAS]: Iniciando proceso de archivado...")
-        print(f"[BITACORAS]: DATOS -> {data}")
+        log(f"[BITACORAS]: Iniciando proceso de archivado...")
+        log(f"[BITACORAS]: DATOS -> {data}")
         
         activado_por = self.sender()
         if activado_por: 
             activado_por.setEnabled(False)
             
-        self.h_thread = QThread()
-        
-        self.h_worker = Fetch(FBitacora.archivar, data) 
-        
-        self.h_worker.moveToThread(self.h_thread) 
-
-        self.h_thread.started.connect(self.h_worker.run)
-        
-        self.h_worker.finished.connect(lambda result: self.on_archivado_finalizado(activado_por))
-        
-        self.h_worker.error.connect(self.handle_error)
-        self.h_worker.error.connect(lambda: activado_por.setEnabled(True) if activado_por else None)
-        
-        self.h_worker.finished.connect(self.h_thread.quit)
-        self.h_worker.finished.connect(self.h_worker.deleteLater)
-        self.h_thread.finished.connect(self.h_thread.deleteLater)
-
-        self.h_thread.start()
+        self.runner.run(FBitacora.archivar, 
+                        lambda c: self.on_archivado_finalizado(activado_por), 
+                        lambda: activado_por.setEnabled(True) if activado_por else None,
+                        data
+                        )
 
     def on_archivado_finalizado(self, boton):
         self.notificar.emit("Archivado", "Bitacora archivada exitosamente", "#2ecc71") 
@@ -241,28 +232,6 @@ class BITScreenWidget(QWidget):
             boton.setEnabled(True)
             
         self.fetch_bitacoras()
-        
-    def obtener(self, funcion, callback_exito, callback_error=None, *args, **kwargs):
-        self.thread = QThread()
-        self.worker = Fetch(funcion, *args, **kwargs)
-        
-        self.worker.moveToThread(self.thread)
-        
-        self.thread.started.connect(self.worker.run)
-        self.worker.finished.connect(self.thread.quit)
-        
-        self.worker.finished.connect(callback_exito)
-        
-        if callback_error:
-            self.worker.error.connect(callback_error)
-        else:
-            self.worker.error.connect(lambda e: print(f"[OBTENER ERROR]: {e}"))
-            
-        self.worker.finished.connect(self.worker.deleteLater)
-        self.thread.finished.connect(self.thread.deleteLater)
-        
-        self.thread.start()
-        
         
     def handle_refresh(self):
         print("[BITACORAS]: Refrescando datos...")

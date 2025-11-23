@@ -2,6 +2,8 @@ from db.ConnB import Conn
 from domain.bitacoras.Clase import Bitacora
 from mysql.connector import Error
 
+from utils.log import log
+
 def listaGeneral() -> list[tuple]:
     conn = Conn()
 
@@ -16,10 +18,10 @@ def listaGeneral() -> list[tuple]:
         WHERE visible = FALSE
     """
     
-    # print("CRUD.listaGeneral ejecutándose...")
+    # log("CRUD.listaGeneral ejecutándose...")
     lista = conn.lista(query)
 
-    # print("CRUD LISTA EJECUTADO")
+    # log("CRUD LISTA EJECUTADO")
 
     bitacoras = []
     for fila in lista:
@@ -45,10 +47,10 @@ def listaArchivados() -> list[Bitacora]:
         WHERE visible = FALSE
     """
     
-    # print("CRUD.listaGeneral ejecutándose...")
+    # log("CRUD.listaGeneral ejecutándose...")
     lista = conn.lista(query)
 
-    # print("CRUD LISTA EJECUTADO")
+    # log("CRUD LISTA EJECUTADO")
 
     bitacoras = []
     for fila in lista:
@@ -88,14 +90,14 @@ def bitacoraSinEntrada():
     lista = conn.lista(query)
 
     if lista == 0 or len(lista) == 0:
-        print("   No se puede mostrar.")
+        log("   No se puede mostrar.")
         return
 
     for fila in lista:
         numCtrl, asunto, destino, salida, entrada = fila
         if entrada == None: entrada = 0
 
-        print(f"{numCtrl:<8}{asunto:<35}{destino:<15}{salida:<12}{entrada}")
+        log(f"{numCtrl:<8}{asunto:<35}{destino:<15}{salida:<12}{entrada}")
 
     return len(lista)
 
