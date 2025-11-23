@@ -9,11 +9,12 @@ from interface.components.bitacora_row import BitacoraRowWidget
 from interface.components.button import ButtonWidget
 from interface.components.square_button import SquareButtonWidget
 from interface.components.button import ColorKeys
-from interface.components.data_fetch import Fetch, TaskRunner
+from interface.components.data_fetch import TaskRunner
 from interface.components.table_head import TableHeadWidget
 from interface.components.modal import ModalWidget
 from interface.components.salida_form import SalidaFormWidget
 
+from interface.components.styles.table_style import scrollbar_style
 from utils.log import log
 
 class BITScreenWidget(QWidget):
@@ -37,7 +38,7 @@ class BITScreenWidget(QWidget):
         table_scroll_widget = QWidget() 
         self.table_scroll_layout = QVBoxLayout(table_scroll_widget) 
         
-        # Instancia del objeto para realizar operaciones con la BD 
+        # Instancia del objeto para realizar operaciones con la BD en segundo plano.
         self.runner = TaskRunner(self)
         
         # Elementos espaciadores
@@ -59,9 +60,12 @@ class BITScreenWidget(QWidget):
         self.main_layout.setContentsMargins(48, 52, 48, 0) 
         self.main_layout.setSpacing(0)
         
+        # La ventana popup que aparece:
+        # Self es el elemento padre, este archivo.
+        # SalidaFormWidget es lo que se muestra dentro de este popup.
         self.modal = ModalWidget(self, SalidaFormWidget())
         
-        # Asignacion de eventos en botones        
+        # Asignacion de eventos en los botones cuando se hace clic        
         self.button_salida.clicked.connect(self.modal.show_modal)
         self.button_recargar.clicked.connect(self.handle_refresh)
         
@@ -117,40 +121,7 @@ class BITScreenWidget(QWidget):
         table_head.addWidget(TableHeadWidget("Acciones"), 1)
 
         table_scroll_area.setWidgetResizable(True)
-        table_scroll_area.setStyleSheet("""
-            QScrollArea { 
-                border: none; 
-                background-color: transparent; 
-                border-radius: 8px;
-            }
-            
-            QScrollBar:vertical {
-                border: none;
-                background: #2D2D2D;    
-                width: 16px;            
-                margin: 0px 0px 0px 0px;
-            }
-
-            QScrollBar::handle:vertical {
-                background-color: #555555;   /* Color del manejador */
-                min-height: 20px;            /* Altura mínima */
-                border-radius: 5px;          /* Bordes redondeados */
-            }
-            
-            QScrollBar::handle:vertical:hover {
-                background-color: #777777;
-            }
-            
-            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
-                border: none;
-                background: none;
-                height: 0px;
-            }
-            
-            QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
-                background: none;
-            }
-        """)
+        table_scroll_area.setStyleSheet(scrollbar_style)
 
         self.table_scroll_layout.setContentsMargins(0, 0, 0, 0)
         self.table_scroll_layout.setSpacing(0)
@@ -167,22 +138,19 @@ class BITScreenWidget(QWidget):
         self.main_layout.addWidget(self.table_head_widget, 7, 0)
         self.main_layout.addWidget(table_scroll_area, 8, 0)
 
-
+        # Llamamos a la funcion que pide los datos.
         self.fetch_bitacoras()
-        #self.buttons_actions()
         
-    def cerrar_y_guardar(self):
-        self.modal.hide_modal()
-        
-    def buttons_actions(self):
-        self.button_salida.clicked.connect(self.form_salida)
-        self.button_entrada.clicked.connect(self.form_salida)
-        self.button_modificar.clicked.connect(self.form_salida)
-        self.button_archivar.clicked.connect(self.form_salida)
-        self.button_recargar.clicked.connect(self.form_salida)
-
+    # Funcion para pedir los datos 
     def fetch_bitacoras(self):
         log("[BITACORAS]: Iniciando fetch...")
+        # Llamar al objeto para hacer peticiones en segundo plano.
+        # Esta funcion nos pide...
+        # La funcion a ejecutar: func
+        # Lo que se debe hacer si todo sale bien: on_success
+        # Lo que se debe hacer si hay un error: on_error
+        # Aqui no se utiliza, pero tambien esta args, para cuando se le pasen tuplas
+        # tampoco se utiliza, kwargs, para cuando se le pasen objetos o clave = valor
         self.runner.run(func=FBitacora.lista, on_success=self.handle_data, on_error=self.handle_error)
 
     def handle_data(self, data: list[tuple]):
@@ -235,7 +203,8 @@ class BITScreenWidget(QWidget):
         
     def handle_refresh(self):
         print("[BITACORAS]: Refrescando datos...")
-        self.obtener(FBitacora.lista, 
-            lambda data: (self.handle_data(data), self.notificar.emit("Datos recargados", "Las bitacoras fueron recargadas correctamente.", "#2ecc71")),
-            lambda err: self.notificar.emit("Error", f"Fallo: {err}", "#cc2e2e")
+        self.runner.run(
+            func=FBitacora.lista_archivados,
+            on_success=self.handle_data,
+            on_error=self.handle_error
         )

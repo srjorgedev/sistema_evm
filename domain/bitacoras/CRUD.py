@@ -18,10 +18,7 @@ def listaGeneral() -> list[tuple]:
         WHERE visible = FALSE
     """
     
-    # log("CRUD.listaGeneral ejecutándose...")
     lista = conn.lista(query)
-
-    # log("CRUD LISTA EJECUTADO")
 
     bitacoras = []
     for fila in lista:
@@ -33,7 +30,7 @@ def listaGeneral() -> list[tuple]:
 
     return bitacoras
 
-def listaArchivados() -> list[Bitacora]:
+def listaArchivados() -> list[tuple]:
     conn = Conn()
 
     query = """
@@ -46,24 +43,16 @@ def listaArchivados() -> list[Bitacora]:
         FROM bitacora
         WHERE visible = FALSE
     """
-    
-    # log("CRUD.listaGeneral ejecutándose...")
-    lista = conn.lista(query)
 
-    # log("CRUD LISTA EJECUTADO")
+    lista = conn.lista(query)
 
     bitacoras = []
     for fila in lista:
         id, asunto, destino, entrada, salida = fila
         
-        listaItem = Bitacora()
-        listaItem.set_numControl(id)
-        listaItem.set_asunto(asunto)
-        listaItem.set_destino(destino)
-        listaItem.set_entradaBool(entrada)
-        listaItem.set_salidaBool(salida)
+        bitacora = (id, asunto, destino, entrada, salida)
 
-        bitacoras.append(listaItem)
+        bitacoras.append(bitacora)
 
     return bitacoras
 

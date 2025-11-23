@@ -16,14 +16,13 @@ def lista():
     
 def lista_archivados():
     log("[CTRL BIT]: Funcion -> LISTA ARCHIVADOS")
-    # log("Entré a FBitacora.lista")
     try:
-        # log("Ejecutando CRUD.listaGeneral...")
+        log("[CTRL BIT]: Obteniendo datos del CRUD")
         resultado = CRUD.listaArchivados()
-        # log("Resultado:", resultado)
+        log("[CTRL BIT]: Datos obtenidos, retornando...")
         return resultado
     except Exception as e:
-        # log("ERROR dentro de lista():", e)
+        log("[CTRL BIT]: Ocurrió un error, retornando...")
         raise
         
 
