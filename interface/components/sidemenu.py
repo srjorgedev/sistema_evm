@@ -12,7 +12,7 @@ from interface.components.sidemenu_button import MenuButtonWidget
 from utils.log import log
 
 datos_menu = [
-    ("Dashboard", "dashboard"),
+    # ("Dashboard", "dashboard"),
     ("Bitacoras", "register"),
     ("Solicitudes", "request"),
     ("Empleados", "employees"),
@@ -68,7 +68,7 @@ class SidemenuWidget(QWidget):
 
         # Layout
         self.layout_horizontal.addWidget(img_logo)
-        self.layout_horizontal.addWidget(sidebar_icon)
+        # self.layout_horizontal.addWidget(sidebar_icon)
         
         self.layout_vertical.addLayout(self.layout_horizontal)
         self.layout_vertical.addItem(QSpacerItem(8, 30, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed))

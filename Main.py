@@ -44,7 +44,7 @@ class VentanaPrincipal(QMainWindow):
         
         self.stack.setStyleSheet("background-color: #0f181f;")
         
-        self.stack.addWidget(ScreenWidget("VISTA DASHBOARD", "#2c3e50"))
+        # self.stack.addWidget(ScreenWidget("VISTA DASHBOARD", "#2c3e50"))
         self.stack.addWidget(self.pantalla_bitacora)
         self.stack.addWidget(ScreenWidget("VISTA SOLICITUDES", "#8e44ad"))
         self.stack.addWidget(ScreenWidget("VISTA EMPLEADOS", "#16a085"))
