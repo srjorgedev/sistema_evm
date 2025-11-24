@@ -9,19 +9,6 @@ CREATE TABLE tipo_licencia (
     codigo CHAR(1) NOT NULL,
     descripcion VARCHAR(30) NOT NULL
 );
-ALTER TABLE tipo_licencia
-DROP PRIMARY KEY;
-
-ALTER TABLE tipo_licencia
-ADD COLUMN numero INT NOT NULL AUTO_INCREMENT FIRST;
-
-ALTER TABLE tipo_licencia
-ADD PRIMARY KEY (numero);
-
-SHOW CREATE TABLE tipo_licencia;
-
-DROP TABLE tipo_licencia;
-
 
 CREATE TABLE marca (
     codigo VARCHAR(4) PRIMARY KEY,
@@ -79,18 +66,6 @@ CREATE TABLE tipo_observacion (
     FOREIGN KEY (tipo_mantenimiento) REFERENCES tipo_mantenimiento(codigo)
 );
 
-CREATE TABLE empleado (
-    numero INT AUTO_INCREMENT PRIMARY KEY,
-    nombrePila VARCHAR(30) NOT NULL,
-    apdPaterno VARCHAR(20) NOT NULL,
-    apdMaterno VARCHAR(20),
-    tipo_empleado VARCHAR(5) NOT NULL,
-    FOREIGN KEY (tipo_empleado) REFERENCES tipo_empleado(codigo)
-);
-
-SET FOREIGN_KEY_CHECKS = 0;
-DROP TABLE empleado;
-SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE empleado(
     numero INT AUTO_INCREMENT PRIMARY KEY,
@@ -118,20 +93,6 @@ CREATE TABLE licencia (
     FOREIGN KEY (empleado) REFERENCES empleado(numero),
     FOREIGN KEY (tipo_licencia) REFERENCES tipo_licencia(numero)
 );
-SHOW CREATE TABLE licencia;
-
-ALTER TABLE licencia
-DROP FOREIGN KEY licencia_ibfk_2;
-
-ALTER TABLE licencia
-MODIFY tipo_licencia INT(15) NOT NULL;
-
-ALTER TABLE licencia
-ADD CONSTRAINT fk_tipoLicencia
-FOREIGN KEY (tipo_licencia) REFERENCES tipo_licencia(numero);
-
-DROP TABLE licencia;
-
 
 CREATE TABLE seguro (
     numero INT AUTO_INCREMENT PRIMARY KEY,
@@ -157,20 +118,6 @@ CREATE TABLE vehiculo (
     FOREIGN KEY (modelo) REFERENCES modelo(codigo),
     FOREIGN KEY (licencia_requerida) REFERENCES tipo_licencia(numero)
 );
-SHOW CREATE TABLE vehiculo;
-ALTER TABLE vehiculo
-DROP FOREIGN KEY vehiculo_ibfk_3;
-ALTER TABLE vehiculo
-DROP FOREIGN KEY vehiculo_ibfk_2;
-ALTER TABLE vehiculo
-DROP FOREIGN KEY vehiculo_ibfk_1;
-
-SET FOREIGN_KEY_CHECKS = 0;
-DROP TABLE vehiculo;
-SET FOREIGN_KEY_CHECKS = 1;
-
-
-DROP TABLE vehiculo;
 
 CREATE TABLE vehiculo_seguro (
     vehiculo VARCHAR(17) NOT NULL UNIQUE,

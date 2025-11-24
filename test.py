@@ -62,18 +62,20 @@ while True and opc1 != 9:
         case 3:
             opc13 = 100
 
-            while opc13 != 5:
+            while opc13 != 6:
                 opc13 = Val._SelectMenu("    Opcion: ", _Usuarios._Usuarios, 1, 6)
                 match opc13:
                     case 1:
                         fUsuarios.createUser()
                     case 2:
-                        fUsuarios.selectUser()
+                        fUsuarios.selectChofer()
                     case 3:
-                        fUsuarios.updateUser()
+                        fUsuarios.empleados_contactos()
                     case 4:
-                        fUsuarios.deleteUser()
+                        fUsuarios.updateUser()
                     case 5:
+                        fUsuarios.deleteUser()
+                    case 6:
                         print("   Saliendo del Menu de Usuarios...")
         case 9:
             print("   Saliendo...")
