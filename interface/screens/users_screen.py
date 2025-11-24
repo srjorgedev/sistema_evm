@@ -41,7 +41,7 @@ class USERScreenWidget(QWidget):
         
         # Creación del QTabWidget
         self.tabs = QTabWidget()
-        self.tabs.addTab(self.table, "Registros Activos")
+        self.tabs.addTab(self.table, "Empleados registrados")
         # self.tabs.addTab(self.archivadas, "Registros Archivados")
 
         # Instancia del objeto para realizar operaciones con la BD en segundo plano.
@@ -52,10 +52,9 @@ class USERScreenWidget(QWidget):
         h_spacer = QSpacerItem(128, 16, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
         
         # Botones
-        self.button_salida = ButtonWidget("out", "Registrar salida", ColorKeys.CREAR)
-        self.button_entrada = ButtonWidget("in", "Registrar entrada", ColorKeys.CREAR)
+        self.button_agregar = ButtonWidget("add", "Registrar salida", ColorKeys.CREAR)
         self.button_modificar = ButtonWidget("modify", "Modificar", ColorKeys.MODIFICAR)
-        self.button_archivar = ButtonWidget("archive", "Archivar", ColorKeys.ARCHIVAR)
+        self.button_archivar = ButtonWidget("archive", "Eliminar", ColorKeys.ARCHIVAR)
         self.button_recargar = SquareButtonWidget("reload", "#f1f1f1")
         
         # Asignacion de atributos 
@@ -66,8 +65,7 @@ class USERScreenWidget(QWidget):
         self.modal_entrada = ModalWidget(self, EntradaFormWidget(), "Crear un nuevo registro de entrada")
         
         # Asignacion de eventos en los botones cuando se hace clic        
-        self.button_salida.clicked.connect(self.modal_salida.show_modal)
-        self.button_entrada.clicked.connect(self.modal_entrada.show_modal)
+        self.button_agregar.clicked.connect(self.modal_salida.show_modal)
         self.button_recargar.clicked.connect(self.handle_refresh)
         
         # Asignacion de estilos
@@ -84,8 +82,7 @@ class USERScreenWidget(QWidget):
         button_layout.setSpacing(16)
         
         # Agragamos los botones al contenedor de botones
-        button_layout.addWidget(self.button_salida)
-        button_layout.addWidget(self.button_entrada)
+        button_layout.addWidget(self.button_agregar)
         button_layout.addWidget(self.button_modificar)
         button_layout.addWidget(self.button_archivar)
         button_layout.addItem(h_spacer)
