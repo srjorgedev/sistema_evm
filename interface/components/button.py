@@ -25,7 +25,7 @@ colors = {
 class ButtonWidget(QWidget):
     clicked = pyqtSignal()
 
-    def __init__(self, icono, texto="", color: ColorKeys = ColorKeys.BASE):
+    def __init__(self, icono=None, texto="", color: ColorKeys = ColorKeys.BASE):
         super().__init__()
         
         # Asignacion de atributos
@@ -44,7 +44,6 @@ class ButtonWidget(QWidget):
         self.main_layout = QVBoxLayout(self)                        # Layout vertical
         self.button_frame = QFrame()                                # Un contenedor     
         self.inner_layout = QHBoxLayout(self.button_frame)          # layout horizontal
-        self.icon_widget = QSvgWidget()                             # SVG para iconos
         self.text_label = QLabel(texto)                             # Texto
         
         # Propiedadess y atributos                      
@@ -56,16 +55,18 @@ class ButtonWidget(QWidget):
         self.inner_layout.setContentsMargins(16, 0, 8, 0)          # Margenes entre el borde y los hijos
         self.inner_layout.setSpacing(8)                            # Espaciado entre los elementos hijos en 16
 
-        self.icon_widget.setFixedSize(24, 24)                       # Tamaño inmutable para el icono
-        
-        icon_path = folder / "assets" / "icons" / f"{icono}.svg"    # Ruta del svg
-        if icon_path.exists():
-            self.icon_widget.load(str(icon_path))
-        else:
-            print(f"Warning: Icono no encontrado en {icon_path}")
+        if icono: 
+            self.icon_widget = QSvgWidget()                             # SVG para iconos
+            self.icon_widget.setFixedSize(24, 24)                       # Tamaño inmutable para el icono
+
+            icon_path = folder / "assets" / "icons" / f"{icono}.svg"    # Ruta del svg
+            if icon_path.exists():
+                self.icon_widget.load(str(icon_path))
+            else:
+                print(f"Warning: Icono no encontrado en {icon_path}")
+            self.inner_layout.addWidget(self.icon_widget)
 
         # Acomodar los elementos en el layout horizontal
-        self.inner_layout.addWidget(self.icon_widget)
         self.inner_layout.addWidget(self.text_label)
         self.inner_layout.addStretch() 
 

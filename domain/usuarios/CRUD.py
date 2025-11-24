@@ -28,3 +28,11 @@ def lista_tipos():
         SELECT codigo, descripcion
         FROM tipo_empleado
     """
+    
+    lista = conn.lista(query)
+    
+    tipos = []
+    for tupla in lista:
+        tipos.append((tupla[0], tupla[1]))
+        
+    return tipos
