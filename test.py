@@ -5,7 +5,16 @@ import interface.bitacoras.Menu as _Bitacoras
 from controllers import bitacora_controller
 
 import interface.vehiculos.Menu as _Vehiculos
-from controllers import fVehiculo
+#from controllers import fVehiculo
+
+from db.conn import conn
+print("prueba de conexion")
+miConn = conn()
+from interface.observacionymantenimiento import menu
+from interface.observacionymantenimiento import fMantenimiento
+from interface.observacionymantenimiento import fObservacion
+#import sys
+from interface.observacionymantenimiento import val
 
 import interface.Menu as Menu
 import interface.Val as Val
@@ -40,24 +49,25 @@ while True and opc1 != 9:
                         print("   Saliendo...")
                         break
 
-        case 2:
-            opc12 = 100
+    #    case 2:
+    #        opc12 = 100
+#
+ #           while opc12 != 5:
+  #              opc12 = Val._SelectMenu("    Opcion: ", _Vehiculos.menuVehiculos,
+   #                                     1, 6)
+    #            match opc12:
+     #               case 1:
+      #                  fVehiculo.listarVehiculos()
+       #             case 2:
+        #                fVehiculo.SolicitarDatos()
+         #           case 3:
+          #              fVehiculo.modificarMatricula()
+          #          case 4:
+          #              fVehiculo.borrarVehiculo()
+          #          case 5:
+          #              print("   Saliendo...")
+          #              break
 
-            while opc12 != 5:
-                opc12 = Val._SelectMenu("    Opcion: ", _Vehiculos.menuVehiculos,
-                                        1, 6)
-                match opc12:
-                    case 1:
-                        fVehiculo.listarVehiculos()
-                    case 2:
-                        fVehiculo.SolicitarDatos()
-                    case 3:
-                        fVehiculo.modificarMatricula()
-                    case 4:
-                        fVehiculo.borrarVehiculo()
-                    case 5:
-                        print("   Saliendo...")
-                        break
 
         case 3:
             opc13 = 100
@@ -77,6 +87,26 @@ while True and opc1 != 9:
                         fUsuarios.deleteUser()
                     case 6:
                         print("   Saliendo del Menu de Usuarios...")
+                        
+        case 4: # MANTENIMIENTO
+            opc1=0
+            while (opc1!=9):
+                opc1 = val.vOpciones("Opcion",1,9, menu.mMantenimiento)
+                match opc1:
+                    case 1: fMantenimiento.pedirDatos()
+                    case 2: fMantenimiento.listaGeneral()
+                    case 3: fMantenimiento.actualizarMantenimiento()
+                    case 4: fMantenimiento.borrarMantenimiento()
+        case 5: # OBSERVACIONES
+            opc2=0
+            while (opc2!=9):
+                opc2 = val.vOpciones("Opcion",1,9, menu.mObservaciones)
+                match opc2:
+                    case 1: fObservacion.pedirDatos()
+                    case 2: fObservacion.listaGeneral()
+                    case 3: fObservacion.actualizarObservacion()
+                    case 4: fObservacion.borrarObservacion()
+        
         case 9:
             print("   Saliendo...")
             break
