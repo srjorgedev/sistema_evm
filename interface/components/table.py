@@ -56,7 +56,7 @@ class TableWidget(QFrame):
         for i, text in enumerate(labels):
             widget = TableHeadWidget(text)
             
-            if i == 0:
+            if i == 0 and len(labels[i]) < 6:
                 widget.setFixedWidth(60) 
             
             self.header_layout.addWidget(widget)
