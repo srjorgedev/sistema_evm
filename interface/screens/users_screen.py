@@ -15,6 +15,9 @@ from interface.components.bitacoras.salida_form import SalidaFormWidget
 from interface.components.bitacoras.entrada_form import EntradaFormWidget
 from interface.components.table import TableWidget
 from interface.components.user_row import UserRowWidget
+from interface.components.tipo_row import TypeRowWidget
+from interface.components.nuevo_user_form import NewUserFormWidget
+import controllers.user_controller as FUser
 
 from utils.log import log
 
@@ -27,6 +30,7 @@ class USERScreenWidget(QWidget):
         super().__init__()
         
         table_headers = ["N°", "Nombre", "Rol", "Acciones"]
+        tipo_headers = ["N°", "Descripcion", "Acciones"]
         
         # Creacion de elementos
         self.main_layout = QVBoxLayout(self) 
@@ -37,11 +41,12 @@ class USERScreenWidget(QWidget):
         
         # Las tablas ahora estarán dentro de las pestañas
         self.table = TableWidget(table_headers)
-        self.archivadas = TableWidget(table_headers)
+        self.tipos_table = TableWidget(tipo_headers)
         
         # Creación del QTabWidget
         self.tabs = QTabWidget()
         self.tabs.addTab(self.table, "Empleados registrados")
+        self.tabs.addTab(self.tipos_table, "Tipos de empleados")
         # self.tabs.addTab(self.archivadas, "Registros Archivados")
 
         # Instancia del objeto para realizar operaciones con la BD en segundo plano.
@@ -61,12 +66,12 @@ class USERScreenWidget(QWidget):
         self.main_layout.setContentsMargins(48, 52, 48, 0) 
         self.main_layout.setSpacing(0)
         
-        self.modal_salida = ModalWidget(self, SalidaFormWidget(), "Crear un nuevo registro de salida")
+        self.modal_salida = ModalWidget(self, NewUserFormWidget(), "Registrar un nuevo usuario.")
         self.modal_entrada = ModalWidget(self, EntradaFormWidget(), "Crear un nuevo registro de entrada")
         
         # Asignacion de eventos en los botones cuando se hace clic        
         self.button_agregar.clicked.connect(self.modal_salida.show_modal)
-        self.button_recargar.clicked.connect(self.handle_refresh)
+        # self.button_recargar.clicked.connect(self.handle_refresh)
         
         # Asignacion de estilos
         label_titulo.setStyleSheet("font-size: 48px; font-weight: bold; color: white;")
@@ -97,12 +102,11 @@ class USERScreenWidget(QWidget):
         self.main_layout.addWidget(self.tabs)
         self.main_layout.addSpacerItem(v_spacer)
 
-        # Aplicamos los estilos a las pestañas
         self.apply_tab_styles()
 
         # Llamamos a la funcion que pide los datos.
         self.fetch_usuarios()
-        self.fetch_archivadas()
+        self.fetch_tipos_empleado()
 
     def apply_tab_styles(self):
         style = """
@@ -136,6 +140,14 @@ class USERScreenWidget(QWidget):
             }
         """
         self.tabs.setStyleSheet(style)
+        
+    def fetch_tipos_empleado(self):
+        log("[USUARIOS]: Iniciando fetch de tipos...")
+        self.runner.run(
+            func=FUser.lista_tipos,
+            on_success= lambda a: self.handle_tipos(a, self.tipos_table),
+            on_error=lambda e: log(f"[USUARIOS]: Error -> {e}")
+            )
         
     # Funcion para pedir los datos 
     def fetch_usuarios(self):

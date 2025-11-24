@@ -7,19 +7,18 @@ from PyQt6.QtGui import QResizeEvent, QColor, QPalette, QCursor, QRegularExpress
 from PyQt6.QtSvgWidgets import QSvgWidget
 
 class InputWidget(QWidget):
-    def __init__(self, text, pattern=None):
+    def __init__(self, text, pattern=None, password=False):
         super().__init__()
         
         self.main_layout = QVBoxLayout(self)
-
+        label = QLabel(text)
+        self.input_field = QLineEdit()
+        
+        self.input_field.setFixedHeight(40) 
         self.main_layout.setContentsMargins(0, 0, 0, 0)
         self.main_layout.setSpacing(5) 
         
-        label = QLabel(text)
         label.setStyleSheet("color: #f1f1f1; font-size: 16px;")
-
-        self.input_field = QLineEdit()
-
         self.input_field.setStyleSheet("""
             QLineEdit {
                 background-color: #0f172a; 
@@ -33,7 +32,9 @@ class InputWidget(QWidget):
                 border: 1px solid #3b82f6;
             }
         """)
-        self.input_field.setFixedHeight(40) 
+        
+        if password: 
+            self.input_field.setEchoMode(QLineEdit.EchoMode.Password)
         
         if pattern: 
             regex = QRegularExpressionValidator(QRegularExpression(pattern), self)
