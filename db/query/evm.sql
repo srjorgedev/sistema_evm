@@ -197,3 +197,69 @@ CREATE TABLE mantenimiento(
 
 ALTER TABLE empleado ADD COLUMN password_hash VARCHAR(255) NOT NULL;
 ALTER TABLE empleado ADD COLUMN email VARCHAR(100) NOT NULL;
+
+
+--Tablas mantenimiento y observaciones
+
+-- 1. Tabla: TipoMantenimiento
+CREATE TABLE TipoMantenimiento (
+    numero INT PRIMARY KEY,
+    comentario VARCHAR(255)
+);
+
+-- 2. Tabla: EstadoMantenimiento
+CREATE TABLE EstadoMantenimiento (
+    numero INT PRIMARY KEY,
+    descripcion VARCHAR(100)
+);
+
+-- 3. Tabla: TipoObservacion
+CREATE TABLE TipoObservacion (
+    numero INT PRIMARY KEY,
+    descripcion VARCHAR(255),
+    tipoMantenimiento INT,
+    FOREIGN KEY (tipoMantenimiento) REFERENCES TipoMantenimiento(numero)
+);
+
+-- 4. Tabla necesaria para FK: Vehiculo
+CREATE TABLE Vehiculo (
+    numSerie VARCHAR(50) PRIMARY KEY,
+    modelo VARCHAR(50),
+    anio INT
+    -- Se pueden añadir más campos de vehículo aquí
+);
+
+-- 5. Tabla necesaria para FK: Bitacora
+CREATE TABLE Bitacora (
+    numControl INT PRIMARY KEY AUTO_INCREMENT,
+    fechaHora DATETIME,
+    detalle VARCHAR(500)
+    -- Se pueden añadir más campos de bitácora aquí
+);
+
+
+-- 6. Tabla: Mantenimiento
+CREATE TABLE Mantenimiento (
+    folio INT PRIMARY KEY,
+    razon VARCHAR(255),
+    estatus VARCHAR(50),
+    importancia VARCHAR(50),
+    fechaProgramada DATE,
+    comentarios VARCHAR(500),
+    tipoMantenimiento INT,
+    vehiculo VARCHAR(50),
+    estadoMantenimiento INT,
+    FOREIGN KEY (tipoMantenimiento) REFERENCES TipoMantenimiento(numero),
+    FOREIGN KEY (vehiculo) REFERENCES Vehiculo(numSerie),
+    FOREIGN KEY (estadoMantenimiento) REFERENCES EstadoMantenimiento(numero)
+);
+
+-- 7. Tabla: Observacion
+CREATE TABLE Observacion (
+    numero INT PRIMARY KEY,
+    descripcion VARCHAR(500),
+    tipoObservacion INT,
+    bitacora INT,
+    FOREIGN KEY (tipoObservacion) REFERENCES TipoObservacion(numero),
+    FOREIGN KEY (bitacora) REFERENCES bitacora(numero)
+);
