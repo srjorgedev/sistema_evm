@@ -36,8 +36,8 @@ class USERScreenWidget(QWidget):
         label_buttons = QLabel("Acciones rapidas")
         
         # Las tablas ahora estarán dentro de las pestañas
-        self.table = BITTableWidget(table_headers)
-        self.archivadas = BITTableWidget(table_headers)
+        self.table = TableWidget(table_headers)
+        self.archivadas = TableWidget(table_headers)
         
         # Creación del QTabWidget
         self.tabs = QTabWidget()
@@ -165,7 +165,7 @@ class USERScreenWidget(QWidget):
             on_error=self.handle_error
         )
 
-    def handle_data(self, data: list[tuple], parent: BITTableWidget):
+    def handle_data(self, data: list[tuple], parent: TableWidget):
         log(f"[USUARIOS]: Datos recibidos -> {len(data)} bitácoras.")
         
         parent.clearRows()

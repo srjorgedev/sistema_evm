@@ -177,7 +177,7 @@ class BITScreenWidget(QWidget):
             on_error=self.handle_error
         )
 
-    def handle_data(self, data: list[tuple], parent: BITTableWidget):
+    def handle_data(self, data: list[tuple], parent: TableWidget):
         log(f"[BITACORAS]: Datos recibidos -> {len(data)} bitácoras.")
         
         parent.clearRows()
