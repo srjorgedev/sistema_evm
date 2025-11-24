@@ -3,7 +3,7 @@ from db.ConnB import Conn
 from domain.vehiculos.ClaseVehiculo import Vehiculo
 
 def listarVehiculos():
-    miConn = Conn()
+    miConn = conn()
     comando = "select * from vehiculo"
     lista = miConn.lista(comando)
     

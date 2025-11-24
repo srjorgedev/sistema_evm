@@ -1,4 +1,4 @@
-class Vehiculo:
+class Solicitud:
     def __init__(self, numero, asunto, horaSolicitud, fechaSolicitud, vehiculo, edoSolicitud,
                  solicitante, autorizador):
         self.__numero = numero
@@ -50,8 +50,3 @@ class Vehiculo:
         self.__solicitante = solicitante
     def set_autorizador(self, autorizador):
         self.__autorizador = autorizador
-        
-    
-
-
-

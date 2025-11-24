@@ -11,10 +11,10 @@ class conn:
             port=3306,
             user="root",
             password="",
-            db="evm")
-            print("   conectado")
+            db="evm_db")
+            print("conectado")
         except Error as variable:
-            print("   error en conexion")
+            print("error en conexion")
             print(variable)
 
     #READ - SELECT
