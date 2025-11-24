@@ -56,7 +56,6 @@ class SalidaFormWidget(QWidget):
         desc.setStyleSheet("font-size: 16px; font-weight: normal; color: #c1c1c1;")
         observaciones_label.setStyleSheet("font-size: 16px; font-weight: normal; color: #f1f1f1;")
         
-        self.select_.change.connect(lambda e: log(f"[ENTRADA FORM]: Bitacora -> {e}"))
         self.btn_add_obs.clicked.connect(self.agregar_observacion)
         
         self.observaciones.setSpacing(8)
@@ -66,7 +65,6 @@ class SalidaFormWidget(QWidget):
         
         self.layout_v.addWidget(desc)
         self.layout_v.addItem(v_spacer)
-        self.layout_v.addWidget(self.select_)
         self.layout_v.addItem(v_spacer)
         self.layout_v.addLayout(layout_h)
         self.layout_v.addItem(v_spacer)
@@ -85,7 +83,6 @@ class SalidaFormWidget(QWidget):
         
         self.agregar_observacion()
         
-        self.fetch_bitacoras_no_entrada()
         self.fetch_tipos_observaciones()
         
     def agregar_observacion(self):
