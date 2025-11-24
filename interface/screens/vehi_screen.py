@@ -16,6 +16,7 @@ from interface.components.bitacoras.salida_form import SalidaFormWidget
 from interface.components.bitacoras.entrada_form import EntradaFormWidget
 from interface.components.table import TableWidget
 from interface.components.user_row import UserRowWidget
+from interface.components.vehiculo_row import VehiculoCardWidget
 
 from utils.log import log
 
@@ -27,7 +28,7 @@ class VEHIScreenWidget(QWidget):
     def __init__(self):
         super().__init__()
         
-        table_headers = ["N°"]
+        table_headers = ["N° Serie", "Matricula", "Marca", "Acciones"]
         
         # Creacion de elementos
         self.main_layout = QVBoxLayout(self) 
@@ -67,7 +68,7 @@ class VEHIScreenWidget(QWidget):
         
         # Asignacion de eventos en los botones cuando se hace clic        
         self.button_agregar.clicked.connect(self.modal_salida.show_modal)
-        self.button_recargar.clicked.connect(self.handle_refresh)
+        # self.button_recargar.clicked.connect(self.handle_refresh)
         
         # Asignacion de estilos
         label_titulo.setStyleSheet("font-size: 48px; font-weight: bold; color: white;")
@@ -139,7 +140,7 @@ class VEHIScreenWidget(QWidget):
         
     # Funcion para pedir los datos 
     def fetch_vehiculos(self):
-        log("[vehiculos]: Iniciando fetch general...")
+        log("[VEHICULOS]: Iniciando fetch general...")
         # Llamar al objeto para hacer peticiones en segundo plano.
         # Esta funcion nos pide...
         # La funcion a ejecutar: func
@@ -153,4 +154,23 @@ class VEHIScreenWidget(QWidget):
             on_error=self.handle_error
         )
         
-    
+    def handle_data(self, data: list[tuple], parent: TableWidget):
+        log(f"[VEHICULOS]: Datos recibidos -> {len(data)} VEHICULOS.")
+        
+        parent.clearRows()
+
+        if not data:
+            no_data_label = QLabel("No hay vehiculos para mostrar.")
+            no_data_label.setStyleSheet("background-color: transparent; font-size: 16px; color: #888888;")
+            no_data_label.setContentsMargins(0, 16, 0, 0)
+            
+            no_data_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            parent.addRow(no_data_label)
+        else:
+            for bitacora in data:
+                card = VehiculoCardWidget(bitacora) 
+                card.btn_archivo.connect(lambda: print("HI"))
+                parent.addRow(card)   
+        
+    def handle_error(self, error_message):
+        log(f"[VEHICULOS]: Error al hacer fetch -> {error_message}")

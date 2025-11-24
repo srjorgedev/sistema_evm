@@ -12,17 +12,17 @@ class VehiculoCardWidget(QFrame):
     
     def __init__(self, data: tuple):
         super().__init__()
-        self.data = data  # (id, serie, matricula, marca)
+        self.data = data  # (serie, matricula, marca)
         
         self.setAttribute(Qt.WidgetAttribute.WA_Hover, True)
         self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
         layout = QHBoxLayout(self)
 
-        lbl_id = QLabel(f"#{self.data[0]}")
-        lbl_serie = QLabel(self.data[1])       # serie
-        lbl_matricula = QLabel(self.data[2])   # matrícula
-        lbl_marca = QLabel(self.data[3])       # marca
+        # lbl_id = QLabel(f"#{self.data[0]}")
+        lbl_serie = QLabel(self.data[0])       # serie
+        lbl_matricula = QLabel(self.data[1])   # matrícula
+        lbl_marca = QLabel(self.data[2])       # marca
         
         acciones = QWidget()
         acciones_layout = QHBoxLayout(acciones)
@@ -41,18 +41,18 @@ class VehiculoCardWidget(QFrame):
         lbl_style = "font-size: 18px; color: #f1f1f1; background: transparent;"
         lbl_strong = "font-size: 18px; color: #009AD3; font-weight: bold; background: transparent;"
 
-        lbl_id.setStyleSheet(lbl_strong)
+        # lbl_id.setStyleSheet(lbl_strong)
         lbl_serie.setStyleSheet(lbl_style)
         lbl_matricula.setStyleSheet(lbl_style)
         lbl_marca.setStyleSheet(lbl_style)
         
-        lbl_id.setFixedWidth(40)
-        lbl_id.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        # lbl_id.setFixedWidth(40)
+        # lbl_id.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.setFixedHeight(56)
 
         # Armado final
-        layout.addWidget(lbl_id)
+        # layout.addWidget(lbl_id)
         layout.addWidget(lbl_serie, 1)
         layout.addWidget(lbl_matricula, 1)
         layout.addWidget(lbl_marca, 1)

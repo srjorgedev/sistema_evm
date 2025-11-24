@@ -10,7 +10,7 @@ class conn:
             host="localhost",
             port=3306,
             user="root",
-            password="",
+            password="root",
             db="evm_db")
             print("conectado")
         except Error as variable:

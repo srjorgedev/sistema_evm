@@ -1,17 +1,37 @@
 from db.connV import conn
 from db.ConnB import Conn
 from domain.vehiculos.ClaseVehiculo import Vehiculo
+from utils.log import log
 
 def listarVehiculos():
-    miConn = conn()
-    comando = "select * from vehiculo"
+    log("[CRUD VEHICULO]: Funcion -> Listar vehiculos")
+    miConn = Conn()
+    
+    # Campos que recuperamos
+    # Num serie, matricula, marca
+    comando = """
+    SELECT v.numSerie, v.matricula, m.nombre
+    FROM vehiculo AS v
+    INNER JOIN marca AS m ON v.marca = m.codigo
+    """
+    
+    log("[CRUD VEHICULO]: Obteniendo datos...")
     lista = miConn.lista(comando)
+    log("[CRUD VEHICULO]: Datos obtenidos.")
     
     if not lista:
-        print("No hay vehiculos registrados, para mostrar")
+        log("[CRUD VEHICULO]: No hay vehiculos.")
+        return []
     else:
         if len(lista)>0:
-            return lista
+            log("[CRUD VEHICULO]: Si hay vehiculos.")
+            datos = []
+            for item in lista:
+                datos.append(item)
+                
+            log("[CRUD VEHICULO]: Retornando datos...")
+            return datos
+                
                 
 def listaCorta():
     miConn = conn()

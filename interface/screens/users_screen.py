@@ -67,11 +67,9 @@ class USERScreenWidget(QWidget):
         self.main_layout.setSpacing(0)
         
         self.modal_salida = ModalWidget(self, NewUserFormWidget(), "Registrar un nuevo usuario.")
-        self.modal_entrada = ModalWidget(self, EntradaFormWidget(), "Crear un nuevo registro de entrada")
         
         # Asignacion de eventos en los botones cuando se hace clic        
         self.button_agregar.clicked.connect(self.modal_salida.show_modal)
-        # self.button_recargar.clicked.connect(self.handle_refresh)
         
         # Asignacion de estilos
         label_titulo.setStyleSheet("font-size: 48px; font-weight: bold; color: white;")
@@ -151,7 +149,7 @@ class USERScreenWidget(QWidget):
         
     # Funcion para pedir los datos 
     def fetch_usuarios(self):
-        log("[usuarios]: Iniciando fetch general...")
+        log("[USUARIOS]: Iniciando fetch general...")
         # Llamar al objeto para hacer peticiones en segundo plano.
         # Esta funcion nos pide...
         # La funcion a ejecutar: func
@@ -164,5 +162,42 @@ class USERScreenWidget(QWidget):
             on_success=lambda data: self.handle_data(data, self.table), 
             on_error=self.handle_error
         )
+
+    def handle_data(self, data: list[tuple], parent: TableWidget):
+        log(f"[USUARIOS]: Datos recibidos -> {len(data)} bitácoras.")
         
-  
+        parent.clearRows()
+
+        if not data:
+            no_data_label = QLabel("No hay empleados para mostrar.")
+            no_data_label.setStyleSheet("background-color: transparent; font-size: 16px; color: #888888;")
+            no_data_label.setContentsMargins(0, 16, 0, 0)
+            
+            no_data_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            parent.addRow(no_data_label)
+        else:
+            for bitacora in data:
+                card = UserRowWidget(bitacora) 
+                card.btn_archivo.connect(lambda: print("HI"))
+                parent.addRow(card)
+    
+    def handle_tipos(self, data: list[tuple], parent: TableWidget):
+        log(f"[USUARIOS]: Datos recibidos -> {len(data)} bitácoras.")
+        
+        parent.clearRows()
+
+        if not data:
+            no_data_label = QLabel("No hay tipos para mostrar.")
+            no_data_label.setStyleSheet("background-color: transparent; font-size: 16px; color: #888888;")
+            no_data_label.setContentsMargins(0, 16, 0, 0)
+            
+            no_data_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            parent.addRow(no_data_label)
+        else:
+            for bitacora in data:
+                card = TypeRowWidget(bitacora) 
+                card.btn_archivo.connect(lambda: print("HI"))
+                parent.addRow(card)
+
+    def handle_error(self, error_message):
+        log(f"[USUARIOS]: Error al hacer fetch -> {error_message}")
