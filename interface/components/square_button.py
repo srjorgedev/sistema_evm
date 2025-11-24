@@ -5,6 +5,8 @@ from PyQt6.QtSvgWidgets import QSvgWidget
 from PyQt6.QtGui import QCursor, QColor
 from utils.load_resource import ruta_svg
 
+from utils.log import log
+
 class SquareButtonWidget(QWidget):
     clicked = pyqtSignal()
 
@@ -45,7 +47,7 @@ class SquareButtonWidget(QWidget):
         if icon_path.exists():
             self.icon_widget.load(str(icon_path))
         else:
-            print(f"Warning: Icono no encontrado en {icon_path}")
+            log(f"Warning: Icono no encontrado en {icon_path}")
 
         # Acomodar los elementos en el layout horizontal
         self.inner_layout.addWidget(self.icon_widget)

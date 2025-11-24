@@ -19,7 +19,7 @@ colors = {
     ColorKeys.ARCHIVAR: "#EF4444",
     ColorKeys.CREAR: "#22C55E",
     ColorKeys.MODIFICAR: "#fbff85",
-    ColorKeys.BASE: "#343434"
+    ColorKeys.BASE: "#3498DB"
 }
 
 class ButtonWidget(QWidget):

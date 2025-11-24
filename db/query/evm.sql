@@ -5,10 +5,22 @@ CREATE DATABASE evm_db;
 USE evm_db;
 
 CREATE TABLE tipo_licencia (
-    numero INT(15) PRIMARY KEY AUTO_INCREMENT,
-    codigo CHAR(1) NOT NULL,
+    codigo CHAR(1) PRIMARY KEY,
     descripcion VARCHAR(30) NOT NULL
 );
+ALTER TABLE tipo_licencia
+DROP PRIMARY KEY;
+
+ALTER TABLE tipo_licencia
+ADD COLUMN numero INT NOT NULL AUTO_INCREMENT FIRST;
+
+ALTER TABLE tipo_licencia
+ADD PRIMARY KEY (numero);
+
+SHOW CREATE TABLE tipo_licencia;
+
+DROP TABLE tipo_licencia;
+
 
 CREATE TABLE marca (
     codigo VARCHAR(4) PRIMARY KEY,
@@ -66,6 +78,18 @@ CREATE TABLE tipo_observacion (
     FOREIGN KEY (tipo_mantenimiento) REFERENCES tipo_mantenimiento(codigo)
 );
 
+CREATE TABLE empleado (
+    numero INT AUTO_INCREMENT PRIMARY KEY,
+    nombrePila VARCHAR(30) NOT NULL,
+    apdPaterno VARCHAR(20) NOT NULL,
+    apdMaterno VARCHAR(20),
+    tipo_empleado VARCHAR(5) NOT NULL,
+    FOREIGN KEY (tipo_empleado) REFERENCES tipo_empleado(codigo)
+);
+
+SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE empleado;
+SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE empleado(
     numero INT AUTO_INCREMENT PRIMARY KEY,
@@ -85,13 +109,13 @@ CREATE TABLE telefono (
 );
 
 CREATE TABLE licencia (
-    numero VARCHAR(14), #tendria que ser pk
+    numero VARCHAR(14),
     fechaExpedicion DATE NOT NULL,
     fechaVencimiento DATE NOT NULL,
     empleado INT NOT NULL,
-    tipo_licencia INT NOT NULL,
+    tipo_licencia CHAR(1) NOT NULL,
     FOREIGN KEY (empleado) REFERENCES empleado(numero),
-    FOREIGN KEY (tipo_licencia) REFERENCES tipo_licencia(numero)
+    FOREIGN KEY (tipo_licencia) REFERENCES tipo_licencia(codigo)
 );
 
 CREATE TABLE seguro (
@@ -113,10 +137,10 @@ CREATE TABLE vehiculo (
     disponibilidad BOOLEAN DEFAULT TRUE,
     marca VARCHAR(4) NOT NULL,
     modelo VARCHAR(4) NOT NULL,
-    licencia_requerida INT NOT NULL,
+    licencia_requerida CHAR(1) NOT NULL,
     FOREIGN KEY (marca) REFERENCES marca(codigo),
     FOREIGN KEY (modelo) REFERENCES modelo(codigo),
-    FOREIGN KEY (licencia_requerida) REFERENCES tipo_licencia(numero)
+    FOREIGN KEY (licencia_requerida) REFERENCES tipo_licencia(codigo)
 );
 
 CREATE TABLE vehiculo_seguro (
@@ -164,12 +188,6 @@ CREATE TABLE bitacora (
     FOREIGN KEY (vehiculo) REFERENCES vehiculo(numSerie)
 );
 
-ALTER TABLE bitacora
-ADD COLUMN visible BOOLEAN;
-
-UPDATE bitacora
-SET visible = 1;
-
 CREATE TABLE empleado_bitacora (
     bitacora INT NOT NULL,
     empleado INT NOT NULL,
@@ -203,3 +221,6 @@ CREATE TABLE mantenimiento(
     FOREIGN KEY (vehiculo) REFERENCES vehiculo(numSerie),
     FOREIGN KEY (edo_mantenimiento) REFERENCES edo_mantenimiento(numero)
 );
+
+ALTER TABLE empleado ADD COLUMN password_hash VARCHAR(255) NOT NULL;
+ALTER TABLE empleado ADD COLUMN email VARCHAR(100) NOT NULL;

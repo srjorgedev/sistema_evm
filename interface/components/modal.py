@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QFrame, QPushButton,
+from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QFrame, QLabel, QHBoxLayout,
                              QGraphicsDropShadowEffect)
 from PyQt6.QtCore import Qt, QRect, pyqtSignal
 from PyQt6.QtGui import QColor, QCursor
@@ -9,7 +9,7 @@ class ModalWidget(QWidget):
     close = pyqtSignal()
     save = pyqtSignal()
     
-    def __init__(self, parent=None, widget_contenido=None):
+    def __init__(self, parent=None, widget_contenido=None, titulo=""):
         super().__init__(parent)
         
         self.porcentaje_ancho = 0.75
@@ -22,6 +22,7 @@ class ModalWidget(QWidget):
         self.contenedor.setStyleSheet("""
             QFrame {
                 background-color: #1e293b; 
+                border-radius: 10px;
             }
             QLabel { background: transparent; color: white; }
         """)
@@ -34,14 +35,24 @@ class ModalWidget(QWidget):
 
         self.layout_tarjeta = QVBoxLayout(self.contenedor)
         self.layout_tarjeta.setContentsMargins(48, 48, 48, 48)
+        self.layout_tarjeta.setSpacing(20)
         
+        self.header = QHBoxLayout()
+        
+        title = QLabel(titulo)
+        title.setStyleSheet("font-size: 32px; font-weight: bold; color: white;")
+        
+        self.btn_cerrar = SquareButtonWidget("close", "#cc1c11", 36)
+        self.btn_cerrar.clicked.connect(self.hide_modal)
+        
+        self.header.addWidget(title)
+        self.header.addStretch()
+        self.header.addWidget(self.btn_cerrar)
+        
+        self.layout_tarjeta.addLayout(self.header)
+
         if widget_contenido:
             self.layout_tarjeta.addWidget(widget_contenido)
-            
-        self.btn_cerrar = SquareButtonWidget("close", "#cc1c11", 36)
-        self.btn_cerrar.setParent(self.contenedor)
-        self.btn_cerrar.clicked.connect(self.hide_modal)
-        self.btn_cerrar.raise_()
 
         if parent:
             self.resize(parent.size())
@@ -62,13 +73,6 @@ class ModalWidget(QWidget):
         pos_y = int((parent_size.height() - alto_tarjeta) / 2)
         
         self.contenedor.setGeometry(pos_x, pos_y, ancho_tarjeta, alto_tarjeta)
-        
-        margen_x = 48
-        margen_y = 48
-        btn_x = ancho_tarjeta - self.btn_cerrar.width() - margen_x
-        btn_y = margen_y
-        
-        self.btn_cerrar.move(btn_x, btn_y)
 
     def show_modal(self):
         self.resize(self.parent().size()) 
@@ -77,7 +81,3 @@ class ModalWidget(QWidget):
     
     def hide_modal(self):
         self.setVisible(False)
-
-    # def mousePressEvent(self, event):
-    #     if not self.contenedor.geometry().contains(event.pos()):
-    #         self.hide_modal()
