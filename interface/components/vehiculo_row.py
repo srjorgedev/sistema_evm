@@ -35,7 +35,7 @@ class VehiculoCardWidget(QFrame):
 
         acciones_layout.addWidget(modificar)
         acciones_layout.addWidget(archivar)
-        acciones_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        acciones_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
 
         # Estilos
         lbl_style = "font-size: 18px; color: #f1f1f1; background: transparent;"
