@@ -20,3 +20,11 @@ def lista_general():
         usuarios.append((tupla[0], tupla[1], tupla[2], tupla[3]))
         
     return usuarios
+
+def lista_tipos():
+    conn = Conn()
+    
+    query = """
+        SELECT codigo, descripcion
+        FROM tipo_empleado
+    """
