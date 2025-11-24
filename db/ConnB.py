@@ -1,5 +1,6 @@
 import mysql.connector
 from mysql.connector import Error
+from utils.log import log
 
 class Conn:
     def __init__(self):
@@ -45,7 +46,8 @@ class Conn:
             return res
             
         except Error as error:
-            print(f"[BD ERROR - LISTA]: {error}")
+            log(f"[BD ERROR - LISTA]: {error.errno}")
+            log(f"[BD ERROR - LISTA]: {error.msg}")
             return [] # Retornamos lista vacía en vez de error tupla para no romper la UI
             
         finally:
@@ -71,7 +73,7 @@ class Conn:
             return lastid
             
         except Error as error:
-            print(f"[BD ERROR - REGISTRAR]: {error}")
+            log(f"[BD ERROR - REGISTRAR]: {error}")
             return -1
             
         finally:
@@ -95,7 +97,7 @@ class Conn:
             return count
             
         except Error as error:
-            print(f"[BD ERROR - ACTUALIZAR]: {error}")
+            log(f"[BD ERROR - ACTUALIZAR]: {error}")
             return 0
             
         finally:

@@ -1,5 +1,9 @@
 from db.connU import conn
-from domain.usuarios.ClaseUsuarios import Usuario, TipoEmpleado
+from domain.usuarios.ClaseUsuarios import Usuario, TipoEmpleado, Telefono, Licencia, TipoLicencia
+from mysql.connector import Error, IntegrityError
+from interface.usuarios import val
+from interface.usuarios.Menu import datos, licencias
+import mysql.connector
 
 #Create
 #Read
@@ -74,7 +78,7 @@ def Create(newUser, newTipo, newTel, newTLic, newLic):
     idTelefono = cursor.lastrowid
     
     comando4 = """
-    INSERT INTO tipo_licencia ()
+    INSERT INTO tipo_licencia (codigo, descripcion)
     VALUES (%s, %s)
     """
     cursor.execute(comando4, (
@@ -82,6 +86,8 @@ def Create(newUser, newTipo, newTel, newTLic, newLic):
         newTLic.get_descripcionLic()
     ))
     
+    idTipoLic = cursor.lastrowid
+    newLic.set_tipoLicencia(idTipoLic)
     comando5 = """
     INSERT INTO licencia (numero, fechaExpedicion, fechaVencimiento, empleado, tipo_licencia)
     VALUES (%s, %s, %s, %s, %s)
@@ -94,6 +100,61 @@ def Create(newUser, newTipo, newTel, newTLic, newLic):
         newLic.get_tipoLicencia()
     ))
 
+    miConn.conexion.commit()
+    print("ID Telefono", idTelefono)
+    print("Registro Exitoso")
+
+
+def Create2(newUser, newTipo, newTel):
+    miConn = conn()
+
+    cursor = miConn.conexion.cursor()
+
+    # INSERT tipo_empleado
+    comando2 = """
+    INSERT INTO tipo_empleado (codigo, descripcion)
+    VALUES (%s, %s)
+    """
+    cursor.execute(comando2, (
+        newTipo.get_codigo(),
+        newTipo.get_descripcion()
+    ))
+
+    # INSERT empleado
+    comando = """
+    INSERT INTO empleado (nombre, tipo_empleado, activo, password_hash, email)
+    VALUES (%s, %s, %s, %s, %s)
+    """
+    cursor.execute(comando, (
+        newUser.get_nombre(),
+        newTipo.get_codigo(),
+        newUser.get_activo(),
+        newUser.get_password(),
+        newUser.get_email()
+    ))
+
+    idEmpleado = cursor.lastrowid
+    print("Numero de Empleado:", idEmpleado)
+    newTel.set_empleado(idEmpleado)
+    
+    #INSERT telefono
+    comando3 = """
+    INSERT INTO telefono (numTelefono, empleado)
+    VALUES (%s, %s)
+    """
+    while True:
+        try:
+            cursor.execute(comando3, (
+                newTel.get_numTelefono(),
+                newTel.get_empleado()
+            ))
+            break
+        except IntegrityError as e:
+            if e.errno == 1062:
+                print("\n   ERROR: El número de teléfono ya está registrado. Intente otro.")
+                nuevoTel = val.valTelefono()
+                newTel.set_numTelefono(nuevoTel)
+    idTelefono = cursor.lastrowid
     miConn.conexion.commit()
     print("ID Telefono", idTelefono)
     print("Registro Exitoso")
@@ -141,76 +202,104 @@ def selectInd(oldUser):
     else:
         return False
 
-
+#def __init__(self, numEmpleado, nombre, tipo_empleado, activo, password, email):
 #Update
 def UpdateNombre(oldUser):
-    objUser = Usuario("", "", "", "", "", 0, "")
+    objUser = Usuario("", "", "", 0, "", "")
     objUser = oldUser
     miConn = conn()
-    aux = "UPDATE usuario SET nombre = '{0}' WHERE numEmpleado = {1}"
+    aux = "UPDATE empleado SET nombre = '{0}' WHERE numero = {1}"
     comando = aux.format(objUser.get_nombre(), objUser.get_numEmpleado())
     miConn.actualizar(comando)
 
-
+#class Telefono:
+    #def __init__(self, num, numTelefono, empleado):
 def UpdateTelefono(oldUser):
-    objUser = Usuario("", "", "", "", "", 0, "")
-    objUser = oldUser
+    objTel = Telefono("", "", "")
+    objTel = oldUser
     miConn = conn()
-    aux = "UPDATE usuario SET telefono = '{0}' WHERE numEmpleado = {1}"
-    comando = aux.format(objUser.get_telefono(), objUser.get_numEmpleado())
+    aux = "UPDATE telefono SET numTelefono = '{0}' WHERE empleado = {1}"
+    comando = aux.format(objTel.get_numTelefono(), objTel.get_empleado())
     miConn.actualizar(comando)
 
 
-def UpdateTipoEmpleado(oldUser):
-    objUser = Usuario("", "", "", "", "", 0, "")
+def UpdateTipoEmpleado(oldTipo):
+    objTipo = TipoEmpleado("", "")
+    objTipo = oldTipo
+    miConn = conn()
+    aux = "UPDATE tipo_empleado SET descripcion = '{0}' WHERE codigo = {1}"
+    comando = aux.format(objTipo.get_descripcion(), objTipo.get_codigo())
+    miConn.actualizar(comando)
+
+def UpdateEmail(oldUser):
+    objUser = Usuario("", "", "", 0, "", "")
     objUser = oldUser
     miConn = conn()
-    aux = "UPDATE usuario SET tipoEmpleado = '{0}' WHERE numEmpleado = {1}"
-    comando = aux.format(objUser.get_tipoEmpleado(), objUser.get_numEmpleado())
+    aux = "UPDATE empleado SET email = '{0}' WHERE numero = {1}"
+    comando = aux.format(objUser.get_email(), objUser.get_numEmpleado())
     miConn.actualizar(comando)
 
 
 #Delete
 def Delete(oldUser):
-    objUser = Usuario("", "", "", "", "", 0, "")
+    objUser = Usuario("", "", "", 0, "", "")
     objUser = oldUser
-    miConn = conn()
-    aux = "UPDATE usuario SET activo = {0} WHERE numEmpleado = {1}"
-    comando = aux.format(objUser.get_activo(), objUser.get_numEmpleado())
-    miConn.actualizar(comando)
-
-
-    #Buscar
-def Deactive(oldUser):
-    objUser = Usuario("", "", "", "", "", 0, "")
-    objUser = oldUser
-    miConn = conn()
-    aux = "select * from usuario where numEmpleado = {0}"
-    comando = aux.format(objUser.get_numEmpleado())
-    listado = miConn.lista(comando)
-    if len(listado) == 1:
-        print("   Datos a Inhabilitar: ")
-        for fila in listado:
-            obj = Usuario(
-                fila[0],  # customerID
-                fila[1],  # storeID
-                fila[2],  # first_name
-                fila[3],  # last_name
-                fila[4],  # email
-                fila[5],  # addressID
-                fila[6])
-            print(obj)
-        return True
-    else:
+    try:
+        miConn = conn()
+        cursor = miConn.conexion.cursor()
+        cursor.execute(
+        "UPDATE empleado SET activo = %s WHERE numero = %s",
+            (objUser.get_activo(), objUser.get_numEmpleado())
+        )
+        miConn.conexion.commit()
+        if cursor.rowcount > 0:
+            print(f"Empleado {objUser.get_numEmpleado()} desactivado correctamente.")
+            return True
+        else:
+            print(f"No se encontró empleado {objUser.get_numEmpleado()}.")
+            return False
+    except Exception as e:
+        print("Error:", e)
         return False
+
+
+
+
+
+
+
+def Deactive(oldUser):
+    miConn = conn()
+    comando = "SELECT * FROM empleado WHERE numero = %s"
+    listado = miConn.lista_param(comando, (oldUser.get_numEmpleado(),))
+
+    if len(listado) == 1:
+        fila = listado[0]
+
+        obj = Usuario(
+            fila[0],  # numero
+            fila[1],  # nombre
+            fila[2],  # apellido
+            fila[3],  # tipoEmpleado
+            fila[4],  # email
+            fila[5]   # activo
+        )
+
+        print("\n   Datos a Inhabilitar: ")
+        print(obj)
+
+        return obj     # <── REGRESAMOS EL OBJETO COMPLETO
+    else:
+        return None
+
 
 
 #Buscar
 def buscar(oldUser):
-    objUser = Usuario("", "", "", "", "", 0, "")
+    objUser = Usuario("", "", "", 0, "", "")
     objUser = oldUser
     miConn = conn()
-    aux = "select * from usuario where numEmpleado = {0}"
+    aux = "select * from empleado where numero = {0}"
     comando = aux.format(objUser.get_numEmpleado())
     listado = miConn.lista(comando)
     if len(listado) == 1:
@@ -222,9 +311,132 @@ def buscar(oldUser):
                 fila[2],  # first_name
                 fila[3],  # last_name
                 fila[4],  # email
-                fila[5],  # addressID
-                fila[6])
+                fila[5])  # addressID
             print(obj)
         return True
     else:
         return False
+    
+def buscarTipoEmpleado():
+    miConn = conn()
+
+    while True:
+        tipoCod = val.vInt("Ingrese el código del Tipo de Empleado: ")
+
+        comando = "SELECT * FROM tipo_empleado WHERE codigo = %s"
+        listado = miConn.lista_param(comando, (tipoCod,))
+
+        if len(listado) == 1:
+            print("\n   Tipo de empleado encontrado:\n")
+            fila = listado[0]
+
+            obj = TipoEmpleado(
+                fila[0],  # código
+                fila[1]   # descripción
+            )
+
+            print(f"Código: {obj.get_codigo()} - Descripción: {obj.get_descripcion()}")
+
+            return obj   # regresamos el tipo encontrado
+
+        else:
+            print("\n   ERROR: Ese Tipo de Empleado NO existe. Intente nuevamente.\n")
+
+
+def buscar3():
+    miConn = conn()
+
+    while True:
+        numEmpleado = val.vInt("Ingrese el número de Empleado que desea modificar: ")
+
+        comando = "SELECT * FROM empleado WHERE numero = %s"
+        listado = miConn.lista_param(comando, (numEmpleado,))
+
+        if len(listado) == 1:
+            print("\n   Empleado encontrado:\n")
+            fila = listado[0]
+
+            obj = Usuario(
+                fila[0],  # numero
+                fila[1],  # nombre
+                fila[2],
+                fila[3],
+                fila[4],
+                fila[5]
+            )
+
+            print(obj)
+            return obj   
+        else:
+            print("\n   ERROR: Ese empleado NO existe. Intente nuevamente.\n")
+
+def registrarLicencia(numEmpleado):
+    miConn = conn()
+    cursor = miConn.conexion.cursor()
+
+    print("\n   >>> Registro de Licencia de Chofer <<<")
+
+    licencias()
+    opcLic = val._IntRange("   Ingrese una opción de Licencia: ", 1, 5)
+
+    match opcLic:
+        case 1:
+            codigoLic = "A"
+            descripcionLic = "Automovilista"
+        case 2:
+            codigoLic = "B"
+            descripcionLic = "Taxis y Aplicaciones"
+        case 3:
+            codigoLic = "C"
+            descripcionLic = "Transporte público"
+        case 4:
+            codigoLic = "D"
+            descripcionLic = "Transporte de carga"
+        case 5:
+            codigoLic = "E"
+            descripcionLic = "Servicios especializados y carga"
+
+    print(f"   Seleccionó la licencia {codigoLic} ({descripcionLic})\n")
+
+    while True:
+        numeroLic = input("   Ingrese el número de licencia: ")
+        if val.valLicencia(numeroLic):
+            break
+        print("   ERROR: Número de licencia inválido.\n")
+
+    exp = val.val_exp()
+    ven = val.val_ven(exp)
+
+    cursor.execute("SELECT numero FROM tipo_licencia WHERE codigo = %s", (codigoLic,))
+    resultado = cursor.fetchone()
+
+    if resultado:
+        id_tipoLic = resultado[0]  
+    else:
+      
+        cursor.execute(
+            "INSERT INTO tipo_licencia (codigo, descripcion) VALUES (%s, %s)",
+            (codigoLic, descripcionLic)
+        )
+        miConn.conexion.commit()
+
+        id_tipoLic = cursor.lastrowid
+
+    comandoLic = """
+        INSERT INTO licencia (numero, fechaExpedicion, fechaVencimiento, empleado, tipo_licencia)
+        VALUES (%s, %s, %s, %s, %s)
+    """
+
+    cursor.execute(comandoLic, (
+        numeroLic,
+        exp,
+        ven,
+        numEmpleado,
+        id_tipoLic     
+    ))
+
+    miConn.conexion.commit()
+
+    print("\n   Licencia de chofer registrada correctamente.\n")
+    return True
+

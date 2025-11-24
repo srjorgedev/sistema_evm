@@ -9,8 +9,10 @@ from PyQt6.QtSvgWidgets import QSvgWidget
 from utils.load_resource import ruta_svg
 from interface.components.sidemenu_button import MenuButtonWidget
 
+from utils.log import log
+
 datos_menu = [
-    ("Dashboard", "dashboard"),
+    # ("Dashboard", "dashboard"),
     ("Bitacoras", "register"),
     ("Solicitudes", "request"),
     ("Empleados", "employees"),
@@ -56,7 +58,7 @@ class SidemenuWidget(QWidget):
         if icon_path.exists():
             sidebar_icon.load(str(icon_path))
         else:
-            print(f"Advertencia: Icono no encontrado en {icon_path}")
+            log(f"Advertencia: Icono no encontrado en {icon_path}")
 
         for i, boton in enumerate(self.botones_menu):
             boton.clicked.connect(self.manejar_clic_menu)
@@ -66,7 +68,7 @@ class SidemenuWidget(QWidget):
 
         # Layout
         self.layout_horizontal.addWidget(img_logo)
-        self.layout_horizontal.addWidget(sidebar_icon)
+        # self.layout_horizontal.addWidget(sidebar_icon)
         
         self.layout_vertical.addLayout(self.layout_horizontal)
         self.layout_vertical.addItem(QSpacerItem(8, 30, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed))

@@ -3,7 +3,7 @@ def _Usuarios():
     print("     1. Registrar usuario")
     print("     2. Listado de usuarios")
     print("     3. Actualizar Usuarios")
-    print("     4. Eliminar Usuarios")
+    print("     4. Inhabilitar/Habilitar Usuarios")
     print("     5. Volver")
 
 
@@ -12,7 +12,7 @@ def _Listado():
     print("     1. Administradores ")
     print("     2. Choferes")
     print("     3. Vigilante ")
-    print("     4. Usuario ")
+    print("     4. Empleado - Usuario ")
     print("     5. Volver ")
 
 
@@ -21,7 +21,7 @@ def _Tipos():
     print("     1. Administradores ")
     print("     2. Choferes")
     print("     3. Vigilante ")
-    print("     4. Usuario ")
+    print("     4. Empleado - Usuario ")
     print("     5. Volver ")
 
 
@@ -54,4 +54,5 @@ def datos():
     print("   1. Nombre")
     print("   2. Telefono")
     print("   3. Tipo de Empleado")
-    print("   4. Volver")
+    print("   4. Correo Electronico")
+    print("   5. Volver")

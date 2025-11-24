@@ -2,7 +2,9 @@ from db.ConnB import Conn
 from domain.bitacoras.Clase import Bitacora
 from mysql.connector import Error
 
-def listaGeneral() -> list[Bitacora]:
+from utils.log import log
+
+def listaGeneral() -> list[tuple]:
     conn = Conn()
 
     query = """
@@ -11,32 +13,52 @@ def listaGeneral() -> list[Bitacora]:
             asunto,
             destino, 
             entrada, 
-            salida
+            salida,
+            visible
         FROM bitacora
         WHERE visible = TRUE
     """
     
-    # print("CRUD.listaGeneral ejecutándose...")
     lista = conn.lista(query)
-
-    # print("CRUD LISTA EJECUTADO")
 
     bitacoras = []
     for fila in lista:
-        id, asunto, destino, entrada, salida = fila
+        id, asunto, destino, entrada, salida, visible = fila
         
-        listaItem = Bitacora()
-        listaItem.set_numControl(id)
-        listaItem.set_asunto(asunto)
-        listaItem.set_destino(destino)
-        listaItem.set_entradaBool(entrada)
-        listaItem.set_salidaBool(salida)
+        bitacora = (id, asunto, destino, entrada, salida, visible)
 
-        bitacoras.append(listaItem)
+        bitacoras.append(bitacora)
 
     return bitacoras
 
-def archivar(data: Bitacora):
+def listaArchivados() -> list[tuple]:
+    conn = Conn()
+
+    query = """
+        SELECT 
+            numero as id,
+            asunto,
+            destino, 
+            entrada, 
+            salida,
+            visible
+        FROM bitacora
+        WHERE visible = FALSE
+    """
+
+    lista = conn.lista(query)
+
+    bitacoras = []
+    for fila in lista:
+        id, asunto, destino, entrada, salida, visible = fila
+        
+        bitacora = (id, asunto, destino, entrada, salida, visible)
+
+        bitacoras.append(bitacora)
+
+    return bitacoras
+
+def archivar(data: int):
     conn = Conn()
     
     query = """
@@ -45,7 +67,22 @@ def archivar(data: Bitacora):
         WHERE numero = %s
     """
     
-    params = (data.get_numControl(),)
+    params = (data,)
+    
+    r = conn.actualizar(query, params)
+    
+    return r
+
+def desarchivar(data: int):
+    conn = Conn()
+    
+    query = """
+        UPDATE bitacora 
+        SET visible = TRUE
+        WHERE numero = %s
+    """
+    
+    params = (data,)
     
     r = conn.actualizar(query, params)
     
@@ -54,21 +91,30 @@ def archivar(data: Bitacora):
 def bitacoraSinEntrada():
     conn = Conn()
 
-    query = 'SELECT numControl as "Numero de control", asunto as Asunto, destino as Destino, salida as Salida, entrada as Entrada '
-    query += 'FROM bitacora WHERE entrada IS NULL AND status = 1'
+    query = """
+    SELECT 
+        numero as id,
+        asunto,
+        destino, 
+        entrada, 
+        salida,
+        visible
+    FROM bitacora
+    WHERE visible = TRUE AND
+    ENTRADA = FALSE
+    """
+    
     lista = conn.lista(query)
 
-    if lista == 0 or len(lista) == 0:
-        print("   No se puede mostrar.")
-        return
-
+    bitacoras = []
     for fila in lista:
-        numCtrl, asunto, destino, salida, entrada = fila
-        if entrada == None: entrada = 0
+        id, asunto, destino, entrada, salida, visible = fila
+        
+        bitacora = (id, asunto, destino, entrada, salida, visible)
 
-        print(f"{numCtrl:<8}{asunto:<35}{destino:<15}{salida:<12}{entrada}")
+        bitacoras.append(bitacora)
 
-    return len(lista)
+    return bitacoras
 
 
 def existe(bitacora: Bitacora):

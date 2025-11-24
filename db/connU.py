@@ -53,6 +53,18 @@ class conn:
             except Error as valError:
                 print(valError)
         return 0
+    
+    def lista_param(self, comando, params):
+        try:
+            if self.conexion.is_connected():
+                cursor = self.conexion.cursor()
+                cursor.execute(comando, params)
+                resultados = cursor.fetchall()
+                return resultados
+        except Error as e:
+            print(e)
+            return []
+
 
     #Update
     def actualizar(self, comando):
@@ -63,8 +75,10 @@ class conn:
                 self.conexion.commit()
                 contador = cursor.rowcount
                 print("   Actualizado")
+                print()
 
             except Error as valError:
                 print(valError)
                 contador = -1
         return contador
+

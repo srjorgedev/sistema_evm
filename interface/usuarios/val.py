@@ -8,7 +8,13 @@ def vInt(msg):
             return int(valor)
         else:
             print("   Solo se permiten números enteros. Inténtalo de nuevo.")
-
+            
+def vInt2(numero):
+    while True:
+        if numero.isdigit():
+            return int(numero)
+        else:
+            print("   Solo se permiten números enteros. Inténtalo de nuevo.")
 
 def vEmail(msg):
     while True:
@@ -97,7 +103,7 @@ def valTelefono():
         pattern = r"^\d{10}$"
         if re.fullmatch(pattern, telefono):
             print(f"{telefono}: Número válido ")
-            return telefono  # ✅ Devuelve el número correcto y termina la función
+            return telefono  
         else:
             print(f"{telefono}: Número inválido ")
             print(
@@ -196,3 +202,21 @@ def val_ven(expedicion):
 
         except ValueError:
             print("   Fecha inválida. Debes usar el formato aaaa-mm-dd (por ejemplo: 2028-03-15).")
+
+
+def _IntRange(msg: str, inf: int, sup: int):
+    while True:
+        opc = input(msg)
+
+        # Validación: solo dígitos
+        if not opc.isdigit():
+            print("\n   Solo números enteros.")
+            continue
+
+        opc_int = int(opc)
+
+        # Validación: rango
+        if inf <= opc_int <= sup:
+            return opc_int
+        else:
+            print(f"\n   Fuera de rango. Rango permitido: {inf} - {sup}")

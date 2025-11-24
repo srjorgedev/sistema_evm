@@ -16,6 +16,6 @@ class TableHeadWidget(QFrame):
         label = QLabel(text)     
         
         label.setStyleSheet("font-size: 18px; font-weight: normal; color: #f1f1f1;")
-        self.setStyleSheet("background-color: #17272f;")
+        self.setStyleSheet("background-color: transparent;")
         
         self.main_layout.addWidget(label)

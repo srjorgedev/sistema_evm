@@ -8,6 +8,9 @@ def listarVehiculos():
     print("- - - Listado de Vehiculos - - -")
     crudVehiculo.listarVehiculos()
     
+def listadoCorto():
+    return crudVehiculo.listaCorta()
+    
 def SolicitarDatos():
     print(" - - - Agregar Vehiculo - - - ")
     num_serie = val.vNumSerie("Ingresa el numero de serie del vehiculo: ")

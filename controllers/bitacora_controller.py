@@ -1,33 +1,67 @@
 import domain.bitacoras.CRUD as CRUD
 from domain.bitacoras.Clase import Bitacora
 import interface.bitacoras.Val as Val
+from utils.log import log
 
 def lista():
-    # print("Entré a FBitacora.lista")
+    log("[CTRL BIT]: Funcion -> LISTA GENERAL")
     try:
-        # print("Ejecutando CRUD.listaGeneral...")
+        log("[CTRL BIT]: Obteniendo datos del CRUD")
         resultado = CRUD.listaGeneral()
-        # print("Resultado:", resultado)
+        log("[CTRL BIT]: Datos obtenidos, retornando...")
         return resultado
     except Exception as e:
-        # print("ERROR dentro de lista():", e)
+        log("[CTRL BIT]: Ocurrió un error, retornando...")
         raise
     
-# Logica similar al de eliminar
-def archivar(data: Bitacora):
-    print("[CTRL BIT]: Funcion -> ARCHIVAR")
-    try: 
-        print("[CTRL BIT]: Iniciando...")
-        r = CRUD.archivar(data)
-        print("[CTRL BIT]: Terminado.")
-        print(f"[CTRL BIT]: Retorno -> {r}")
+def lista_archivados():
+    log("[CTRL BIT]: Funcion -> LISTA ARCHIVADOS")
+    try:
+        log("[CTRL BIT]: Obteniendo datos del CRUD")
+        resultado = CRUD.listaArchivados()
+        log("[CTRL BIT]: Datos obtenidos, retornando...")
+        return resultado
     except Exception as e:
-        print("[CTRL BIT]: Error ->")
-        print(e)
+        log("[CTRL BIT]: Ocurrió un error, retornando...")
+        raise
+    
+def lista_sin_entrada():
+    log("[CTRL BIT]: Funcion -> LISTA SIN ENTRADA")
+    try:
+        log("[CTRL BIT]: Obteniendo datos del CRUD")
+        resultado = CRUD.bitacoraSinEntrada()
+        log("[CTRL BIT]: Datos obtenidos, retornando...")
+        return resultado
+    except Exception as e:
+        log("[CTRL BIT]: Ocurrió un error, retornando...")
+        raise
+
+# Logica similar al de eliminar
+def archivar(data: int):
+    log("[CTRL BIT]: Funcion -> ARCHIVAR")
+    try: 
+        log("[CTRL BIT]: Iniciando...")
+        r = CRUD.archivar(data)
+        log("[CTRL BIT]: Terminado.")
+        log(f"[CTRL BIT]: Retorno -> {r}")
+    except Exception as e:
+        log("[CTRL BIT]: Error ->")
+        log(e)
+    
+def desarchivar(data: int):
+    log("[CTRL BIT]: Funcion -> DESARCHIVAR")
+    try: 
+        log("[CTRL BIT]: Iniciando...")
+        r = CRUD.desarchivar(data)
+        log("[CTRL BIT]: Terminado.")
+        log(f"[CTRL BIT]: Retorno -> {r}")
+    except Exception as e:
+        log("[CTRL BIT]: Error ->")
+        log(e)
     
 
 def registrarSalida():
-    print("   \n-- Registrar salida --")
+    log("   \n-- Registrar salida --")
 
     asunto = Val.Str("Asunto: ")
     destino = Val.Str("Destino: ")
@@ -42,26 +76,26 @@ def registrarSalida():
     lastid = CRUD.crearSalida(bitacora)
 
     if (lastid == -1):
-        print("   No se pudo registrar.")
+        log("   No se pudo registrar.")
         return
     else:
-        print("   Bitacora registrada.")
-    print()
+        log("   Bitacora registrada.")
+    log()
 
     bitacora.set_numControl(lastid)
 
-    print(bitacora)
+    log(bitacora)
 
 
 def registrarEntrada():
-    print("   \n-- Registrar entrada --")
+    log("   \n-- Registrar entrada --")
 
-    print("   Bitacoras sin entrada:")
+    log("   Bitacoras sin entrada:")
     bitacoras_sin_entrada = CRUD.bitacoraSinEntrada()
-    print()
+    log()
 
     if bitacoras_sin_entrada == 0:
-        print("   No hay bitacoras.")
+        log("   No hay bitacoras.")
         return
 
     numControl = Val.Int("Numero de control: ")
@@ -71,7 +105,7 @@ def registrarEntrada():
 
     existe = CRUD.existe(bitacora)
     if len(existe) == 0:
-        print(
+        log(
             f"No existe la bitacora con el numero de control {numControl}.\n")
         return
 
@@ -89,17 +123,17 @@ def registrarEntrada():
 
     rowcount = CRUD.crearEntrada(bitacora)
     if rowcount == -1:
-        print("   No se pudo registrar la entrada.")
+        log("   No se pudo registrar la entrada.")
         return
 
-    print(bitacora)
+    log(bitacora)
 
 
 def eliminar():
-    print("   \n-- Eliminar --")
-    print("   Bitacoras:")
+    log("   \n-- Eliminar --")
+    log("   Bitacoras:")
     bitacoras = CRUD.listaGeneral()
-    print()
+    log()
 
     numControl = Val.Int("Numero de control: ")
 
@@ -108,7 +142,7 @@ def eliminar():
 
     existe = CRUD.existe(bitacora)
     if len(existe) == 0:
-        print(
+        log(
             f"No existe la bitacora con el numero de control {numControl}.\n")
         return
 
@@ -116,19 +150,19 @@ def eliminar():
     if elegir:
         rowcount = CRUD.baja(bitacora)
         if rowcount == -1:
-            print("   No se pudo eliminar la bitacora.")
+            log("   No se pudo eliminar la bitacora.")
             return
 
-        print("   Bitacora eliminada.")
+        log("   Bitacora eliminada.")
     else:
-        print("   Eliminacion cancelada.")
-    print()
+        log("   Eliminacion cancelada.")
+    log()
 
 
 def modificar():
-    print("   \n-- Modificar destino --")
+    log("   \n-- Modificar destino --")
     bitacoras = CRUD.listaGeneral()
-    print()
+    log()
 
     numControl = Val.Int("Numero de control: ")
 
@@ -137,7 +171,7 @@ def modificar():
 
     existe = CRUD.existe(bitacora)
     if len(existe) == 0:
-        print(
+        log(
             f"No existe la bitacora con el numero de control {numControl}.\n")
         return
 
@@ -149,13 +183,13 @@ def modificar():
     if elegir:
         rowcount = CRUD.actualizarDestino(bitacora)
         if rowcount == -1:
-            print("   No se pudo actualizar la bitacora.")
+            log("   No se pudo actualizar la bitacora.")
             return
 
-        print("   Destino actualizado.")
+        log("   Destino actualizado.")
     else:
-        print("   Actualizacion cancelada.")
-    print()
+        log("   Actualizacion cancelada.")
+    log()
 
 
 def completar_objeto(bitacora: Bitacora, tupla):

@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QWidget, QLabel, QScrollArea, QVBoxLayout, QHBoxLayo
 from PyQt6.QtCore import Qt, pyqtSignal
 
 import controllers.bitacora_controller as FBitacora
+import controllers.user_controller as FUsuario
 
 from interface.components.bitacoras.bitacora_row import BitacoraRowWidget
 from interface.components.bitacoras.bitacora_row_archive import BitacoraArchivedRowWidget
@@ -13,10 +14,11 @@ from interface.components.modal import ModalWidget
 from interface.components.bitacoras.salida_form import SalidaFormWidget
 from interface.components.bitacoras.entrada_form import EntradaFormWidget
 from interface.components.table import TableWidget
+from interface.components.user_row import UserRowWidget
 
 from utils.log import log
 
-class BITScreenWidget(QWidget):
+class USERScreenWidget(QWidget):
     btn_archivar = pyqtSignal()
     
     notificar = pyqtSignal(str,str,str)
@@ -24,23 +26,23 @@ class BITScreenWidget(QWidget):
     def __init__(self):
         super().__init__()
         
-        table_headers = ["N°", "Asunto", "Destino", "Salida", "Entrada", "Acciones"] # Los titulos que tendra la tabla
+        table_headers = ["N°", "Nombre", "Rol", "Acciones"]
         
         # Creacion de elementos
-        self.main_layout = QVBoxLayout(self)                    # Contenedor vertical
-        label_titulo = QLabel("BITACORAS")                      # Texto
-        button_layout = QHBoxLayout()                           # Layout horizontal
-        label_subtitulo = QLabel("Panel de Control")            # Texto
-        label_buttons = QLabel("Acciones rapidas")              # Texto
+        self.main_layout = QVBoxLayout(self) 
+        label_titulo = QLabel("EMPLEADOS")
+        button_layout = QHBoxLayout()
+        label_subtitulo = QLabel("Panel de Control")
+        label_buttons = QLabel("Acciones rapidas")
         
         # Las tablas ahora estarán dentro de las pestañas
-        self.table = TableWidget(table_headers)              # Creamos una tabla y le pasamos los titulos
-        self.archivadas = TableWidget(table_headers)         # Creamos una tabla y le pasamos los titulos
+        self.table = BITTableWidget(table_headers)
+        self.archivadas = BITTableWidget(table_headers)
         
         # Creación del QTabWidget
         self.tabs = QTabWidget()
         self.tabs.addTab(self.table, "Registros Activos")
-        self.tabs.addTab(self.archivadas, "Registros Archivados")
+        # self.tabs.addTab(self.archivadas, "Registros Archivados")
 
         # Instancia del objeto para realizar operaciones con la BD en segundo plano.
         self.runner = TaskRunner(self)
@@ -49,35 +51,21 @@ class BITScreenWidget(QWidget):
         v_spacer = QSpacerItem(20, 24, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
         h_spacer = QSpacerItem(128, 16, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
         
-        # Botones genericos
-        # En ButtonWidget
-        # El primer parametro es el icono, es obligatorio, por ejemplo -> ""out"
-        # El segundo parametro es el texto, es obligorio, por ejemplo -> "Registrar salida"
-        # El tercer parametro es el color, es opcional, por ejemplo -> ColorKeys.ARCHIVAR
-        self.button_salida = ButtonWidget("out", "Registrar salida", ColorKeys.CREAR) 
-        self.button_entrada = ButtonWidget("in", "Registrar entrada", ColorKeys.CREAR) 
-        self.button_modificar = ButtonWidget("modify", "Modificar", ColorKeys.MODIFICAR) 
+        # Botones
+        self.button_salida = ButtonWidget("out", "Registrar salida", ColorKeys.CREAR)
+        self.button_entrada = ButtonWidget("in", "Registrar entrada", ColorKeys.CREAR)
+        self.button_modificar = ButtonWidget("modify", "Modificar", ColorKeys.MODIFICAR)
         self.button_archivar = ButtonWidget("archive", "Archivar", ColorKeys.ARCHIVAR)
-        # En SquareButtonWidget
-        # El primer parametro es el icono, es obligatorio.
-        # El segundo parametro es el color, es obligatorio.  
-        self.button_recargar = SquareButtonWidget("reload", "#f1f1f1") 
+        self.button_recargar = SquareButtonWidget("reload", "#f1f1f1")
         
         # Asignacion de atributos 
         self.main_layout.setContentsMargins(48, 52, 48, 0) 
         self.main_layout.setSpacing(0)
         
-        # Las ventanas modal o pop-up.
-        # En ModalWidget
-        # El primer parametro, es el elemento padre, self. Es obligatorio.
-        # El segundo parametro, es lo que aparecera dentro de la modal. Es obligatorio.
-        # El tercer parametro, es el titulo de la modal. Es opcional, aunque preferiblemente hay que ponerlo.
         self.modal_salida = ModalWidget(self, SalidaFormWidget(), "Crear un nuevo registro de salida")
         self.modal_entrada = ModalWidget(self, EntradaFormWidget(), "Crear un nuevo registro de entrada")
         
-        # Asignacion de eventos en los botones cuando se hace clic      
-        # Le asignamos funciones a los botones cuando se les hace clic.
-        # TODOS los botones tienen .clicked.connect  
+        # Asignacion de eventos en los botones cuando se hace clic        
         self.button_salida.clicked.connect(self.modal_salida.show_modal)
         self.button_entrada.clicked.connect(self.modal_entrada.show_modal)
         self.button_recargar.clicked.connect(self.handle_refresh)
@@ -116,7 +104,7 @@ class BITScreenWidget(QWidget):
         self.apply_tab_styles()
 
         # Llamamos a la funcion que pide los datos.
-        self.fetch_bitacoras()
+        self.fetch_usuarios()
         self.fetch_archivadas()
 
     def apply_tab_styles(self):
@@ -153,8 +141,8 @@ class BITScreenWidget(QWidget):
         self.tabs.setStyleSheet(style)
         
     # Funcion para pedir los datos 
-    def fetch_bitacoras(self):
-        log("[BITACORAS]: Iniciando fetch general...")
+    def fetch_usuarios(self):
+        log("[USUARIOS]: Iniciando fetch general...")
         # Llamar al objeto para hacer peticiones en segundo plano.
         # Esta funcion nos pide...
         # La funcion a ejecutar: func
@@ -163,14 +151,14 @@ class BITScreenWidget(QWidget):
         # Aqui no se utiliza, pero tambien esta args, para cuando se le pasen tuplas
         # tampoco se utiliza, kwargs, para cuando se le pasen objetos o clave = valor
         self.runner.run(
-            func=FBitacora.lista, 
+            func=FUsuario.lista_general, 
             on_success=lambda data: self.handle_data(data, self.table), 
             on_error=self.handle_error
         )
         
     # Funcion para pedir los datos 
     def fetch_archivadas(self):
-        log("[BITACORAS]: Iniciando fetch archivados...")
+        log("[USUARIOS]: Iniciando fetch archivados...")
         self.runner.run(
             func=FBitacora.lista_archivados, 
             on_success=lambda data: self.handle_data(data, self.archivadas), 
@@ -178,7 +166,7 @@ class BITScreenWidget(QWidget):
         )
 
     def handle_data(self, data: list[tuple], parent: BITTableWidget):
-        log(f"[BITACORAS]: Datos recibidos -> {len(data)} bitácoras.")
+        log(f"[USUARIOS]: Datos recibidos -> {len(data)} bitácoras.")
         
         parent.clearRows()
 
@@ -191,20 +179,16 @@ class BITScreenWidget(QWidget):
             parent.addRow(no_data_label)
         else:
             for bitacora in data:
-                if bitacora[5] == True:
-                    card = BitacoraRowWidget(bitacora) 
-                    card.btn_archivo.connect(self.handle_archivar)
-                elif bitacora[5] == False:
-                    card = BitacoraArchivedRowWidget(bitacora) 
-                    card.btn_archivo.connect(self.handle_desarchivar)
+                card = UserRowWidget(bitacora) 
+                card.btn_archivo.connect(self.handle_archivar)
                 parent.addRow(card)
 
     def handle_error(self, error_message):
-        log(f"[BITACORAS]: Error al hacer fetch -> {error_message}")
+        log(f"[USUARIOS]: Error al hacer fetch -> {error_message}")
         
     def handle_archivar(self, data: int):
-        log(f"[BITACORAS]: Iniciando proceso de archivado...")
-        log(f"[BITACORAS]: DATOS -> {data}")
+        log(f"[USUARIOS]: Iniciando proceso de archivado...")
+        log(f"[USUARIOS]: DATOS -> {data}")
         
         activado_por = self.sender()
         if activado_por: 
@@ -217,8 +201,8 @@ class BITScreenWidget(QWidget):
                         )
         
     def handle_desarchivar(self, data: int):
-        log(f"[BITACORAS]: Iniciando proceso de desarchivado...")
-        log(f"[BITACORAS]: DATOS -> {data}")
+        log(f"[USUARIOS]: Iniciando proceso de desarchivado...")
+        log(f"[USUARIOS]: DATOS -> {data}")
         
         activado_por = self.sender()
         if activado_por: 
@@ -236,12 +220,12 @@ class BITScreenWidget(QWidget):
         if boton:
             boton.setEnabled(True)
             
-        self.fetch_bitacoras()
+        self.fetch_usuarios()
         self.fetch_archivadas()
         
     def handle_refresh(self):
-        print("[BITACORAS]: Refrescando datos...")
-        self.fetch_bitacoras()
+        print("[USUARIOS]: Refrescando datos...")
+        self.fetch_usuarios()
         self.fetch_archivadas()
         
         self.notificar.emit("Recarga", "Datos recargados con exito", "#2ecc71") 
