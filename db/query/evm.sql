@@ -88,17 +88,19 @@ CREATE TABLE empleado (
     FOREIGN KEY (tipo_empleado) REFERENCES tipo_empleado(codigo)
 );
 
-SET FOREIGN_KEY_CHECKS = 0;
+/* SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE empleado;
 SET FOREIGN_KEY_CHECKS = 1;
 
-CREATE TABLE empleado(
+CREATE TABLE empleado (
     numero INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR (90) NOT NULL,
+    nombrePila VARCHAR(30) NOT NULL,
+    apdPaterno VARCHAR(20) NOT NULL,
+    apdMaterno VARCHAR(20),
     tipo_empleado VARCHAR(5) NOT NULL,
     FOREIGN KEY (tipo_empleado) REFERENCES tipo_empleado(codigo)
-);
-ALTER TABLE empleado ADD activo TINYINT(1) NOT NULL DEFAULT 1;
+); */
+
 ALTER TABLE empleado ADD COLUMN password_hash VARCHAR(255) NOT NULL;
 ALTER TABLE empleado ADD COLUMN email VARCHAR(100) NOT NULL;
 
