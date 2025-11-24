@@ -9,6 +9,8 @@ from PyQt6.QtSvgWidgets import QSvgWidget
 from utils.load_resource import ruta_svg
 from interface.components.sidemenu_button import MenuButtonWidget
 
+from interface.components.styles.general import COLORS, COLORS_LIST
+
 from utils.log import log
 
 datos_menu = [
@@ -42,7 +44,7 @@ class SidemenuWidget(QWidget):
         self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
         self.setAutoFillBackground(True)
         paleta = self.palette()
-        paleta.setColor(QPalette.ColorRole.Window, QColor("#131e24"))
+        paleta.setColor(QPalette.ColorRole.Window, QColor(COLORS_LIST[COLORS.SIDE_OSCURO_1]))
         self.setPalette(paleta)
 
         self.layout_vertical.setContentsMargins(0, 24, 0, 12)

@@ -1,10 +1,8 @@
-from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QSizePolicy, QWidget
+from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QWidget
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QCursor
 
-from domain.bitacoras.Clase import Bitacora
 from interface.components.square_button import SquareButtonWidget
-from interface.components.button import ButtonWidget
 
 class VehiculoCardWidget(QFrame):
     btn_archivo = pyqtSignal(object)
@@ -35,16 +33,19 @@ class VehiculoCardWidget(QFrame):
 
         acciones_layout.addWidget(modificar)
         acciones_layout.addWidget(archivar)
-        acciones_layout.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+        acciones_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        layout.setContentsMargins(8, 0, 8, 0)
 
         # Estilos
         lbl_style = "font-size: 18px; color: #f1f1f1; background: transparent;"
         lbl_strong = "font-size: 18px; color: #009AD3; font-weight: bold; background: transparent;"
 
+        self.setStyleSheet("VehiculoCardWidget {background-color: transparent;} VehiculoCardWidget:hover {background-color: #162229;}")
         # lbl_id.setStyleSheet(lbl_strong)
-        lbl_serie.setStyleSheet(lbl_style)
+        lbl_serie.setStyleSheet(lbl_strong)
         lbl_matricula.setStyleSheet(lbl_style)
         lbl_marca.setStyleSheet(lbl_style)
+        acciones.setStyleSheet("background: transparent;")
         
         # lbl_id.setFixedWidth(40)
         # lbl_id.setAlignment(Qt.AlignmentFlag.AlignCenter)

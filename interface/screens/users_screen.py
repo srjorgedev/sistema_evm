@@ -30,7 +30,7 @@ class USERScreenWidget(QWidget):
         super().__init__()
         
         table_headers = ["N°", "Nombre", "Rol", "Acciones"]
-        tipo_headers = ["N°", "Descripcion", "Acciones"]
+        tipo_headers = ["Codigo", "Descripcion", "Acciones"]
         
         # Creacion de elementos
         self.main_layout = QVBoxLayout(self) 
