@@ -440,3 +440,71 @@ def registrarLicencia(numEmpleado):
     print("\n   Licencia de chofer registrada correctamente.\n")
     return True
 
+
+
+def mostrar_choferes(conexion):
+    cursor = conexion.cursor()
+
+    query = """
+   SELECT e.nombre as Nombre,
+    te.descripcion as "Tipo de empleado", -- "
+    l.numero as "Numero de licencia", -- "
+    tl.codigo as "Clase de licencia", -- "
+    l.fechaExpedicion as "Fecha de expedicion", -- "
+    l.fechaVencimiento as "Fecha de vencimiento" -- "
+    from empleado as e
+    inner join tipo_empleado as te on e.tipo_empleado = te.codigo
+    inner join licencia as l on e.numero = l.empleado
+    inner join tipo_licencia as tl on l.tipo_licencia = tl.numero
+    where te.descripcion = 'Chofer'
+    """
+
+    cursor.execute(query)
+    resultados = cursor.fetchall()
+
+    print("\n=== LISTA DE CHOFERES ===\n")
+
+    if len(resultados) == 0:
+        print("No hay choferes registrados.")
+    else:
+        for fila in resultados:
+            print(f"Nombre: {fila[0]}")
+            print(f"Tipo de empleado: {fila[1]}")
+            print(f"Número de licencia: {fila[2]}")
+            print(f"Clase de licencia: {fila[3]}")
+            print(f"Fecha de expedición: {fila[4]}")
+            print(f"Fecha de vencimiento: {fila[5]}")
+            print("-" * 40)  # separador limpio
+
+    cursor.close()
+
+
+
+def empleados_contactos(conexion):
+    cursor = conexion.cursor()
+
+    query = """
+    SELECT e.numero as Numero,
+    e.nombre as Nombre,
+    e.email as "Correo Electronico", -- "
+    t.numTelefono as "Numero Telefonico" -- "
+    from empleado as e
+    inner join telefono as t on t.empleado = e.numero
+    """
+
+    cursor.execute(query)
+    resultados = cursor.fetchall()
+
+    print("\n=== LISTA DE EMPLEADOS Y SUS CONTACTOS ===\n")
+
+    if len(resultados) == 0:
+        print("No hay empleados registrados.")
+    else:
+        for fila in resultados:
+            print(f"Numero de Empleado: {fila[0]}")
+            print(f"Nombre: {fila[1]}")
+            print(f"Correo Electronico: {fila[2]}")
+            print(f"Numero Telefonico: {fila[3]}")
+            print("-" * 40)
+
+    cursor.close()

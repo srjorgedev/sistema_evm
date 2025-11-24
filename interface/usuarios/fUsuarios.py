@@ -1,3 +1,4 @@
+import mysql
 from domain.usuarios.ClaseUsuarios import Usuario, TipoEmpleado, Telefono, Licencia, TipoLicencia
 import domain.usuarios.crudUsers as crudUsers
 from interface.usuarios.Menu import _Tipos, _Usuarios
@@ -6,6 +7,13 @@ from interface.usuarios.Menu import datos
 from interface.usuarios import val
 import random
 import bcrypt
+
+conexion = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="",
+    database="evm_db"
+)
 
 '''
 ////Codigo verificacion de hash de password
@@ -185,14 +193,21 @@ def createUser():
             crudUsers.Create2(newUser, newTipo, newTel)
 
 
-def selectUser():
-    print("   Listado de Usuarios: ")
-    print()
-    crudUsers.Select()
-    numEmpleado = val.vInt("Ingrese el numero de Empeleado del empleado: ")
-    oldUser = Usuario("", "", "", "", "", numEmpleado, "")
-    crudUsers.selectInd(oldUser)
-
+def selectChofer():
+    crudUsers.mostrar_choferes(conexion)
+    desMod = input(" Desea modificar algun chofer? (s/n): ").strip().lower()
+    if desMod == "s":
+        updateUser()
+    else:
+        print("   Saliendo del Menu de Choferes...")
+    
+def empleados_contactos():
+    crudUsers.empleados_contactos(conexion)
+    desMod2 = input(" Desea modificar algun contacto? (s/n): ").strip().lower()
+    if desMod2 == "s":
+        updateUser()
+    else:
+        print("   Saliendo del Menu de Contactos...") 
 
 def updateUser():
     print("   Actualizar Usuario: ")
