@@ -13,7 +13,7 @@ from interface.components.data_fetch import TaskRunner
 from interface.components.modal import ModalWidget
 from interface.components.bitacoras.salida_form import SalidaFormWidget
 from interface.components.bitacoras.entrada_form import EntradaFormWidget
-from interface.components.bitacoras.bitacora_table import BITTableWidget
+from interface.components.table import TableWidget
 from interface.components.user_row import UserRowWidget
 
 from utils.log import log

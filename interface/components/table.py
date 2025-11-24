@@ -5,7 +5,7 @@ from interface.components.table_head import TableHeadWidget
 
 from interface.components.styles.table_style import scrollbar_style, scroll_widget_style, scroll_area_style
 
-class BITTableWidget(QFrame):
+class TableWidget(QFrame):
     def __init__(self, headers: list[str] = None):
         super().__init__()
         

@@ -12,7 +12,7 @@ from interface.components.data_fetch import TaskRunner
 from interface.components.modal import ModalWidget
 from interface.components.bitacoras.salida_form import SalidaFormWidget
 from interface.components.bitacoras.entrada_form import EntradaFormWidget
-from interface.components.bitacoras.bitacora_table import BITTableWidget
+from interface.components.table import TableWidget
 
 from utils.log import log
 
@@ -24,18 +24,18 @@ class BITScreenWidget(QWidget):
     def __init__(self):
         super().__init__()
         
-        table_headers = ["N°", "Asunto", "Destino", "Salida", "Entrada", "Acciones"]
+        table_headers = ["N°", "Asunto", "Destino", "Salida", "Entrada", "Acciones"] # Los titulos que tendra la tabla
         
         # Creacion de elementos
-        self.main_layout = QVBoxLayout(self) # <-- CAMBIO: QVBoxLayout
-        label_titulo = QLabel("BITACORAS")
-        button_layout = QHBoxLayout()
-        label_subtitulo = QLabel("Panel de Control")
-        label_buttons = QLabel("Acciones rapidas")
+        self.main_layout = QVBoxLayout(self)                    # Contenedor vertical
+        label_titulo = QLabel("BITACORAS")                      # Texto
+        button_layout = QHBoxLayout()                           # Layout horizontal
+        label_subtitulo = QLabel("Panel de Control")            # Texto
+        label_buttons = QLabel("Acciones rapidas")              # Texto
         
         # Las tablas ahora estarán dentro de las pestañas
-        self.table = BITTableWidget(table_headers)
-        self.archivadas = BITTableWidget(table_headers)
+        self.table = TableWidget(table_headers)              # Creamos una tabla y le pasamos los titulos
+        self.archivadas = TableWidget(table_headers)         # Creamos una tabla y le pasamos los titulos
         
         # Creación del QTabWidget
         self.tabs = QTabWidget()
@@ -49,21 +49,35 @@ class BITScreenWidget(QWidget):
         v_spacer = QSpacerItem(20, 24, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
         h_spacer = QSpacerItem(128, 16, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
         
-        # Botones
-        self.button_salida = ButtonWidget("out", "Registrar salida", ColorKeys.CREAR)
-        self.button_entrada = ButtonWidget("in", "Registrar entrada", ColorKeys.CREAR)
-        self.button_modificar = ButtonWidget("modify", "Modificar", ColorKeys.MODIFICAR)
+        # Botones genericos
+        # En ButtonWidget
+        # El primer parametro es el icono, es obligatorio, por ejemplo -> ""out"
+        # El segundo parametro es el texto, es obligorio, por ejemplo -> "Registrar salida"
+        # El tercer parametro es el color, es opcional, por ejemplo -> ColorKeys.ARCHIVAR
+        self.button_salida = ButtonWidget("out", "Registrar salida", ColorKeys.CREAR) 
+        self.button_entrada = ButtonWidget("in", "Registrar entrada", ColorKeys.CREAR) 
+        self.button_modificar = ButtonWidget("modify", "Modificar", ColorKeys.MODIFICAR) 
         self.button_archivar = ButtonWidget("archive", "Archivar", ColorKeys.ARCHIVAR)
-        self.button_recargar = SquareButtonWidget("reload", "#f1f1f1")
+        # En SquareButtonWidget
+        # El primer parametro es el icono, es obligatorio.
+        # El segundo parametro es el color, es obligatorio.  
+        self.button_recargar = SquareButtonWidget("reload", "#f1f1f1") 
         
         # Asignacion de atributos 
         self.main_layout.setContentsMargins(48, 52, 48, 0) 
         self.main_layout.setSpacing(0)
         
+        # Las ventanas modal o pop-up.
+        # En ModalWidget
+        # El primer parametro, es el elemento padre, self. Es obligatorio.
+        # El segundo parametro, es lo que aparecera dentro de la modal. Es obligatorio.
+        # El tercer parametro, es el titulo de la modal. Es opcional, aunque preferiblemente hay que ponerlo.
         self.modal_salida = ModalWidget(self, SalidaFormWidget(), "Crear un nuevo registro de salida")
         self.modal_entrada = ModalWidget(self, EntradaFormWidget(), "Crear un nuevo registro de entrada")
         
-        # Asignacion de eventos en los botones cuando se hace clic        
+        # Asignacion de eventos en los botones cuando se hace clic      
+        # Le asignamos funciones a los botones cuando se les hace clic.
+        # TODOS los botones tienen .clicked.connect  
         self.button_salida.clicked.connect(self.modal_salida.show_modal)
         self.button_entrada.clicked.connect(self.modal_entrada.show_modal)
         self.button_recargar.clicked.connect(self.handle_refresh)

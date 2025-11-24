@@ -10,3 +10,4 @@ def log(msg: str):
         new_text = msg
         
     print(new_text)
+
