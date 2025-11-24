@@ -3,7 +3,6 @@ from PyQt6.QtCore import Qt, pyqtSignal
 
 import controllers.bitacora_controller as FBitacora
 import controllers.user_controller as FUsuario
-import controllers.vehiculo_controller as FVehiculo
 
 from interface.components.bitacoras.bitacora_row import BitacoraRowWidget
 from interface.components.bitacoras.bitacora_row_archive import BitacoraArchivedRowWidget
@@ -16,11 +15,10 @@ from interface.components.bitacoras.salida_form import SalidaFormWidget
 from interface.components.bitacoras.entrada_form import EntradaFormWidget
 from interface.components.table import TableWidget
 from interface.components.user_row import UserRowWidget
-from interface.components.vehiculo_row import VehiculoCardWidget
 
 from utils.log import log
 
-class VEHIScreenWidget(QWidget):
+class SOLIScreenWidget(QWidget):
     btn_archivar = pyqtSignal()
     
     notificar = pyqtSignal(str,str,str)
@@ -28,11 +26,11 @@ class VEHIScreenWidget(QWidget):
     def __init__(self):
         super().__init__()
         
-        table_headers = ["N° Serie", "Matricula", "Marca", "Acciones"]
+        table_headers = ["Estados"]
         
         # Creacion de elementos
         self.main_layout = QVBoxLayout(self) 
-        label_titulo = QLabel("VEHICULOS")
+        label_titulo = QLabel("SOLICITUDES")
         button_layout = QHBoxLayout()
         label_subtitulo = QLabel("Panel de Control")
         label_buttons = QLabel("Acciones rapidas")
@@ -43,7 +41,7 @@ class VEHIScreenWidget(QWidget):
         
         # Creación del QTabWidget
         self.tabs = QTabWidget()
-        self.tabs.addTab(self.table, "Vehiculos registrados")
+        self.tabs.addTab(self.table, "Empleados registrados")
         # self.tabs.addTab(self.archivadas, "Registros Archivados")
 
         # Instancia del objeto para realizar operaciones con la BD en segundo plano.
@@ -68,7 +66,7 @@ class VEHIScreenWidget(QWidget):
         
         # Asignacion de eventos en los botones cuando se hace clic        
         self.button_agregar.clicked.connect(self.modal_salida.show_modal)
-        # self.button_recargar.clicked.connect(self.handle_refresh)
+        self.button_recargar.clicked.connect(self.handle_refresh)
         
         # Asignacion de estilos
         label_titulo.setStyleSheet("font-size: 48px; font-weight: bold; color: white;")
@@ -103,7 +101,8 @@ class VEHIScreenWidget(QWidget):
         self.apply_tab_styles()
 
         # Llamamos a la funcion que pide los datos.
-        self.fetch_vehiculos()
+        self.fetch_usuarios()
+        self.fetch_archivadas()
 
     def apply_tab_styles(self):
         style = """
@@ -139,8 +138,8 @@ class VEHIScreenWidget(QWidget):
         self.tabs.setStyleSheet(style)
         
     # Funcion para pedir los datos 
-    def fetch_vehiculos(self):
-        log("[VEHICULOS]: Iniciando fetch general...")
+    def fetch_usuarios(self):
+        log("[USUARIOS]: Iniciando fetch general...")
         # Llamar al objeto para hacer peticiones en segundo plano.
         # Esta funcion nos pide...
         # La funcion a ejecutar: func
@@ -149,18 +148,27 @@ class VEHIScreenWidget(QWidget):
         # Aqui no se utiliza, pero tambien esta args, para cuando se le pasen tuplas
         # tampoco se utiliza, kwargs, para cuando se le pasen objetos o clave = valor
         self.runner.run(
-            func=FVehiculo.lista_general, 
+            func=FUsuario.lista_general, 
             on_success=lambda data: self.handle_data(data, self.table), 
             on_error=self.handle_error
         )
         
+    # Funcion para pedir los datos 
+    def fetch_archivadas(self):
+        log("[USUARIOS]: Iniciando fetch archivados...")
+        self.runner.run(
+            func=FBitacora.lista_archivados, 
+            on_success=lambda data: self.handle_data(data, self.archivadas), 
+            on_error=self.handle_error
+        )
+
     def handle_data(self, data: list[tuple], parent: TableWidget):
-        log(f"[VEHICULOS]: Datos recibidos -> {len(data)} VEHICULOS.")
+        log(f"[USUARIOS]: Datos recibidos -> {len(data)} bitácoras.")
         
         parent.clearRows()
 
         if not data:
-            no_data_label = QLabel("No hay vehiculos para mostrar.")
+            no_data_label = QLabel("No hay bitácoras para mostrar.")
             no_data_label.setStyleSheet("background-color: transparent; font-size: 16px; color: #888888;")
             no_data_label.setContentsMargins(0, 16, 0, 0)
             
@@ -168,9 +176,53 @@ class VEHIScreenWidget(QWidget):
             parent.addRow(no_data_label)
         else:
             for bitacora in data:
-                card = VehiculoCardWidget(bitacora) 
-                card.btn_archivo.connect(lambda: print("HI"))
-                parent.addRow(card)   
-        
+                card = UserRowWidget(bitacora) 
+                card.btn_archivo.connect(self.handle_archivar)
+                parent.addRow(card)
+
     def handle_error(self, error_message):
-        log(f"[VEHICULOS]: Error al hacer fetch -> {error_message}")
+        log(f"[USUARIOS]: Error al hacer fetch -> {error_message}")
+        
+    def handle_archivar(self, data: int):
+        log(f"[USUARIOS]: Iniciando proceso de archivado...")
+        log(f"[USUARIOS]: DATOS -> {data}")
+        
+        activado_por = self.sender()
+        if activado_por: 
+            activado_por.setEnabled(False)
+            
+        self.runner.run(FBitacora.archivar, 
+                        lambda c: self.on_archivado_finalizado(activado_por), 
+                        lambda: activado_por.setEnabled(True) if activado_por else None,
+                        data
+                        )
+        
+    def handle_desarchivar(self, data: int):
+        log(f"[USUARIOS]: Iniciando proceso de desarchivado...")
+        log(f"[USUARIOS]: DATOS -> {data}")
+        
+        activado_por = self.sender()
+        if activado_por: 
+            activado_por.setEnabled(False)
+            
+        self.runner.run(FBitacora.desarchivar, 
+                        lambda c: self.on_archivado_finalizado(activado_por), 
+                        lambda: activado_por.setEnabled(True) if activado_por else None,
+                        data
+                        )
+
+    def on_archivado_finalizado(self, boton):
+        self.notificar.emit("Archivado", "Bitacora archivada exitosamente", "#2ecc71") 
+        
+        if boton:
+            boton.setEnabled(True)
+            
+        self.fetch_usuarios()
+        self.fetch_archivadas()
+        
+    def handle_refresh(self):
+        print("[USUARIOS]: Refrescando datos...")
+        self.fetch_usuarios()
+        self.fetch_archivadas()
+        
+        self.notificar.emit("Recarga", "Datos recargados con exito", "#2ecc71") 

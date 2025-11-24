@@ -15,6 +15,9 @@ from interface.components.bitacoras.salida_form import SalidaFormWidget
 from interface.components.bitacoras.entrada_form import EntradaFormWidget
 from interface.components.table import TableWidget
 from interface.components.user_row import UserRowWidget
+from interface.components.tipo_row import TypeRowWidget
+from interface.components.nuevo_user_form import NewUserFormWidget
+import controllers.user_controller as FUser
 
 from utils.log import log
 
@@ -27,6 +30,7 @@ class USERScreenWidget(QWidget):
         super().__init__()
         
         table_headers = ["N°", "Nombre", "Rol", "Acciones"]
+        tipo_headers = ["N°", "Descripcion", "Acciones"]
         
         # Creacion de elementos
         self.main_layout = QVBoxLayout(self) 
@@ -37,11 +41,12 @@ class USERScreenWidget(QWidget):
         
         # Las tablas ahora estarán dentro de las pestañas
         self.table = TableWidget(table_headers)
-        self.archivadas = TableWidget(table_headers)
+        self.tipos_table = TableWidget(tipo_headers)
         
         # Creación del QTabWidget
         self.tabs = QTabWidget()
         self.tabs.addTab(self.table, "Empleados registrados")
+        self.tabs.addTab(self.tipos_table, "Tipos de empleados")
         # self.tabs.addTab(self.archivadas, "Registros Archivados")
 
         # Instancia del objeto para realizar operaciones con la BD en segundo plano.
@@ -61,12 +66,10 @@ class USERScreenWidget(QWidget):
         self.main_layout.setContentsMargins(48, 52, 48, 0) 
         self.main_layout.setSpacing(0)
         
-        self.modal_salida = ModalWidget(self, SalidaFormWidget(), "Crear un nuevo registro de salida")
-        self.modal_entrada = ModalWidget(self, EntradaFormWidget(), "Crear un nuevo registro de entrada")
+        self.modal_salida = ModalWidget(self, NewUserFormWidget(), "Registrar un nuevo usuario.")
         
         # Asignacion de eventos en los botones cuando se hace clic        
         self.button_agregar.clicked.connect(self.modal_salida.show_modal)
-        self.button_recargar.clicked.connect(self.handle_refresh)
         
         # Asignacion de estilos
         label_titulo.setStyleSheet("font-size: 48px; font-weight: bold; color: white;")
@@ -97,12 +100,11 @@ class USERScreenWidget(QWidget):
         self.main_layout.addWidget(self.tabs)
         self.main_layout.addSpacerItem(v_spacer)
 
-        # Aplicamos los estilos a las pestañas
         self.apply_tab_styles()
 
         # Llamamos a la funcion que pide los datos.
         self.fetch_usuarios()
-        self.fetch_archivadas()
+        self.fetch_tipos_empleado()
 
     def apply_tab_styles(self):
         style = """
@@ -137,6 +139,14 @@ class USERScreenWidget(QWidget):
         """
         self.tabs.setStyleSheet(style)
         
+    def fetch_tipos_empleado(self):
+        log("[USUARIOS]: Iniciando fetch de tipos...")
+        self.runner.run(
+            func=FUser.lista_tipos,
+            on_success= lambda a: self.handle_tipos(a, self.tipos_table),
+            on_error=lambda e: log(f"[USUARIOS]: Error -> {e}")
+            )
+        
     # Funcion para pedir los datos 
     def fetch_usuarios(self):
         log("[USUARIOS]: Iniciando fetch general...")
@@ -152,15 +162,6 @@ class USERScreenWidget(QWidget):
             on_success=lambda data: self.handle_data(data, self.table), 
             on_error=self.handle_error
         )
-        
-    # Funcion para pedir los datos 
-    def fetch_archivadas(self):
-        log("[USUARIOS]: Iniciando fetch archivados...")
-        self.runner.run(
-            func=FBitacora.lista_archivados, 
-            on_success=lambda data: self.handle_data(data, self.archivadas), 
-            on_error=self.handle_error
-        )
 
     def handle_data(self, data: list[tuple], parent: TableWidget):
         log(f"[USUARIOS]: Datos recibidos -> {len(data)} bitácoras.")
@@ -168,7 +169,7 @@ class USERScreenWidget(QWidget):
         parent.clearRows()
 
         if not data:
-            no_data_label = QLabel("No hay bitácoras para mostrar.")
+            no_data_label = QLabel("No hay empleados para mostrar.")
             no_data_label.setStyleSheet("background-color: transparent; font-size: 16px; color: #888888;")
             no_data_label.setContentsMargins(0, 16, 0, 0)
             
@@ -177,52 +178,26 @@ class USERScreenWidget(QWidget):
         else:
             for bitacora in data:
                 card = UserRowWidget(bitacora) 
-                card.btn_archivo.connect(self.handle_archivar)
+                card.btn_archivo.connect(lambda: print("HI"))
+                parent.addRow(card)
+    
+    def handle_tipos(self, data: list[tuple], parent: TableWidget):
+        log(f"[USUARIOS]: Datos recibidos -> {len(data)} bitácoras.")
+        
+        parent.clearRows()
+
+        if not data:
+            no_data_label = QLabel("No hay tipos para mostrar.")
+            no_data_label.setStyleSheet("background-color: transparent; font-size: 16px; color: #888888;")
+            no_data_label.setContentsMargins(0, 16, 0, 0)
+            
+            no_data_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            parent.addRow(no_data_label)
+        else:
+            for bitacora in data:
+                card = TypeRowWidget(bitacora) 
+                card.btn_archivo.connect(lambda: print("HI"))
                 parent.addRow(card)
 
     def handle_error(self, error_message):
         log(f"[USUARIOS]: Error al hacer fetch -> {error_message}")
-        
-    def handle_archivar(self, data: int):
-        log(f"[USUARIOS]: Iniciando proceso de archivado...")
-        log(f"[USUARIOS]: DATOS -> {data}")
-        
-        activado_por = self.sender()
-        if activado_por: 
-            activado_por.setEnabled(False)
-            
-        self.runner.run(FBitacora.archivar, 
-                        lambda c: self.on_archivado_finalizado(activado_por), 
-                        lambda: activado_por.setEnabled(True) if activado_por else None,
-                        data
-                        )
-        
-    def handle_desarchivar(self, data: int):
-        log(f"[USUARIOS]: Iniciando proceso de desarchivado...")
-        log(f"[USUARIOS]: DATOS -> {data}")
-        
-        activado_por = self.sender()
-        if activado_por: 
-            activado_por.setEnabled(False)
-            
-        self.runner.run(FBitacora.desarchivar, 
-                        lambda c: self.on_archivado_finalizado(activado_por), 
-                        lambda: activado_por.setEnabled(True) if activado_por else None,
-                        data
-                        )
-
-    def on_archivado_finalizado(self, boton):
-        self.notificar.emit("Archivado", "Bitacora archivada exitosamente", "#2ecc71") 
-        
-        if boton:
-            boton.setEnabled(True)
-            
-        self.fetch_usuarios()
-        self.fetch_archivadas()
-        
-    def handle_refresh(self):
-        print("[USUARIOS]: Refrescando datos...")
-        self.fetch_usuarios()
-        self.fetch_archivadas()
-        
-        self.notificar.emit("Recarga", "Datos recargados con exito", "#2ecc71") 

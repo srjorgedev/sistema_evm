@@ -1,20 +1,62 @@
+from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QSizePolicy, QWidget
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtGui import QCursor
 
-from PyQt6.QtWidgets import QWidget, QLabel, QHBoxLayout
+from domain.bitacoras.Clase import Bitacora
+from interface.components.square_button import SquareButtonWidget
+from interface.components.button import ButtonWidget
 
-class VehiculoCardWidget(QWidget):
-    def __init__(self, vehiculo):
+class VehiculoCardWidget(QFrame):
+    btn_archivo = pyqtSignal(object)
+    btn_modificar = pyqtSignal()
+    
+    def __init__(self, data: tuple):
         super().__init__()
+        self.data = data  # (serie, matricula, marca)
+        
+        self.setAttribute(Qt.WidgetAttribute.WA_Hover, True)
+        self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
         layout = QHBoxLayout(self)
 
-        layout.addWidget(QLabel(f"Marca: {vehiculo.get_marca()}"))
-        layout.addWidget(QLabel(f"Modelo: {vehiculo.get_modelo()}"))
-        layout.addWidget(QLabel(f"Placa: {vehiculo.get_matricula()}"))
+        # lbl_id = QLabel(f"#{self.data[0]}")
+        lbl_serie = QLabel(self.data[0])       # serie
+        lbl_matricula = QLabel(self.data[1])   # matrícula
+        lbl_marca = QLabel(self.data[2])       # marca
+        
+        acciones = QWidget()
+        acciones_layout = QHBoxLayout(acciones)
 
+        # Botones
+        modificar = SquareButtonWidget("modify", "#1f4355", 32)
+        archivar = SquareButtonWidget("archive", "#1f4355", 32)
 
-        self.setStyleSheet("""
-            background-color: #2b2b2b;
-            border-radius: 8px;
-            padding: 10px;
-            color: white;
-        """)
+        archivar.clicked.connect(self.emit_archivar)
+
+        acciones_layout.addWidget(modificar)
+        acciones_layout.addWidget(archivar)
+        acciones_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+
+        # Estilos
+        lbl_style = "font-size: 18px; color: #f1f1f1; background: transparent;"
+        lbl_strong = "font-size: 18px; color: #009AD3; font-weight: bold; background: transparent;"
+
+        # lbl_id.setStyleSheet(lbl_strong)
+        lbl_serie.setStyleSheet(lbl_style)
+        lbl_matricula.setStyleSheet(lbl_style)
+        lbl_marca.setStyleSheet(lbl_style)
+        
+        # lbl_id.setFixedWidth(40)
+        # lbl_id.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.setFixedHeight(56)
+
+        # Armado final
+        # layout.addWidget(lbl_id)
+        layout.addWidget(lbl_serie, 1)
+        layout.addWidget(lbl_matricula, 1)
+        layout.addWidget(lbl_marca, 1)
+        layout.addWidget(acciones, 1)
+
+    def emit_archivar(self):
+        self.btn_archivo.emit(self.data[0])

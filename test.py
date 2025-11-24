@@ -5,7 +5,7 @@ import interface.bitacoras.Menu as _Bitacoras
 from controllers import bitacora_controller
 
 import interface.vehiculos.Menu as _Vehiculos
-from interface.vehiculos import fVehiculo
+from controllers import fVehiculo
 
 import interface.Menu as Menu
 import interface.Val as Val
