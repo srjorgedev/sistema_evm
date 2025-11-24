@@ -139,7 +139,7 @@ class USERScreenWidget(QWidget):
         
     # Funcion para pedir los datos 
     def fetch_usuarios(self):
-        log("[USUARIOS]: Iniciando fetch general...")
+        log("[usuarios]: Iniciando fetch general...")
         # Llamar al objeto para hacer peticiones en segundo plano.
         # Esta funcion nos pide...
         # La funcion a ejecutar: func
@@ -153,76 +153,4 @@ class USERScreenWidget(QWidget):
             on_error=self.handle_error
         )
         
-    # Funcion para pedir los datos 
-    def fetch_archivadas(self):
-        log("[USUARIOS]: Iniciando fetch archivados...")
-        self.runner.run(
-            func=FBitacora.lista_archivados, 
-            on_success=lambda data: self.handle_data(data, self.archivadas), 
-            on_error=self.handle_error
-        )
-
-    def handle_data(self, data: list[tuple], parent: TableWidget):
-        log(f"[USUARIOS]: Datos recibidos -> {len(data)} bitácoras.")
-        
-        parent.clearRows()
-
-        if not data:
-            no_data_label = QLabel("No hay bitácoras para mostrar.")
-            no_data_label.setStyleSheet("background-color: transparent; font-size: 16px; color: #888888;")
-            no_data_label.setContentsMargins(0, 16, 0, 0)
-            
-            no_data_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            parent.addRow(no_data_label)
-        else:
-            for bitacora in data:
-                card = UserRowWidget(bitacora) 
-                card.btn_archivo.connect(self.handle_archivar)
-                parent.addRow(card)
-
-    def handle_error(self, error_message):
-        log(f"[USUARIOS]: Error al hacer fetch -> {error_message}")
-        
-    def handle_archivar(self, data: int):
-        log(f"[USUARIOS]: Iniciando proceso de archivado...")
-        log(f"[USUARIOS]: DATOS -> {data}")
-        
-        activado_por = self.sender()
-        if activado_por: 
-            activado_por.setEnabled(False)
-            
-        self.runner.run(FBitacora.archivar, 
-                        lambda c: self.on_archivado_finalizado(activado_por), 
-                        lambda: activado_por.setEnabled(True) if activado_por else None,
-                        data
-                        )
-        
-    def handle_desarchivar(self, data: int):
-        log(f"[USUARIOS]: Iniciando proceso de desarchivado...")
-        log(f"[USUARIOS]: DATOS -> {data}")
-        
-        activado_por = self.sender()
-        if activado_por: 
-            activado_por.setEnabled(False)
-            
-        self.runner.run(FBitacora.desarchivar, 
-                        lambda c: self.on_archivado_finalizado(activado_por), 
-                        lambda: activado_por.setEnabled(True) if activado_por else None,
-                        data
-                        )
-
-    def on_archivado_finalizado(self, boton):
-        self.notificar.emit("Archivado", "Bitacora archivada exitosamente", "#2ecc71") 
-        
-        if boton:
-            boton.setEnabled(True)
-            
-        self.fetch_usuarios()
-        self.fetch_archivadas()
-        
-    def handle_refresh(self):
-        print("[USUARIOS]: Refrescando datos...")
-        self.fetch_usuarios()
-        self.fetch_archivadas()
-        
-        self.notificar.emit("Recarga", "Datos recargados con exito", "#2ecc71") 
+  

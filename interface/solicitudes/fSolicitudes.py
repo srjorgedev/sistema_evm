@@ -1,4 +1,4 @@
-from solicitudes import crudSolicitudes
+from domain.solicitudes import crudSolicitudes
 from domain.solicitudes.ClaseSolicitudes import Solicitud
 from solicitudes import val
 from db.connV import conn
