@@ -32,7 +32,7 @@ class EntradaFormWidget(QWidget):
         self.scroll_area = QScrollArea()
         self.content_widget = QWidget()
         self.layout_v = QVBoxLayout(self.content_widget)
-        self.select_ = SelectWidget("La entrada pertenece a la bitacora *")
+        self.select_ = SelectWidget("La entrada pertenece a la bitacora *", "Seleccione una bitacora...")
         self.observaciones = QVBoxLayout()
         self.btn_add_obs = ButtonWidget("add", "Agregar Observación", ColorKeys.BASE)
         layout_h = QHBoxLayout()
@@ -41,13 +41,15 @@ class EntradaFormWidget(QWidget):
         gas_entrada = InputWidget("Litros de gasolina al entrar *", r"^[0-9]+.?[0-9]*$")
         v_spacer = QSpacerItem(20, 16, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
         observaciones_label = QLabel("Registrar observaciones (opcional)")
+        crear_button = ButtonWidget("ok", "Continuar", ColorKeys.CREAR)
     
         self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setFrameShape(QFrame.Shape.NoFrame)
     
         layout_h.setSpacing(8)
+        
         self.main_layout.setContentsMargins(0, 0, 0, 0)
-        self.layout_v.setContentsMargins(0, 0, 10, 0) 
+        self.layout_v.setContentsMargins(0, 0, 10, 24)
         self.layout_v.setSpacing(0) 
         self.main_layout.setSpacing(0)
         
@@ -56,7 +58,7 @@ class EntradaFormWidget(QWidget):
         desc.setStyleSheet("font-size: 16px; font-weight: normal; color: #c1c1c1;")
         observaciones_label.setStyleSheet("font-size: 16px; font-weight: normal; color: #f1f1f1;")
         
-        self.select_.change.connect(lambda e: print(f"Cambió a: {e}"))
+        self.select_.change.connect(lambda e: log(f"[ENTRADA FORM]: Bitacora -> {e}"))
         self.btn_add_obs.clicked.connect(self.agregar_observacion)
         
         self.observaciones.setSpacing(8)
@@ -75,6 +77,8 @@ class EntradaFormWidget(QWidget):
         self.layout_v.addWidget(self.btn_add_obs)
         self.layout_v.addItem(v_spacer)
         self.layout_v.addLayout(self.observaciones)
+        self.layout_v.addItem(v_spacer)
+        self.layout_v.addWidget(crear_button)
         
         self.layout_v.addStretch()
         
