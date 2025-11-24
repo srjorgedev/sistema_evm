@@ -24,7 +24,17 @@ def lista_archivados():
     except Exception as e:
         log("[CTRL BIT]: Ocurrió un error, retornando...")
         raise
-        
+    
+def lista_sin_entrada():
+    log("[CTRL BIT]: Funcion -> LISTA SIN ENTRADA")
+    try:
+        log("[CTRL BIT]: Obteniendo datos del CRUD")
+        resultado = CRUD.bitacoraSinEntrada()
+        log("[CTRL BIT]: Datos obtenidos, retornando...")
+        return resultado
+    except Exception as e:
+        log("[CTRL BIT]: Ocurrió un error, retornando...")
+        raise
 
 # Logica similar al de eliminar
 def archivar(data: int):
@@ -32,6 +42,17 @@ def archivar(data: int):
     try: 
         log("[CTRL BIT]: Iniciando...")
         r = CRUD.archivar(data)
+        log("[CTRL BIT]: Terminado.")
+        log(f"[CTRL BIT]: Retorno -> {r}")
+    except Exception as e:
+        log("[CTRL BIT]: Error ->")
+        log(e)
+    
+def desarchivar(data: int):
+    log("[CTRL BIT]: Funcion -> DESARCHIVAR")
+    try: 
+        log("[CTRL BIT]: Iniciando...")
+        r = CRUD.desarchivar(data)
         log("[CTRL BIT]: Terminado.")
         log(f"[CTRL BIT]: Retorno -> {r}")
     except Exception as e:

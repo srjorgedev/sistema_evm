@@ -1,36 +1,17 @@
-# NUEVO: Importaciones necesarias para el threading y los datos
-from PyQt6.QtWidgets import QWidget, QGridLayout, QLabel, QScrollArea, QVBoxLayout, QHBoxLayout, QSizePolicy, QSpacerItem, QFrame
-from PyQt6.QtCore import Qt, QThread, pyqtSignal
-
-import controllers.bitacora_controller as FBitacora
-from domain.bitacoras.Clase import Bitacora
-
-from interface.components.bitacoras.bitacora_row import BitacoraRowWidget
-from interface.components.button import ButtonWidget
-from interface.components.square_button import SquareButtonWidget
-from interface.components.button import ColorKeys
-from interface.components.data_fetch import TaskRunner
-from interface.components.table_head import TableHeadWidget
-from interface.components.modal import ModalWidget
-from interface.components.salida_form import SalidaFormWidget
-from interface.components.bitacoras.bitacora_table import BITTableWidget
-
-from interface.components.styles.table_style import scrollbar_style, scroll_widget_style, scroll_area_style
-from utils.log import log
-
-# NUEVO: Importaciones necesarias para el threading y los datos
 from PyQt6.QtWidgets import QWidget, QLabel, QScrollArea, QVBoxLayout, QHBoxLayout, QSizePolicy, QSpacerItem, QTabWidget
 from PyQt6.QtCore import Qt, pyqtSignal
 
 import controllers.bitacora_controller as FBitacora
 
 from interface.components.bitacoras.bitacora_row import BitacoraRowWidget
+from interface.components.bitacoras.bitacora_row_archive import BitacoraArchivedRowWidget
 from interface.components.button import ButtonWidget
 from interface.components.square_button import SquareButtonWidget
 from interface.components.button import ColorKeys
 from interface.components.data_fetch import TaskRunner
 from interface.components.modal import ModalWidget
-from interface.components.salida_form import SalidaFormWidget
+from interface.components.bitacoras.salida_form import SalidaFormWidget
+from interface.components.bitacoras.entrada_form import EntradaFormWidget
 from interface.components.bitacoras.bitacora_table import BITTableWidget
 
 from utils.log import log
@@ -79,10 +60,12 @@ class BITScreenWidget(QWidget):
         self.main_layout.setContentsMargins(48, 52, 48, 0) 
         self.main_layout.setSpacing(0)
         
-        self.modal = ModalWidget(self, SalidaFormWidget())
+        self.modal_salida = ModalWidget(self, SalidaFormWidget(), "Crear un nuevo registro de salida")
+        self.modal_entrada = ModalWidget(self, EntradaFormWidget(), "Crear un nuevo registro de entrada")
         
         # Asignacion de eventos en los botones cuando se hace clic        
-        self.button_salida.clicked.connect(self.modal.show_modal)
+        self.button_salida.clicked.connect(self.modal_salida.show_modal)
+        self.button_entrada.clicked.connect(self.modal_entrada.show_modal)
         self.button_recargar.clicked.connect(self.handle_refresh)
         
         # Asignacion de estilos
@@ -157,7 +140,7 @@ class BITScreenWidget(QWidget):
         
     # Funcion para pedir los datos 
     def fetch_bitacoras(self):
-        log("[BITACORAS]: Iniciando fetch...")
+        log("[BITACORAS]: Iniciando fetch general...")
         # Llamar al objeto para hacer peticiones en segundo plano.
         # Esta funcion nos pide...
         # La funcion a ejecutar: func
@@ -173,7 +156,7 @@ class BITScreenWidget(QWidget):
         
     # Funcion para pedir los datos 
     def fetch_archivadas(self):
-        log("[BITACORAS]: Iniciando fetch...")
+        log("[BITACORAS]: Iniciando fetch archivados...")
         self.runner.run(
             func=FBitacora.lista_archivados, 
             on_success=lambda data: self.handle_data(data, self.archivadas), 
@@ -194,8 +177,12 @@ class BITScreenWidget(QWidget):
             parent.addRow(no_data_label)
         else:
             for bitacora in data:
-                card = BitacoraRowWidget(bitacora) 
-                card.btn_archivo.connect(self.handle_archivar)
+                if bitacora[5] == True:
+                    card = BitacoraRowWidget(bitacora) 
+                    card.btn_archivo.connect(self.handle_archivar)
+                elif bitacora[5] == False:
+                    card = BitacoraArchivedRowWidget(bitacora) 
+                    card.btn_archivo.connect(self.handle_desarchivar)
                 parent.addRow(card)
 
     def handle_error(self, error_message):
@@ -214,6 +201,20 @@ class BITScreenWidget(QWidget):
                         lambda: activado_por.setEnabled(True) if activado_por else None,
                         data
                         )
+        
+    def handle_desarchivar(self, data: int):
+        log(f"[BITACORAS]: Iniciando proceso de desarchivado...")
+        log(f"[BITACORAS]: DATOS -> {data}")
+        
+        activado_por = self.sender()
+        if activado_por: 
+            activado_por.setEnabled(False)
+            
+        self.runner.run(FBitacora.desarchivar, 
+                        lambda c: self.on_archivado_finalizado(activado_por), 
+                        lambda: activado_por.setEnabled(True) if activado_por else None,
+                        data
+                        )
 
     def on_archivado_finalizado(self, boton):
         self.notificar.emit("Archivado", "Bitacora archivada exitosamente", "#2ecc71") 
@@ -228,3 +229,5 @@ class BITScreenWidget(QWidget):
         print("[BITACORAS]: Refrescando datos...")
         self.fetch_bitacoras()
         self.fetch_archivadas()
+        
+        self.notificar.emit("Recarga", "Datos recargados con exito", "#2ecc71") 

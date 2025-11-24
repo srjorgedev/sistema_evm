@@ -13,7 +13,8 @@ def listaGeneral() -> list[tuple]:
             asunto,
             destino, 
             entrada, 
-            salida
+            salida,
+            visible
         FROM bitacora
         WHERE visible = TRUE
     """
@@ -22,9 +23,9 @@ def listaGeneral() -> list[tuple]:
 
     bitacoras = []
     for fila in lista:
-        id, asunto, destino, entrada, salida = fila
+        id, asunto, destino, entrada, salida, visible = fila
         
-        bitacora = (id, asunto, destino, entrada, salida)
+        bitacora = (id, asunto, destino, entrada, salida, visible)
 
         bitacoras.append(bitacora)
 
@@ -39,7 +40,8 @@ def listaArchivados() -> list[tuple]:
             asunto,
             destino, 
             entrada, 
-            salida
+            salida,
+            visible
         FROM bitacora
         WHERE visible = FALSE
     """
@@ -48,9 +50,9 @@ def listaArchivados() -> list[tuple]:
 
     bitacoras = []
     for fila in lista:
-        id, asunto, destino, entrada, salida = fila
+        id, asunto, destino, entrada, salida, visible = fila
         
-        bitacora = (id, asunto, destino, entrada, salida)
+        bitacora = (id, asunto, destino, entrada, salida, visible)
 
         bitacoras.append(bitacora)
 
@@ -71,24 +73,48 @@ def archivar(data: int):
     
     return r
 
+def desarchivar(data: int):
+    conn = Conn()
+    
+    query = """
+        UPDATE bitacora 
+        SET visible = TRUE
+        WHERE numero = %s
+    """
+    
+    params = (data,)
+    
+    r = conn.actualizar(query, params)
+    
+    return r
+
 def bitacoraSinEntrada():
     conn = Conn()
 
-    query = 'SELECT numControl as "Numero de control", asunto as Asunto, destino as Destino, salida as Salida, entrada as Entrada '
-    query += 'FROM bitacora WHERE entrada IS NULL AND status = 1'
+    query = """
+    SELECT 
+        numero as id,
+        asunto,
+        destino, 
+        entrada, 
+        salida,
+        visible
+    FROM bitacora
+    WHERE visible = TRUE AND
+    ENTRADA = FALSE
+    """
+    
     lista = conn.lista(query)
 
-    if lista == 0 or len(lista) == 0:
-        log("   No se puede mostrar.")
-        return
-
+    bitacoras = []
     for fila in lista:
-        numCtrl, asunto, destino, salida, entrada = fila
-        if entrada == None: entrada = 0
+        id, asunto, destino, entrada, salida, visible = fila
+        
+        bitacora = (id, asunto, destino, entrada, salida, visible)
 
-        log(f"{numCtrl:<8}{asunto:<35}{destino:<15}{salida:<12}{entrada}")
+        bitacoras.append(bitacora)
 
-    return len(lista)
+    return bitacoras
 
 
 def existe(bitacora: Bitacora):
