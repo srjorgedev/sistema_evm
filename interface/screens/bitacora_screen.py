@@ -75,14 +75,14 @@ class BITScreenWidget(QWidget):
         # El primer parametro, es el elemento padre, self. Es obligatorio.
         # El segundo parametro, es lo que aparecera dentro de la modal. Es obligatorio.
         # El tercer parametro, es el titulo de la modal. Es opcional, aunque preferiblemente hay que ponerlo.
-        self.modal_salida = ModalWidget(self, SalidaFormWidget(), "Crear un nuevo registro de salida")
+        # self.modal_salida = ModalWidget(self, SalidaFormWidget(), "Crear un nuevo registro de salida")
         self.modal_entrada = ModalWidget(self, EntradaFormWidget(), "Crear un nuevo registro de entrada")
         # self.modal_into = ModalWidget(self, BitacoraInfoWidget(self.row_click), "Ver datos de bitacora")
         
         # Asignacion de eventos en los botones cuando se hace clic      
         # Le asignamos funciones a los botones cuando se les hace clic.
         # TODOS los botones tienen .clicked.connect  
-        self.button_salida.clicked.connect(self.modal_salida.show_modal)
+        self.button_salida.clicked.connect(lambda: self.abrir_modal(SalidaFormWidget, "Crear un nuevo registro de salida"))
         self.button_entrada.clicked.connect(self.modal_entrada.show_modal)
         self.button_recargar.clicked.connect(self.handle_refresh)
         
@@ -260,3 +260,10 @@ class BITScreenWidget(QWidget):
         
         self.modal_info = ModalWidget(self, content_widget, "Ver datos de bitácora")
         self.modal_info.show_modal()
+
+    def abrir_modal(self, formulario, titulo):
+        form = formulario()
+        
+        modal = ModalWidget(self, form, titulo)
+        
+        modal.show_modal()

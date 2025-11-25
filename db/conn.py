@@ -22,9 +22,20 @@ class conn:
             try:
                 cursor = self.conexion.cursor()
                 cursor.execute(comando)
-                reultados = cursor.fetchall()
+                resultados = cursor.fetchall()
                 # print("Listado correcto")
-                return reultados
+                return resultados
+            except Error as valError:
+                print("Error al listar:")
+                print(valError)
+        return 0
+    
+    def lista_param(self, comando, valores):
+        if self.conexion and self.conexion.is_connected():
+            try:
+                cursor = self.conexion.cursor()
+                cursor.execute(comando, valores)
+                return cursor.fetchall()
             except Error as valError:
                 print("Error al listar:")
                 print(valError)
@@ -42,6 +53,17 @@ class conn:
                 print("Error en el registro:")
                 print(valError)
         return -1
+    
+    def registrar_param(self, comando, valores):
+        try:
+            cursor = self.conexion.cursor()
+            cursor.execute(comando, valores)
+            self.conexion.commit()
+            return True
+        except Error as variable:
+            print("Error en conexión o registro:")
+            print(variable)
+            return False
                 
     def actualizar(self, comando):
         contador = -1
@@ -58,3 +80,16 @@ class conn:
             
             return contador
         return contador
+    
+    def actualizar_param(self, comando, valores):
+        if self.conexion and self.conexion.is_connected():
+            try:
+                cursor = self.conexion.cursor()
+                cursor.execute(comando, valores)
+                self.conexion.commit()
+                return cursor.rowcount
+            except Error as valError:
+                print("Error en actualización:")
+                print(valError)
+                return -1
+        return -1
