@@ -1,3 +1,5 @@
+##import sys
+##sys.dont_write_bytecode = True estos dos solo los puse para que no me genere el pycache
 import interface.usuarios.Menu as _Usuarios
 from interface.usuarios import fUsuarios
 
@@ -10,11 +12,10 @@ import interface.vehiculos.Menu as _Vehiculos
 from db.conn import conn
 print("prueba de conexion")
 miConn = conn()
-from interface.observacionymantenimiento import menu
+#from interface.observacionymantenimiento import menu
 from interface.observacionymantenimiento import fMantenimiento
 from interface.observacionymantenimiento import fObservacion
-#import sys
-from interface.observacionymantenimiento import val
+#from interface.observacionymantenimiento import val
 
 import interface.Menu as Menu
 import interface.Val as Val
@@ -89,23 +90,11 @@ while True and opc1 != 9:
                         print("   Saliendo del Menu de Usuarios...")
                         
         case 4: # MANTENIMIENTO
-            opc1=0
-            while (opc1!=9):
-                opc1 = val.vOpciones("Opcion",1,9, menu.mMantenimiento)
-                match opc1:
-                    case 1: fMantenimiento.pedirDatos()
-                    case 2: fMantenimiento.listaGeneral()
-                    case 3: fMantenimiento.actualizarMantenimiento()
-                    case 4: fMantenimiento.borrarMantenimiento()
+    # Llama al submenú completo de mantenimiento
+            fMantenimiento.menuMantenimientos()
         case 5: # OBSERVACIONES
-            opc2=0
-            while (opc2!=9):
-                opc2 = val.vOpciones("Opcion",1,9, menu.mObservaciones)
-                match opc2:
-                    case 1: fObservacion.pedirDatos()
-                    case 2: fObservacion.listaGeneral()
-                    case 3: fObservacion.actualizarObservacion()
-                    case 4: fObservacion.borrarObservacion()
+    # Llama al submenú completo de observaciones
+            fObservacion.menuObservaciones()
         
         case 9:
             print("   Saliendo...")

@@ -113,6 +113,70 @@ t.numTelefono as "Numero Telefonico" -- "
 from empleado as e
 inner join telefono as t on t.empleado = e.numero
 
+
+--Observaciones realizadas en una bitacora
+SELECT 
+    o.bitacora AS bitacora_num,
+    o.numero AS observacion_num,
+    o.descripcion AS observacion_desc
+FROM observacion o
+WHERE o.bitacora = 12; -- reemplaza con la bitácora que quieras
+
+--Reporte de mantenimiento de un vehiculo
+SELECT 
+    v.matricula,
+    m.nombre AS marca,
+    mo.nombre AS modelo,
+    mt.fechaProgramada AS fecha,
+    mt.razon,
+    mt.comentarios,
+    tm.comentario AS tipo_mantenimiento,
+    tobs.descripcion AS tipo_observacion,
+    em.descripcion AS estado_mantenimiento
+FROM mantenimiento mt
+JOIN vehiculo v ON mt.vehiculo = v.numSerie
+JOIN marca m ON v.marca = m.codigo
+JOIN modelo mo ON v.modelo = mo.codigo
+JOIN tipoMantenimiento tm ON mt.tipoMantenimiento = tm.numero
+JOIN estadoMantenimiento em ON mt.estadoMantenimiento = em.numero
+LEFT JOIN mantenimiento_bitacora mb ON mt.folio = mb.mantenimiento
+LEFT JOIN observacion o ON mb.bitacora = o.bitacora
+LEFT JOIN tipoObservacion tobs ON o.tipoObservacion = tobs.numero
+WHERE v.matricula = 'XYZ123'; -- vehículo específico
+
+--Estados de los vehiculos en mantenimiento
+SELECT 
+    mt.folio,
+    v.matricula,
+    ma.nombre AS marca,
+    mo.nombre AS modelo,
+    mt.fechaProgramada AS fecha,
+    mt.razon,
+    tm.comentario AS tipo_mantenimiento,
+    em.descripcion AS estado_mantenimiento
+FROM mantenimiento mt
+JOIN vehiculo v ON mt.vehiculo = v.numSerie
+JOIN marca ma ON v.marca = ma.codigo
+JOIN modelo mo ON v.modelo = mo.codigo
+JOIN tipoMantenimiento tm ON mt.tipoMantenimiento = tm.numero
+JOIN estadoMantenimiento em ON mt.estadoMantenimiento = em.numero
+ORDER BY mt.fechaProgramada DESC;
+
+--JOINS MANTENIMIENTO CON TIPO MANTENIMIENTO, ESTADO MANTENIMIENTO Y VEHICULO
+select m.folio as Folio, m.razon as Razon, m.estatus as Estatus, m.importancia as Importancia,
+m.fechaProgramada as Fecha, m.comentarios as Comentarios, tm.comentario as TipoMantenimiento,
+v.numSerie as Vehiculo, em.descripcion as EstadoMantenimiento
+from mantenimiento as m
+inner join tipomantenimiento as tm on m.tipomantenimiento = tm.numero
+inner join estadomantenimiento as em on m.estadomantenimiento = em.numero
+inner join vehiculo as v on m.vehiculo = v.numSerie
+
+--JOINS OBSERVACION CON TIPO OBSERVACION Y BITACORA
+select o.numero as Folio, o.descripcion as Descripcion, tob.descripcion as Tipo,
+b.numero as Bitacora
+from observacion as o
+inner join bitacora as b on o.bitacora = b.numero
+inner join tipoObservacion as tob on o.tipoObservacion = tob.numero
 SELECT 
             e.numero,
             CONCAT(e.nombrePila, ' ', e.apdPaterno, ' ', e.apdMaterno) AS nombre,
