@@ -1,4 +1,4 @@
-# val.py
+# validaciones.py
 from datetime import date
 import sys
 

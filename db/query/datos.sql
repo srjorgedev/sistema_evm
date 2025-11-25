@@ -85,17 +85,12 @@ INSERT INTO modelo (codigo,nombre, periodo, marca) VALUES
 ('SET1','SEAT Modelo 1', "2024", "SEAT"),
 ('SET2','SEAT Modelo 2', "2023", "SEAT");
 
-INSERT INTO edo_mantenimiento (descripcion) VALUES
-('Pendiente'),
-('En Proceso'),
-('Finalizado'),
-('Cancelado'),
-('Reprogramado'),
-('En Espera de Repuestos'),
-('En Diagnóstico'),
-('Autorizado'),
-('Rechazado');
-
+'''INSERT INTO estadoMantenimiento (numero, descripcion) VALUES
+(1, 'Solicitado'),
+(2, 'En proceso'),
+(3, 'Finalizado'),
+(4, 'Cancelado');
+'''
 INSERT INTO edo_solicitud (descripcion) VALUES
 ('Pendiente'),
 ('Aprobada'),
@@ -107,7 +102,7 @@ INSERT INTO edo_solicitud (descripcion) VALUES
 ('En Espera'),
 ('Revisada');
 
-INSERT INTO tipo_mantenimiento VALUES
+'''INSERT INTO tipo_mantenimiento VALUES
 ('PREV','Preventivo'),
 ('CORR','Correctivo'),
 ('LAVA','Lavado y Limpieza'),
@@ -118,14 +113,14 @@ INSERT INTO tipo_mantenimiento VALUES
 ('SUSP','Suspensión'),
 ('FREN','Frenos'),
 ('NEUM','Neumáticos');
-
-INSERT INTO nvl_importancia (descripcion) VALUES
+'''
+'''INSERT INTO nvl_importancia (descripcion) VALUES
 ('Baja'),
 ('Media'),
 ('Alta'),
 ('Urgente'),
 ('Crítica');
-
+'''
 INSERT INTO nvl_cobertura (descripcion) VALUES
 ('Limitada'),
 ('Amplia'),
@@ -172,7 +167,7 @@ INSERT INTO aseguradora (codigo,nombre,nombreFiscal) VALUES
 ('QBE','QBE', 'QBE México, S.A. de C.V.'),
 ('GRAL','Generali México', 'Generali México, S.A. de C.V.');
 
-INSERT INTO tipo_observacion (codigo,descripcion, tipo_mantenimiento) VALUES
+'''INSERT INTO tipo_observacion (codigo,descripcion, tipo_mantenimiento) VALUES
 ('OBS001','Limpieza exterior', 'LAVA'),
 ('OBS002','Limpieza interior', 'LAVA'),
 ('OBS003','Revisión de aceite', 'PREV'),
@@ -198,6 +193,7 @@ INSERT INTO tipo_observacion (codigo,descripcion, tipo_mantenimiento) VALUES
 ('OBS023','Puerta trabada', 'CORR'),
 ('OBS024','Revisión general', 'PREV'),
 ('OBS025','Mantenimiento completo', 'PREV');
+'''
 
 INSERT INTO empleado (nombrePila, apdPaterno, apdMaterno, tipo_empleado) VALUES
 ('Nombre1', "Apellido1", "Materno1", "LIM"),
@@ -463,7 +459,7 @@ INSERT INTO empleado_bitacora (bitacora,empleado) VALUES
 (20, 9),
 (20, 7);
 
-INSERT INTO observacion (descripcion, tipo_observacion, bitacora, entrada, salida) VALUES
+'''INSERT INTO observacion (descripcion, tipo_observacion, bitacora, entrada, salida) VALUES
 ('Nivel bajo de líquido de frenos', 'OBS020', 9, NULL, NULL),
 ('Llantas con desgaste', 'OBS023', 3, NULL, NULL),
 ('Nivel bajo de líquido de frenos', 'OBS017', 12, NULL, NULL),
@@ -516,4 +512,19 @@ INSERT INTO mantenimiento (folio, razon, fechaProgramada, comentarios, tipo_mant
 ('MANT-023','Revisión general', '2024-12-04', 'Revisar filtros y frenos', 'TRAN', 5, 'BVT2SGH0E49SR8BGK', 2),
 ('MANT-024','Reparación de frenos', '2024-12-01', 'Limpieza general', 'SUSP', 3, 'UWSFGD1S7TH496T4G', 5),
 ('MANT-025','Reemplazo de foco', '2024-11-02', 'Verificar suspensión', 'FREN', 2, '42UNYM7MVX7XXVRF0', 3);
+'''
 
+
+INSERT INTO TipoMantenimiento VALUES (1, 'Preventivo');
+INSERT INTO TipoMantenimiento VALUES (2, 'Correctivo');
+INSERT INTO TipoMantenimiento VALUES (3, 'Superficial');
+
+INSERT INTO estadomantenimiento(numero, descripcion) VALUES
+(1, 'PENDIENTE DE ASIGNACIÓN'),
+(2, 'EN PROGRESO'),
+(3, 'FINALIZADO');
+
+INSERT INTO tipoobservacion (numero, descripcion) VALUES
+(1, 'General'),
+(2, 'Seguridad'),
+(3, 'Estetica')
