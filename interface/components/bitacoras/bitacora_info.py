@@ -134,7 +134,8 @@ class RegistroWidget(QFrame):
         for dato in datos:
             contenido_layout = QHBoxLayout()
             titulo_contenido = QLabel(dato[0])
-            contenido = QLabel(dato[1])
+            print(dato[1])
+            contenido = QLabel(dato[1] if dato[1] not in [None, "None"] else "Pendiente...")
             
             titulo_contenido.setStyleSheet("font-size: 14px; color:#f1f1f1; background-color: transparent;")
             contenido.setStyleSheet("font-size: 14px; color:#f1f1f1; background-color: transparent;")

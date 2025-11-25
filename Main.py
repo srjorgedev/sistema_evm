@@ -13,6 +13,7 @@ from interface.screens.vehi_screen import VEHIScreenWidget
 from interface.screens.soli_screen import SOLIScreenWidget
 from interface.components.notifications import NotificationContainerWidget
 from interface.screens.users_screen import USERScreenWidget
+from interface.screens.mante_screen import MANTEScreenWidget
 
 from interface.components.styles.general import COLORS_LIST, COLORS
 
@@ -53,7 +54,7 @@ class VentanaPrincipal(QMainWindow):
         self.stack.addWidget(SOLIScreenWidget())
         self.stack.addWidget(USERScreenWidget())
         self.stack.addWidget(VEHIScreenWidget())
-        self.stack.addWidget(ScreenWidget("VISTA MANTENIMIENTOS", "#2980b9"))
+        self.stack.addWidget(MANTEScreenWidget())
         
         self.sidemenu.current_page.connect(self.stack.setCurrentIndex)
 

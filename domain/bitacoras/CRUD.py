@@ -125,7 +125,7 @@ def leer(id: int):
         CONCAT(aut.nombrePila, ' ', aut.apdPaterno, ' ', aut.apdMaterno) AS Autorizador,
         bit.destino AS Destino,
         bit.asunto AS Asunto,
-        DATE_FORMAT(bit.fechaSalida, "%d-%m-%Y") AS FechaSalida,
+        DATE_FORMAT(bit.fechaSalida, "%d-%m-%y") AS FechaSalida,
         DATE_FORMAT(bit.horaSalida, "%H:%i") AS HoraSalida,
         bit.kmSalida AS KilometrajeSalida,
         bit.gasSalida AS GasolinaSalida,
