@@ -1,4 +1,4 @@
-# Mantenimiento.py
+# Clase Mantenimiento.py
 class Mantenimiento:
 
     def __init__(self, razon, estatus, importancia, fechaProgramada, comentarios, tipoMantenimiento, vehiculo, estadoMantenimiento, folio=0):
@@ -13,7 +13,7 @@ class Mantenimiento:
         self.__estadoMantenimiento = estadoMantenimiento
 
     def __str__(self):
-        msg = f"Folio: {self.__folio} | Razón: {self.__razon[:30]}... | Estado: {self.__estatus} | Importancia: {self.__importancia}"
+        msg = f"Folio: {self.__folio} | Razón: {self.__razon[:30]}... | Estatus: {self.__estatus} | Importancia: {self.__importancia}"
         msg += f"\n  Tipo: {self.__tipoMantenimiento} | Vehículo: {self.__vehiculo} | Programado: {self.__fechaProgramada} | Estado Mantenimiento: {self.__estadoMantenimiento}"
         return msg
 

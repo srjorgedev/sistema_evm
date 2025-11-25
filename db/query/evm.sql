@@ -1,7 +1,7 @@
 -- query base para la creacion de la base de datos
 
 CREATE DATABASE evm_db;
-
+--drop database if exists evm_db;
 USE evm_db;
 
 CREATE TABLE tipo_licencia (
@@ -22,25 +22,12 @@ CREATE TABLE modelo (
     FOREIGN KEY (marca) REFERENCES marca(codigo)
 );
 
-CREATE TABLE edo_mantenimiento (
-    numero INT PRIMARY KEY AUTO_INCREMENT,
-    descripcion VARCHAR(25) NOT NULL
-);
 
 CREATE TABLE edo_solicitud (
     numero INT PRIMARY KEY AUTO_INCREMENT,
     descripcion VARCHAR(20) NOT NULL
 );
 
-CREATE TABLE tipo_mantenimiento (
-    codigo VARCHAR(6) PRIMARY KEY,
-    descripcion VARCHAR(20) NOT NULL
-);
-
-CREATE TABLE nvl_importancia(
-    numero INT AUTO_INCREMENT PRIMARY KEY,
-    descripcion VARCHAR(15)
-);
 
 CREATE TABLE nvl_cobertura (
     numero INT AUTO_INCREMENT PRIMARY KEY,
@@ -58,12 +45,6 @@ CREATE TABLE aseguradora (
     nombreFiscal VARCHAR(60) NOT NULL UNIQUE
 );
 
-CREATE TABLE tipo_observacion (
-    codigo VARCHAR(8) PRIMARY KEY,
-    descripcion VARCHAR(30) NOT NULL,
-    tipo_mantenimiento VARCHAR(6) NOT NULL,
-    FOREIGN KEY (tipo_mantenimiento) REFERENCES tipo_mantenimiento(codigo)
-);
 
 CREATE TABLE empleado (
     numero INT AUTO_INCREMENT PRIMARY KEY,
@@ -169,97 +150,57 @@ CREATE TABLE empleado_bitacora (
     FOREIGN KEY (bitacora) REFERENCES bitacora(numero)
 );
 
-CREATE TABLE observacion (
-    numero INT AUTO_INCREMENT PRIMARY KEY,
-    descripcion VARCHAR(60) NOT NULL,
-    tipo_observacion VARCHAR(6) NOT NULL,
-    salida BOOLEAN,
-    entrada BOOLEAN,
-    bitacora INT NOT NULL,
-    FOREIGN KEY (tipo_observacion) REFERENCES tipo_observacion(codigo),
-    FOREIGN KEY (bitacora) REFERENCES bitacora(numero)
-);
-
-CREATE TABLE mantenimiento(
-    folio VARCHAR(10) PRIMARY KEY,
-    razon VARCHAR(50) NOT NULL,
-    fechaProgramada DATE NOT NULL,
-    comentarios TEXT,
-    tipo_mantenimiento VARCHAR(6) NOT NULL,
-    nvl_importancia INT NOT NULL,
-    vehiculo VARCHAR(17) NOT NULL,
-    edo_mantenimiento INT NOT NULL,
-    FOREIGN KEY (tipo_mantenimiento) REFERENCES tipo_mantenimiento(codigo),
-    FOREIGN KEY (nvl_importancia) REFERENCES nvl_importancia(numero),
-    FOREIGN KEY (vehiculo) REFERENCES vehiculo(numSerie),
-    FOREIGN KEY (edo_mantenimiento) REFERENCES edo_mantenimiento(numero)
-);
 
 ALTER TABLE empleado ADD COLUMN password_hash VARCHAR(255) NOT NULL;
 ALTER TABLE empleado ADD COLUMN email VARCHAR(100) NOT NULL;
 
 
---Tablas mantenimiento y observaciones
+--CREACION DE TABLAS PARA MANTENIMIENTO Y OBSERVACIONES
 
--- 1. Tabla: TipoMantenimiento
-CREATE TABLE TipoMantenimiento (
+CREATE TABLE tipoMantenimiento (
     numero INT PRIMARY KEY,
-    comentario VARCHAR(255)
+    comentario VARCHAR(200) NOT NULL
 );
 
--- 2. Tabla: EstadoMantenimiento
-CREATE TABLE EstadoMantenimiento (
+CREATE TABLE estadoMantenimiento (
     numero INT PRIMARY KEY,
-    descripcion VARCHAR(100)
+    descripcion VARCHAR(100) NOT NULL
 );
 
--- 3. Tabla: TipoObservacion
-CREATE TABLE TipoObservacion (
+CREATE TABLE tipoObservacion (
     numero INT PRIMARY KEY,
-    descripcion VARCHAR(255),
-    tipoMantenimiento INT,
-    FOREIGN KEY (tipoMantenimiento) REFERENCES TipoMantenimiento(numero)
+    descripcion VARCHAR(200) NOT NULL
 );
 
--- 4. Tabla necesaria para FK: Vehiculo
-CREATE TABLE Vehiculo (
-    numSerie VARCHAR(50) PRIMARY KEY,
-    modelo VARCHAR(50),
-    anio INT
-    -- Se pueden añadir más campos de vehículo aquí
+CREATE TABLE observacion (
+    numero INT PRIMARY KEY AUTO_INCREMENT,
+    descripcion VARCHAR(200) NOT NULL,
+    tipoObservacion INT NOT NULL,
+    bitacora INT NOT NULL,
+    FOREIGN KEY (tipoObservacion) REFERENCES tipoObservacion(numero),
+    FOREIGN KEY (bitacora) REFERENCES bitacora(numero)
 );
 
--- 5. Tabla necesaria para FK: Bitacora
-CREATE TABLE Bitacora (
-    numControl INT PRIMARY KEY AUTO_INCREMENT,
-    fechaHora DATETIME,
-    detalle VARCHAR(500)
-    -- Se pueden añadir más campos de bitácora aquí
+CREATE TABLE mantenimiento (
+    folio INT PRIMARY KEY AUTO_INCREMENT,
+    razon VARCHAR(200) NOT NULL,
+    estatus VARCHAR(50) NOT NULL,
+    importancia VARCHAR(50) NOT NULL,
+    fechaProgramada DATE NOT NULL,
+    comentarios VARCHAR(300),
+    tipoMantenimiento INT NOT NULL,
+    vehiculo VARCHAR(17) NOT NULL,
+    estadoMantenimiento INT NOT NULL,
+    FOREIGN KEY (tipoMantenimiento) REFERENCES tipoMantenimiento(numero),
+    FOREIGN KEY (vehiculo) REFERENCES vehiculo(numSerie),
+    FOREIGN KEY (estadoMantenimiento) REFERENCES estadoMantenimiento(numero)
 );
 
-
--- 6. Tabla: Mantenimiento
-CREATE TABLE Mantenimiento (
-    folio INT PRIMARY KEY,
-    razon VARCHAR(255),
-    estatus VARCHAR(50),
-    importancia VARCHAR(50),
-    fechaProgramada DATE,
-    comentarios VARCHAR(500),
-    tipoMantenimiento INT,
-    vehiculo VARCHAR(50),
-    estadoMantenimiento INT,
-    FOREIGN KEY (tipoMantenimiento) REFERENCES TipoMantenimiento(numero),
-    FOREIGN KEY (vehiculo) REFERENCES Vehiculo(numSerie),
-    FOREIGN KEY (estadoMantenimiento) REFERENCES EstadoMantenimiento(numero)
-);
-
--- 7. Tabla: Observacion
-CREATE TABLE Observacion (
-    numero INT PRIMARY KEY,
-    descripcion VARCHAR(500),
-    tipoObservacion INT,
-    bitacora INT,
-    FOREIGN KEY (tipoObservacion) REFERENCES TipoObservacion(numero),
+--TABLA PUENTE NECESARIA PARA CONSULTAS ENTRE MANTENIMIENTO Y BITACORA
+CREATE TABLE mantenimiento_bitacora (
+    mantenimiento INT NOT NULL,
+    bitacora INT NOT NULL,
+    PRIMARY KEY(mantenimiento, bitacora),
+    FOREIGN KEY (mantenimiento) REFERENCES mantenimiento(folio),
     FOREIGN KEY (bitacora) REFERENCES bitacora(numero)
 );

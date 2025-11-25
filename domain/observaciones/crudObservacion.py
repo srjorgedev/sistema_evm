@@ -1,69 +1,64 @@
 # crudObservacion.py
+
+
 from db.conn import conn
 from domain.observaciones.Observacion import Observacion
 
 # CREATE
-def alta(objObservacion):
+def alta(obj):
     miConn = conn()
-    aux = "INSERT INTO OBSERVACIONES(Descripcion, TipoObservacion, BitacoraAsociada) VALUES('{0}','{1}','{2}')"
-    comando = aux.format(objObservacion.get_descripcion(), objObservacion.get_tipoObservacion(), objObservacion.get_bitacoraAsociada())
-    miConn.registrar(comando)
+    comando = "INSERT INTO observacion (descripcion, tipoObservacion, bitacora) VALUES (%s, %s, %s)"
+    valores = (obj.get_descripcion(), obj.get_tipoObservacion(), obj.get_bitacoraAsociada())
+    miConn.registrar_param(comando, valores)
 
 # READ
 def lista():
     miConn = conn()
-    comando = "SELECT Numero, Descripcion, TipoObservacion, BitacoraAsociada FROM OBSERVACIONES"
+    comando = """
+        SELECT o.numero, o.descripcion, t.descripcion AS TipoTexto, o.bitacora
+        FROM observacion o
+        JOIN tipoobservacion t ON o.tipoObservacion = t.numero
+        ORDER BY o.numero
+    """
     listado = miConn.lista(comando)
-    
     if listado == 0:
         print("Error: No se puede mostrar el listado o la conexión falló.")
-        return 0
-    
-    if len(listado) > 0:
-        print("\n--- Listado de Observaciones ---")
-        for fila in listado:
-            objObservacion = Observacion(fila[1], fila[2], fila[3], fila[0])
-            print(objObservacion)
-        return True
-    else:
+        return
+
+    if len(listado) == 0:
         print("No hay observaciones registradas.")
+        return
+
+    print("\n--- Listado de Observaciones ---")
+    for fila in listado:
+        obj = Observacion(fila[1], fila[2], fila[3], fila[0])
+        print(obj)
 
 # UPDATE
-def actualizar(objObservacion):
+def actualizar(obj):
     miConn = conn()
-    aux = "UPDATE OBSERVACIONES SET Descripcion = '{0}', BitacoraAsociada = '{1}' WHERE Numero = {2}"
-    comando = aux.format(objObservacion.get_descripcion(), objObservacion.get_bitacoraAsociada(), objObservacion.get_numero())
-    contador = miConn.actualizar(comando)
-    if contador == 1:
-        print("Actualización de Observación realizada")
-    else:
-        print("Actualización no realizada o Folio no encontrado")
+    comando = "UPDATE observacion SET descripcion = %s, bitacora = %s WHERE numero = %s"
+    valores = (obj.get_descripcion(), obj.get_bitacoraAsociada(), obj.get_numero())
+    miConn.actualizar_param(comando, valores)
 
 # DELETE
-def borrar(objObservacion):
+def borrar(obj):
     miConn = conn()
-    aux = "DELETE FROM OBSERVACIONES WHERE Numero = {0}"
-    comando = aux.format(objObservacion.get_numero())
-    contador = miConn.actualizar(comando)
-    if contador == 1:
-        print("Observación Eliminada correctamente.")
-    elif contador == 0:
-        print("El Folio de la observación no existe.")
-    else:
-        print("Eliminación no realizada por error de BD.")
-        
-def buscar(objObservacion):
+    comando = "DELETE FROM observacion WHERE numero = %s"
+    valores = (obj.get_numero(),)
+    miConn.actualizar_param(comando, valores)
+
+# BUSCAR
+def buscar(obj):
     miConn = conn()
-    comando = "SELECT Numero, Descripcion, TipoObservacion, BitacoraAsociada FROM OBSERVACIONES WHERE Numero = {0}"
-    comando = comando.format(objObservacion.get_numero())
-    listado = miConn.lista(comando)
-    
+    comando = "SELECT numero, descripcion, tipoObservacion, bitacora FROM observacion WHERE numero = %s"
+    valores = (obj.get_numero(),)
+    listado = miConn.lista_param(comando, valores)
     if listado != 0 and len(listado) == 1:
         fila = listado[0]
         objEncontrado = Observacion(fila[1], fila[2], fila[3], fila[0])
         print("Observación encontrada:")
         print(objEncontrado)
         return objEncontrado
-    else:
-        print("Folio de Observación no encontrado.")
-        return False
+    print("Folio de Observación no encontrado.")
+    return False
