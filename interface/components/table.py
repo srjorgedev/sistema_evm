@@ -56,10 +56,10 @@ class TableWidget(QFrame):
         for i, text in enumerate(labels):
             widget = TableHeadWidget(text)
             
-            if i == 0 and len(labels[i]) < 6:
-                widget.setFixedWidth(60) 
+            if i == 0 and labels[i].upper() in ["CODIGO", "N°", "ID"]:
+                widget.setFixedWidth(80) 
             
-            self.header_layout.addWidget(widget)
+            self.header_layout.addWidget(widget, 0)
 
     def addRow(self, row_widget: QWidget):
         self.rows_layout.addWidget(row_widget)

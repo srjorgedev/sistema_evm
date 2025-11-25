@@ -1,11 +1,8 @@
 from PyQt6.QtWidgets import QWidget, QLabel, QScrollArea, QVBoxLayout, QHBoxLayout, QSizePolicy, QSpacerItem, QTabWidget
 from PyQt6.QtCore import Qt, pyqtSignal
 
-import controllers.bitacora_controller as FBitacora
-import controllers.user_controller as FUsuario
+import controllers.solicitudes_controller as FSoli
 
-from interface.components.bitacoras.bitacora_row import BitacoraRowWidget
-from interface.components.bitacoras.bitacora_row_archive import BitacoraArchivedRowWidget
 from interface.components.button import ButtonWidget
 from interface.components.square_button import SquareButtonWidget
 from interface.components.button import ColorKeys
@@ -14,19 +11,20 @@ from interface.components.modal import ModalWidget
 from interface.components.bitacoras.salida_form import SalidaFormWidget
 from interface.components.bitacoras.entrada_form import EntradaFormWidget
 from interface.components.table import TableWidget
-from interface.components.user_row import UserRowWidget
+from interface.components.solicitud_row import SolicitudRowWidget
 
 from utils.log import log
 
 class SOLIScreenWidget(QWidget):
-    btn_archivar = pyqtSignal()
+    btn_aceptar = pyqtSignal()
+    btn_rechazar = pyqtSignal()
     
     notificar = pyqtSignal(str,str,str)
     
     def __init__(self):
         super().__init__()
         
-        table_headers = ["Estados"]
+        table_headers = ["N°", "Asunto", "Matricula", "Estado", "Solicitante", "Revisor", "Acciones"]
         
         # Creacion de elementos
         self.main_layout = QVBoxLayout(self) 
@@ -41,7 +39,7 @@ class SOLIScreenWidget(QWidget):
         
         # Creación del QTabWidget
         self.tabs = QTabWidget()
-        self.tabs.addTab(self.table, "Empleados registrados")
+        self.tabs.addTab(self.table, "Todas las solicitudes")
         # self.tabs.addTab(self.archivadas, "Registros Archivados")
 
         # Instancia del objeto para realizar operaciones con la BD en segundo plano.
@@ -66,7 +64,6 @@ class SOLIScreenWidget(QWidget):
         
         # Asignacion de eventos en los botones cuando se hace clic        
         self.button_agregar.clicked.connect(self.modal_salida.show_modal)
-        self.button_recargar.clicked.connect(self.handle_refresh)
         
         # Asignacion de estilos
         label_titulo.setStyleSheet("font-size: 48px; font-weight: bold; color: white;")
@@ -101,8 +98,7 @@ class SOLIScreenWidget(QWidget):
         self.apply_tab_styles()
 
         # Llamamos a la funcion que pide los datos.
-        self.fetch_usuarios()
-        self.fetch_archivadas()
+        self.fetch_data()
 
     def apply_tab_styles(self):
         style = """
@@ -138,8 +134,8 @@ class SOLIScreenWidget(QWidget):
         self.tabs.setStyleSheet(style)
         
     # Funcion para pedir los datos 
-    def fetch_usuarios(self):
-        log("[USUARIOS]: Iniciando fetch general...")
+    def fetch_data(self):
+        log("[SOLICITUDES]: Iniciando fetch general...")
         # Llamar al objeto para hacer peticiones en segundo plano.
         # Esta funcion nos pide...
         # La funcion a ejecutar: func
@@ -148,22 +144,13 @@ class SOLIScreenWidget(QWidget):
         # Aqui no se utiliza, pero tambien esta args, para cuando se le pasen tuplas
         # tampoco se utiliza, kwargs, para cuando se le pasen objetos o clave = valor
         self.runner.run(
-            func=FUsuario.lista_general, 
+            func=FSoli.lista_general, 
             on_success=lambda data: self.handle_data(data, self.table), 
-            on_error=self.handle_error
-        )
-        
-    # Funcion para pedir los datos 
-    def fetch_archivadas(self):
-        log("[USUARIOS]: Iniciando fetch archivados...")
-        self.runner.run(
-            func=FBitacora.lista_archivados, 
-            on_success=lambda data: self.handle_data(data, self.archivadas), 
             on_error=self.handle_error
         )
 
     def handle_data(self, data: list[tuple], parent: TableWidget):
-        log(f"[USUARIOS]: Datos recibidos -> {len(data)} bitácoras.")
+        log(f"[SOLICITUDES]: Datos recibidos -> {len(data)} bitácoras.")
         
         parent.clearRows()
 
@@ -175,54 +162,10 @@ class SOLIScreenWidget(QWidget):
             no_data_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             parent.addRow(no_data_label)
         else:
-            for bitacora in data:
-                card = UserRowWidget(bitacora) 
-                card.btn_archivo.connect(self.handle_archivar)
+            for dato in data:
+                # 0, 1, 5, 7, 9, 11
+                card = SolicitudRowWidget((dato[0], dato[1], dato[5], dato[7], dato[9], dato[11])) 
                 parent.addRow(card)
 
     def handle_error(self, error_message):
-        log(f"[USUARIOS]: Error al hacer fetch -> {error_message}")
-        
-    def handle_archivar(self, data: int):
-        log(f"[USUARIOS]: Iniciando proceso de archivado...")
-        log(f"[USUARIOS]: DATOS -> {data}")
-        
-        activado_por = self.sender()
-        if activado_por: 
-            activado_por.setEnabled(False)
-            
-        self.runner.run(FBitacora.archivar, 
-                        lambda c: self.on_archivado_finalizado(activado_por), 
-                        lambda: activado_por.setEnabled(True) if activado_por else None,
-                        data
-                        )
-        
-    def handle_desarchivar(self, data: int):
-        log(f"[USUARIOS]: Iniciando proceso de desarchivado...")
-        log(f"[USUARIOS]: DATOS -> {data}")
-        
-        activado_por = self.sender()
-        if activado_por: 
-            activado_por.setEnabled(False)
-            
-        self.runner.run(FBitacora.desarchivar, 
-                        lambda c: self.on_archivado_finalizado(activado_por), 
-                        lambda: activado_por.setEnabled(True) if activado_por else None,
-                        data
-                        )
-
-    def on_archivado_finalizado(self, boton):
-        self.notificar.emit("Archivado", "Bitacora archivada exitosamente", "#2ecc71") 
-        
-        if boton:
-            boton.setEnabled(True)
-            
-        self.fetch_usuarios()
-        self.fetch_archivadas()
-        
-    def handle_refresh(self):
-        print("[USUARIOS]: Refrescando datos...")
-        self.fetch_usuarios()
-        self.fetch_archivadas()
-        
-        self.notificar.emit("Recarga", "Datos recargados con exito", "#2ecc71") 
+        log(f"[SOLICITUDES]: Error al hacer fetch -> {error_message}")

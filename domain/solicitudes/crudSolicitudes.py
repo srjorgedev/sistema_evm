@@ -1,18 +1,48 @@
 from db.connV import conn
+from db.ConnB import Conn
+
+from utils.log import log
 
 def listarSolicitudes():
-    miConn = conn()
-    comando = "SELECT numero AS ID, asunto AS Asunto, horaSolicitada AS Hora, fechaSolicitada AS Fecha, vehiculo AS Vehiculo, edo_solicitud AS Estado_Solicitud, solicitante AS Solicitante, autorizador AS Autorizador FROM solicitud"
-    
+    log("[CRUD SOLICITUDES]: Funcion -> Listar")
+    miConn = Conn()
+    # 0, 1, 5, 7, 9, 11
+    comando = """
+    SELECT 
+        s.numero AS ID, 
+        s.asunto AS Asunto, 
+        s.horaSolicitada AS Hora, 
+        s.fechaSolicitada AS Fecha,
+        s.vehiculo AS Vehiculo, 
+        ve.matricula,
+        es.numero AS eso_solicitud_codigo,
+        es.descripcion AS edo_solicitud,
+        s.solicitante AS Solicitante, 
+        eso.nombrePila,
+        s.autorizador AS Autorizador,
+        ea.nombrePila
+        FROM solicitud AS s
+        INNER JOIN edo_solicitud AS es ON s.edo_solicitud = es.numero
+        INNER JOIN empleado AS eso ON s.solicitante = eso.numero
+        INNER JOIN empleado AS ea ON s.autorizador = ea.numero
+        INNER JOIN vehiculo AS ve ON s.vehiculo = ve.numSerie
+        ORDER BY ID
+    """
+    log("[CRUD SOLICITUDES]: Obteniendo datos")
     lista = miConn.lista(comando)
-    
+    log("[CRUD SOLICITUDES]: Datos obtenidos")
     if not lista:
-        print("No hay solicitudes registradas para mostrar")
+        log("[CRUD SOLICITUDES]: Error")
+        return []
     else:
         if len(lista)>0:
             for fila in lista:
-                print(fila)
-                
+                datos = []
+                for item in lista:
+                    datos.append(item)
+
+                return datos
+
 def agregarSolicitud(nuevaSolicitud):
     objSolicitud=nuevaSolicitud
     miConn = conn()
