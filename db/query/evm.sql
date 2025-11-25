@@ -195,6 +195,7 @@ CREATE TABLE mantenimiento(
     FOREIGN KEY (edo_mantenimiento) REFERENCES edo_mantenimiento(numero)
 );
 
+ALTER TABLE empleado ADD activo TINYINT(1) NOT NULL DEFAULT 1;
 ALTER TABLE empleado ADD COLUMN password_hash VARCHAR(255) NOT NULL;
 ALTER TABLE empleado ADD COLUMN email VARCHAR(100) NOT NULL;
 
