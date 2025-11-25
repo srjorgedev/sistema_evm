@@ -148,23 +148,32 @@ class SOLIScreenWidget(QWidget):
             on_error=self.handle_error
         )
 
-    def handle_data(self, data: list[tuple], parent: TableWidget):
-        log(f"[SOLICITUDES]: Datos recibidos -> {len(data)} bitácoras.")
-        
-        parent.clearRows()
+def handle_data(self, data: list[tuple], parent: TableWidget):
+    log(f"[SOLICITUDES]: Datos recibidos -> {len(data)} solicitudes.")
 
-        if not data:
-            no_data_label = QLabel("No hay bitácoras para mostrar.")
-            no_data_label.setStyleSheet("background-color: transparent; font-size: 16px; color: #888888;")
-            no_data_label.setContentsMargins(0, 16, 0, 0)
-            
-            no_data_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            parent.addRow(no_data_label)
-        else:
-            for dato in data:
-                # 0, 1, 5, 7, 9, 11
-                card = SolicitudRowWidget((dato[0], dato[1], dato[5], dato[7], dato[9], dato[11])) 
-                parent.addRow(card)
+    parent.clearRows()
+
+    if not data:
+        no_data_label = QLabel("No hay solicitudes para mostrar.")
+        no_data_label.setStyleSheet("background-color: transparent; font-size: 16px; color: #888888;")
+        no_data_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        parent.addRow(no_data_label)
+        return
+
+    for d in data:
+        numero = d[0]
+        asunto = d[1]
+        matricula = d[5]
+        estado = d[7]
+        solicitante = d[9]
+        autorizador = d[11]
+
+        fila = SolicitudRowWidget(
+            (numero, asunto, matricula, estado, solicitante, autorizador)
+        )
+
+        parent.addRow(fila)
+
 
     def handle_error(self, error_message):
         log(f"[SOLICITUDES]: Error al hacer fetch -> {error_message}")
