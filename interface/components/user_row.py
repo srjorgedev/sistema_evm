@@ -1,10 +1,8 @@
-from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QSizePolicy, QWidget
+from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QWidget
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QCursor
 
-from domain.bitacoras.Clase import Bitacora
 from interface.components.square_button import SquareButtonWidget
-from interface.components.button import ButtonWidget
 
 class UserRowWidget(QFrame):
     btn_archivo = pyqtSignal(object)
@@ -35,15 +33,15 @@ class UserRowWidget(QFrame):
         
         acciones_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
         
-        layout.setContentsMargins(8, 0, 8, 0)
+        layout.setContentsMargins(0, 0, 0, 0)
         
         self.setFixedHeight(56) 
-        self.setStyleSheet("BitacoraRowWidget {background-color: transparent;} BitacoraRowWidget:hover {background-color: #162229;}")
+        self.setStyleSheet("UserRowWidget {background-color: transparent;} UserRowWidget:hover {background-color: #162229;}")
         
-        lbl_strong_style = "font-size: 18px; color: #009AD3; font-weight: bold; background: transparent;"
-        lbl_normal_style = "font-size: 18px; color: #f1f1f1; font-weight: normal; background: transparent;"
+        lbl_strong_style = "font-size: 14px; color: #009AD3; font-weight: bold; background: transparent;"
+        lbl_normal_style = "font-size: 14px; color: #f1f1f1; font-weight: normal; background: transparent;"
         
-        lbl_id.setFixedWidth(40)
+        lbl_id.setFixedWidth(80) 
         lbl_id.setStyleSheet(lbl_strong_style)
         lbl_id.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter)
         lbl_titulo.setStyleSheet(lbl_normal_style)

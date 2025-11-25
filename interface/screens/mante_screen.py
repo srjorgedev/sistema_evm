@@ -19,9 +19,12 @@ from interface.components.user_row import UserRowWidget
 from interface.components.vehiculo_row import VehiculoCardWidget
 from interface.components.nuevoVehiculoForm import NewCarWidget
 
+import controllers.mante_controller as FMante
+from domain.mantenimiento.Mantenimiento import Mantenimiento
+
 from utils.log import log
 
-class VEHIScreenWidget(QWidget):
+class MANTEScreenWidget(QWidget):
     btn_archivar = pyqtSignal()
     
     notificar = pyqtSignal(str,str,str)
@@ -29,11 +32,11 @@ class VEHIScreenWidget(QWidget):
     def __init__(self):
         super().__init__()
         
-        table_headers = ["N° Serie", "Matricula", "Marca", "Acciones"]
+        table_headers = ["Folio", "Razon", "Fecha", "Acciones"]
         
         # Creacion de elementos
         self.main_layout = QVBoxLayout(self) 
-        label_titulo = QLabel("VEHICULOS")
+        label_titulo = QLabel("MANTENIMIENTOS")
         button_layout = QHBoxLayout()
         label_subtitulo = QLabel("Panel de Control")
         label_buttons = QLabel("Acciones rapidas")
@@ -44,7 +47,7 @@ class VEHIScreenWidget(QWidget):
         
         # Creación del QTabWidget
         self.tabs = QTabWidget()
-        self.tabs.addTab(self.table, "Vehiculos registrados")
+        self.tabs.addTab(self.table, "Mantenimientos registrados")
         # self.tabs.addTab(self.archivadas, "Registros Archivados")
 
         # Instancia del objeto para realizar operaciones con la BD en segundo plano.
@@ -55,7 +58,7 @@ class VEHIScreenWidget(QWidget):
         h_spacer = QSpacerItem(128, 16, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
         
         # Botones
-        self.button_agregar = ButtonWidget("add", "Registrar vehiculo", ColorKeys.CREAR)
+        self.button_agregar = ButtonWidget("add", "Registrar mantenimiento", ColorKeys.CREAR)
         self.button_modificar = ButtonWidget("modify", "Modificar", ColorKeys.MODIFICAR)
         self.button_archivar = ButtonWidget("archive", "Eliminar", ColorKeys.ARCHIVAR)
         self.button_recargar = SquareButtonWidget("reload", "#f1f1f1")
@@ -104,7 +107,7 @@ class VEHIScreenWidget(QWidget):
         self.apply_tab_styles()
 
         # Llamamos a la funcion que pide los datos.
-        self.fetch_vehiculos()
+        self.fetch_data()
 
     def apply_tab_styles(self):
         style = """
@@ -140,8 +143,8 @@ class VEHIScreenWidget(QWidget):
         self.tabs.setStyleSheet(style)
         
     # Funcion para pedir los datos 
-    def fetch_vehiculos(self):
-        log("[VEHICULOS]: Iniciando fetch general...")
+    def fetch_data(self):
+        log("[MANTENIMIENTOS]: Iniciando fetch general...")
         # Llamar al objeto para hacer peticiones en segundo plano.
         # Esta funcion nos pide...
         # La funcion a ejecutar: func
@@ -150,13 +153,13 @@ class VEHIScreenWidget(QWidget):
         # Aqui no se utiliza, pero tambien esta args, para cuando se le pasen tuplas
         # tampoco se utiliza, kwargs, para cuando se le pasen objetos o clave = valor
         self.runner.run(
-            func=FVehiculo.obtener_lista, 
+            func=FMante.lista, 
             on_success=lambda data: self.handle_data(data, self.table), 
             on_error=self.handle_error
         )
         
-    def handle_data(self, data: list[tuple], parent: TableWidget):
-        log(f"[VEHICULOS]: Datos recibidos -> {len(data)} VEHICULOS.")
+    def handle_data(self, data: list[Mantenimiento], parent: TableWidget):
+        log(f"[MANTENIMIENTOS]: Datos recibidos -> {len(data)} MANTENIMIENTOS.")
         
         parent.clearRows()
 
@@ -168,10 +171,11 @@ class VEHIScreenWidget(QWidget):
             no_data_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             parent.addRow(no_data_label)
         else:
-            for bitacora in data:
-                card = VehiculoCardWidget(bitacora) 
+            for dato in data:
+                tupla = (dato.get_folio(), dato.get_razon(), dato.get_fechaProgramada())
+                card = VehiculoCardWidget(tupla) 
                 card.btn_archivo.connect(lambda: print("HI"))
                 parent.addRow(card)   
         
     def handle_error(self, error_message):
-        log(f"[VEHICULOS]: Error al hacer fetch -> {error_message}")
+        log(f"[MANTENIMIENTOS]: Error al hacer fetch -> {error_message}")

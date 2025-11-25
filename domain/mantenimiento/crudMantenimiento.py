@@ -1,5 +1,6 @@
 # crudMantenimiento.py
 from db.conn import conn
+from db.ConnB import Conn
 from domain.mantenimiento.Mantenimiento import Mantenimiento
 
 # ----- CREATE -----
@@ -32,8 +33,9 @@ def alta(objMantenimiento):
 
 # ----- READ -----
 def lista():
-    miConn = conn()
-    comando = "SELECT Folio, Razon, Estatus, Importancia, FechaProgramada, Comentarios, TipoMantenimiento, Vehiculo, EstadoMantenimiento FROM mantenimiento ORDER BY Folio"
+    miConn = Conn()
+    comando = "SELECT folio, razon, fechaProgramada, comentarios, tipo_mantenimiento, vehiculo, edo_mantenimiento FROM MANTENIMIENTO"
+    listado = miConn.lista(comando)
     
     try:
         cursor = miConn.conexion.cursor()

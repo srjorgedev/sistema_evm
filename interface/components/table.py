@@ -23,7 +23,7 @@ class TableWidget(QFrame):
         self.header_layout.setContentsMargins(0, 0, 0, 0)
         self.header_layout.setSpacing(0)
         self.rows_layout.setContentsMargins(0, 0, 0, 0)
-        self.rows_layout.setSpacing(2)
+        self.rows_layout.setSpacing(0)
         
         self.scroll_area.setWidgetResizable(True) 
         self.scroll_area.setFrameShape(QFrame.Shape.NoFrame)
@@ -56,10 +56,11 @@ class TableWidget(QFrame):
         for i, text in enumerate(labels):
             widget = TableHeadWidget(text)
             
-            if i == 0 and len(labels[i]) < 6:
-                widget.setFixedWidth(60) 
-            
-            self.header_layout.addWidget(widget)
+            if i == 0 and labels[i].upper() in ["CODIGO", "N°", "ID"]:
+                widget.setFixedWidth(80) 
+                self.header_layout.addWidget(widget, 0, Qt.AlignmentFlag.AlignCenter)
+            else: 
+                self.header_layout.addWidget(widget, 1)
 
     def addRow(self, row_widget: QWidget):
         self.rows_layout.addWidget(row_widget)

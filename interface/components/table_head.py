@@ -13,9 +13,14 @@ class TableHeadWidget(QFrame):
         self.setFixedHeight(48)
         
         self.main_layout = QHBoxLayout(self)
-        label = QLabel(text)     
+        label = QLabel(text)   
         
-        label.setStyleSheet("font-size: 18px; font-weight: normal; color: #f1f1f1;")
+        if text in ["N°", "N", "ID"]:
+            label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        if text.upper() == "N° SERIE":
+            label.setContentsMargins(16,0,0,0)
+        
+        label.setStyleSheet("font-size: 16px; font-weight: bold; color: #f1f1f1;")
         self.setStyleSheet("background-color: transparent;")
         
         self.main_layout.addWidget(label)

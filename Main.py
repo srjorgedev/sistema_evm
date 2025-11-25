@@ -13,6 +13,9 @@ from interface.screens.vehi_screen import VEHIScreenWidget
 from interface.screens.soli_screen import SOLIScreenWidget
 from interface.components.notifications import NotificationContainerWidget
 from interface.screens.users_screen import USERScreenWidget
+from interface.screens.mante_screen import MANTEScreenWidget
+
+from interface.components.styles.general import COLORS_LIST, COLORS
 
 from db.ConnB import Conn
 
@@ -26,11 +29,11 @@ class DBTest(QThread):
 
 class VentanaPrincipal(QMainWindow):
     notification = pyqtSignal(object)
-    
+
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Enterprise Vehicle Manager")
-        
+
         widget_central = QWidget()
         self.layout_principal = QHBoxLayout(widget_central)
         self.layout_principal.setSpacing(0)
@@ -44,14 +47,14 @@ class VentanaPrincipal(QMainWindow):
         
         self.pantalla_bitacora.notificar.connect(self.notification_container.nueva_notificacion)
         
-        self.stack.setStyleSheet("background-color: #0f181f;")
+        self.stack.setStyleSheet(f"background-color: {COLORS_LIST[COLORS.BG_OSCURO_1]};")
         
         # self.stack.addWidget(ScreenWidget("VISTA DASHBOARD", "#2c3e50"))
         self.stack.addWidget(self.pantalla_bitacora)
         self.stack.addWidget(SOLIScreenWidget())
         self.stack.addWidget(USERScreenWidget())
         self.stack.addWidget(VEHIScreenWidget())
-        self.stack.addWidget(ScreenWidget("VISTA MANTENIMIENTOS", "#2980b9"))
+        self.stack.addWidget(MANTEScreenWidget())
         
         self.sidemenu.current_page.connect(self.stack.setCurrentIndex)
 

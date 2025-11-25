@@ -7,6 +7,8 @@ from PyQt6.QtGui import QResizeEvent, QColor, QPalette, QCursor
 from PyQt6.QtSvgWidgets import QSvgWidget
 from pathlib import Path
 
+from interface.components.styles.general import COLORS, COLORS_LIST
+
 direction = Path(__file__)
 folder = direction.parent.parent
 
@@ -58,40 +60,41 @@ class MenuButtonWidget(QFrame):
         self.setProperty("active", self._active)
         self.inner_frame.setProperty("active", self._active)
 
-        self.setStyleSheet("""
-            MenuButtonWidget {
+        self.setStyleSheet(f"""
+            MenuButtonWidget {{
                 background-color: transparent;
-            }
+            }}
             
-            MenuButtonWidget[active="true"] {
-                background-color: #009AD3;
-                border-right: 3px solid #9fd9ef;
-            }
+            MenuButtonWidget[active="true"] {{
+                background-color: {COLORS_LIST[COLORS.BASE]};
+                border-right: 3px solid {COLORS_LIST[COLORS.BASE_CLARO]};
+            }}
 
-            MenuButtonWidget #InnerButton {
+            MenuButtonWidget #InnerButton {{
                 background-color: none;
                 border: 1px solid #5A5F6B;
                 border-radius: 2px;
-            }
+            }}
             
-            MenuButtonWidget[active="true"] #InnerButton {
+            MenuButtonWidget[active="true"] #InnerButton {{
                 border-color: transparent; 
-            }
+            }}
 
-            MenuButtonWidget[active="false"]:hover {
-                background-color: #C030C0; 
-            }
-            MenuButtonWidget[active="false"]:hover #InnerButton {
-                border-color: transparent; 
-            }
-
-            MenuButtonWidget #InnerButton QLabel {
-                color: #f1f1f1;
-            }
+            MenuButtonWidget[active="false"]:hover {{
+                background-color: {COLORS_LIST[COLORS.BASE_OSCURO]}; 
+            }}
             
-            MenuButtonWidget[active="true"] #InnerButton QLabel {
+            MenuButtonWidget[active="false"]:hover #InnerButton {{
+                border-color: transparent; 
+            }}
+
+            MenuButtonWidget #InnerButton QLabel {{
                 color: #f1f1f1;
-            }
+            }}
+            
+            MenuButtonWidget[active="true"] #InnerButton QLabel {{
+                color: #f1f1f1;
+            }}
         """)
 
     def set_active(self, is_active):

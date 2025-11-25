@@ -13,11 +13,14 @@ from interface.components.modal import ModalWidget
 from interface.components.bitacoras.salida_form import SalidaFormWidget
 from interface.components.bitacoras.entrada_form import EntradaFormWidget
 from interface.components.table import TableWidget
+from interface.components.bitacoras.bitacora_info import BitacoraInfoWidget
 
 from utils.log import log
 
 class BITScreenWidget(QWidget):
     btn_archivar = pyqtSignal()
+    
+    row_click: int = 0
     
     notificar = pyqtSignal(str,str,str)
     
@@ -72,18 +75,19 @@ class BITScreenWidget(QWidget):
         # El primer parametro, es el elemento padre, self. Es obligatorio.
         # El segundo parametro, es lo que aparecera dentro de la modal. Es obligatorio.
         # El tercer parametro, es el titulo de la modal. Es opcional, aunque preferiblemente hay que ponerlo.
-        self.modal_salida = ModalWidget(self, SalidaFormWidget(), "Crear un nuevo registro de salida")
+        # self.modal_salida = ModalWidget(self, SalidaFormWidget(), "Crear un nuevo registro de salida")
         self.modal_entrada = ModalWidget(self, EntradaFormWidget(), "Crear un nuevo registro de entrada")
+        # self.modal_into = ModalWidget(self, BitacoraInfoWidget(self.row_click), "Ver datos de bitacora")
         
         # Asignacion de eventos en los botones cuando se hace clic      
         # Le asignamos funciones a los botones cuando se les hace clic.
         # TODOS los botones tienen .clicked.connect  
-        self.button_salida.clicked.connect(self.modal_salida.show_modal)
+        self.button_salida.clicked.connect(lambda: self.abrir_modal(SalidaFormWidget, "Crear un nuevo registro de salida"))
         self.button_entrada.clicked.connect(self.modal_entrada.show_modal)
         self.button_recargar.clicked.connect(self.handle_refresh)
         
         # Asignacion de estilos
-        label_titulo.setStyleSheet("font-size: 48px; font-weight: bold; color: white;")
+        label_titulo.setStyleSheet("font-size: 40px; font-weight: bold; color: white;")
         label_buttons.setStyleSheet("font-size: 18px; color: #c1c1c1;")
         label_subtitulo.setStyleSheet("font-size: 18px; color: #c1c1c1;")
         
@@ -193,10 +197,12 @@ class BITScreenWidget(QWidget):
             for bitacora in data:
                 if bitacora[5] == True:
                     card = BitacoraRowWidget(bitacora) 
+                    card.clic_row.connect(lambda id: self.handle_clic_row(id))
                     card.btn_archivo.connect(self.handle_archivar)
                 elif bitacora[5] == False:
                     card = BitacoraArchivedRowWidget(bitacora) 
                     card.btn_archivo.connect(self.handle_desarchivar)
+                    card.clic_row.connect(lambda id: self.handle_clic_row(id))
                 parent.addRow(card)
 
     def handle_error(self, error_message):
@@ -245,3 +251,19 @@ class BITScreenWidget(QWidget):
         self.fetch_archivadas()
         
         self.notificar.emit("Recarga", "Datos recargados con exito", "#2ecc71") 
+    
+    def handle_clic_row(self, id):
+        log(f"[BITACORAS]: Clicando row -> {id}")
+        id_bitacora = int(id) 
+        
+        content_widget = BitacoraInfoWidget(id_bitacora)
+        
+        self.modal_info = ModalWidget(self, content_widget, "Ver datos de bitácora")
+        self.modal_info.show_modal()
+
+    def abrir_modal(self, formulario, titulo):
+        form = formulario()
+        
+        modal = ModalWidget(self, form, titulo)
+        
+        modal.show_modal()

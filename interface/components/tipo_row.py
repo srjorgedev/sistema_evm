@@ -34,15 +34,16 @@ class TypeRowWidget(QFrame):
         
         acciones_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
         
-        layout.setContentsMargins(8, 0, 8, 0)
+        layout.setContentsMargins(0, 0, 0, 0)
         
         self.setFixedHeight(56) 
-        self.setStyleSheet("BitacoraRowWidget {background-color: transparent;} BitacoraRowWidget:hover {background-color: #162229;}")
+        self.setStyleSheet("TypeRowWidget {background-color: transparent;} TypeRowWidget:hover {background-color: #162229;}")
         
-        lbl_strong_style = "font-size: 18px; color: #009AD3; font-weight: bold; background: transparent;"
-        lbl_normal_style = "font-size: 18px; color: #f1f1f1; font-weight: normal; background: transparent;"
+        lbl_strong_style = "font-size: 14px; color: #009AD3; font-weight: bold; background: transparent;"
+        lbl_normal_style = "font-size: 14px; color: #f1f1f1; font-weight: normal; background: transparent;"
         
-        lbl_id.setFixedWidth(40)
+        if len(self.data[0]) < 5: 
+            lbl_id.setFixedWidth(80)
         lbl_id.setStyleSheet(lbl_strong_style)
         lbl_id.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter)
         lbl_titulo.setStyleSheet(lbl_normal_style)
