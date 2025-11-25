@@ -172,3 +172,17 @@ SELECT
         FROM empleado AS e
         INNER JOIN licencia AS l ON e.numero = l.empleado
         WHERE e.tipo_empleado = 2   
+
+-- 1) 
+-- 2) Observaciones realizada en la `bitacora`
+-- num bitacora, num observacion, descripcion
+SELECT b.numero AS 'No Bitacora',o.numero AS 'No Observacion',o.descripcion AS 'Descripcion'
+FROM bitacora AS b
+INNER JOIN observacion AS o ON o.bitacora = b.numero
+ORDER BY b.numero
+
+-- 3) consultar tipo de licencia requerida para cada `vehiculo`
+-- matricla, marca, modelo, proposito, tipo de `licencia`
+SELECT matricula, marca, modelo, proposito
+FROM `vehiculo` as v
+INNER Join `tipo_licencia` as tl on tl.codigo = v.licencia_requerida

@@ -30,10 +30,9 @@ class NewCarWidget(QWidget):
         self.matricula = InputWidget("Matrícula")
         self.proposito = InputWidget("Propósito del vehículo*")
         self.fechaAd = InputWidget("Fecha de adquisición")
-        self.disponibilidad = InputWidget("Disponibilidad*")
-        self.marca = InputWidget("Marca*")
-        self.modelo = InputWidget("Modelo*")
-        self.licencia = InputWidget("Licencia requerida*")
+        self.marca = SelectWidget("Marca")
+        self.modelo = SelectWidget("Modelo")
+        self.licencia = SelectWidget("Licencia requerida")
 
         crear_boton = ButtonWidget(None, "Registrar Vehículo", ColorKeys.CREAR)
         crear_boton.clicked.connect(self.registrar)
@@ -50,7 +49,6 @@ class NewCarWidget(QWidget):
         self.main_layout.addLayout(layout_cred)
         self.main_layout.addWidget(self.marca)
         self.main_layout.addWidget(self.modelo)
-        self.main_layout.addWidget(self.disponibilidad)
         self.main_layout.addWidget(self.licencia)
         self.main_layout.addWidget(self.select_tipos)
         self.main_layout.addStretch()
@@ -80,10 +78,6 @@ class NewCarWidget(QWidget):
         combobox.addItems(datos)
         log("[NEW CAR FORM]: Datos agregados.")
 
-
-    # ============================
-    # ---- REGISTRAR VEHÍCULO ----
-    # ============================
     def registrar(self):
 
         num_serie = self.num_serie.get_text()

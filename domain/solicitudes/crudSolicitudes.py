@@ -45,15 +45,13 @@ def agregarSolicitud(nuevaSolicitud):
 
     comando = f"""
     INSERT INTO solicitud 
-    (asunto, horaSolicitada, fechaSolicitada, vehiculo, edo_solicitud, solicitante, autorizador)
+    (asunto, fechaSolicitada, horaSolicitada, vehiculo, solicitante)
     VALUES (
         '{obj.get_asunto()}',
-        '{obj.get_horaSolicitud()}',
         '{obj.get_fechaSolicitud()}',
+        '{obj.get_horaSolicitud()}',
         '{obj.get_vehiculo()}',
-        '{obj.get_edoSolicitud()}',
         '{obj.get_solicitante()}',
-        '{obj.get_autorizador()}'
     )
     """
 
