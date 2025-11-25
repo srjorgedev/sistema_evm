@@ -50,7 +50,7 @@ class SOLIScreenWidget(QWidget):
         h_spacer = QSpacerItem(128, 16, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
         
         # Botones
-        self.button_agregar = ButtonWidget("add", "Registrar salida", ColorKeys.CREAR)
+        self.button_agregar = ButtonWidget("add", "Registrar solicitud", ColorKeys.CREAR)
         self.button_modificar = ButtonWidget("modify", "Modificar", ColorKeys.MODIFICAR)
         self.button_archivar = ButtonWidget("archive", "Eliminar", ColorKeys.ARCHIVAR)
         self.button_recargar = SquareButtonWidget("reload", "#f1f1f1")

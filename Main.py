@@ -43,7 +43,7 @@ class VentanaPrincipal(QMainWindow):
         self.sidemenu = SidemenuWidget()
         self.stack = QStackedWidget()
         self.notification_container = NotificationContainerWidget(self)
-        
+
         self.pantalla_bitacora.notificar.connect(self.notification_container.nueva_notificacion)
         
         self.stack.setStyleSheet(f"background-color: {COLORS_LIST[COLORS.BG_OSCURO_1]};")
@@ -53,7 +53,7 @@ class VentanaPrincipal(QMainWindow):
         self.stack.addWidget(SOLIScreenWidget())
         self.stack.addWidget(USERScreenWidget())
         self.stack.addWidget(VEHIScreenWidget())
-        self.stack.addWidget(ScreenWidget("VISTA MANTENIMIENTOS", "#2980b9"))
+        self.stack.addWidget(ScreenWidget("VISTA MANTENIMIENTOS", "#31a3f0"))
         
         self.sidemenu.current_page.connect(self.stack.setCurrentIndex)
 
