@@ -1,22 +1,23 @@
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QFrame, QLabel, QHBoxLayout,
-                             QGraphicsDropShadowEffect)
+                            QGraphicsDropShadowEffect)
 from PyQt6.QtCore import Qt, QRect, pyqtSignal
-from PyQt6.QtGui import QColor, QCursor
+from PyQt6.QtGui import QColor
 
 from interface.components.square_button import SquareButtonWidget
+from interface.components.button import ButtonWidget
 
 class ModalWidget(QWidget):
     close = pyqtSignal()
     save = pyqtSignal()
     
-    def __init__(self, parent=None, widget_contenido=None, titulo=""):
+    def __init__(self, parent=None, widget_contenido=None, titulo="", boton = None):
         super().__init__(parent)
         
         self.porcentaje_ancho = 0.75
-        self.porcentaje_alto = 0.75
+        self.porcentaje_alto = 0.80
 
         self.setVisible(False)
-        self.setStyleSheet("background-color: rgba(0, 0, 0, 180);")
+        self.setStyleSheet("background-color: rgba(0, 0, 0, 150);")
         
         self.contenedor = QFrame(self) 
         self.contenedor.setStyleSheet("""
@@ -34,13 +35,13 @@ class ModalWidget(QWidget):
         self.contenedor.setGraphicsEffect(sombra)
 
         self.layout_tarjeta = QVBoxLayout(self.contenedor)
-        self.layout_tarjeta.setContentsMargins(48, 48, 48, 48)
-        self.layout_tarjeta.setSpacing(20)
+        self.layout_tarjeta.setContentsMargins(32, 32, 32, 32)
+        self.layout_tarjeta.setSpacing(16)
         
         self.header = QHBoxLayout()
         
         title = QLabel(titulo)
-        title.setStyleSheet("font-size: 32px; font-weight: bold; color: white;")
+        title.setStyleSheet("font-size: 24px; font-weight: bold; color: white;")
         
         self.btn_cerrar = SquareButtonWidget("close", "#cc1c11", 36)
         self.btn_cerrar.clicked.connect(self.hide_modal)

@@ -226,6 +226,12 @@ INSERT INTO empleado (nombrePila, apdPaterno, apdMaterno, tipo_empleado) VALUES
 ('Nombre24', "Apellido24", "Materno24", "GER"),
 ('Nombre25', "Apellido25", "Materno25", "ADM");
 
+UPDATE empleado 
+SET nombrePila = "Jorge Roque",
+apdPaterno = "Sandoval",
+apdMaterno = "Rodriguez"
+WHERE numero = 1
+
 INSERT INTO telefono (numTelefono, empleado) VALUES
 ('+52 664-101-4001', 1),
 ('+52 664-102-4002', 2),

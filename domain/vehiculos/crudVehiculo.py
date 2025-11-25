@@ -58,18 +58,27 @@ def listaCorta():
     
     return lista
                 
-def agregarVehiculo(nuevoVehiculo):
-    objVehiculo=nuevoVehiculo
+def agregarVehiculo(objVehiculo):
     miConn = conn()
-    aux = "insert into vehiculos (num_serie, matricula, marca, modelo, color, fecha_adquision, tipo, tipo_licencia, capacidad_pasajeros, utilidad, comentarios) VALUES('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', {8}, '{9}', '{10}')"
-    comando = aux.format(objVehiculo.get_num_serie(), 
-    objVehiculo.get_matricula(), objVehiculo.get_marca(), 
-    objVehiculo.get_modelo(), objVehiculo.get_color(), 
-    objVehiculo.get_fecha_adquision(), objVehiculo.get_tipo(), 
-    objVehiculo.get_tipo_licencia(), objVehiculo.get_capacidad_pasajeros(), 
-    objVehiculo.get_utilidad(), objVehiculo.get_comentarios())
-    lastid = miConn.registrar(comando)
-    return lastid
+
+    comando = """
+        INSERT INTO vehiculo
+        (numSerie, matricula, proposito, fechaAdquisicion, disponibilidad,
+         marca, modelo, licencia_requerida)
+        VALUES ('{0}', '{1}', '{2}', '{3}', {4}, '{5}', '{6}', '{7}')
+    """.format(
+        objVehiculo.get_num_serie(),
+        objVehiculo.get_matricula(),
+        objVehiculo.get_proposito(),
+        objVehiculo.get_fecha_adquisicion(),
+        objVehiculo.get_disponibilidad(),
+        objVehiculo.get_marca(),
+        objVehiculo.get_modelo(),
+        objVehiculo.get_licencia_requerida()
+    )
+
+    return miConn.registrar(comando)
+
 
 def borrarVehiculo(existeVehiculo):
     objVehiculo=existeVehiculo

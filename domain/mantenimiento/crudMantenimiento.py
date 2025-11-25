@@ -1,5 +1,6 @@
 # crudMantenimiento.py
 from db.conn import conn
+from db.ConnB import Conn
 from domain.mantenimiento.Mantenimiento import Mantenimiento
 
 # CREATE
@@ -13,8 +14,8 @@ def alta(objMantenimiento):
 
 # READ
 def lista():
-    miConn = conn()
-    comando = "SELECT Folio, Razon, Estatus, Importancia, FechaProgramada, Comentarios, TipoMantenimiento, Vehiculo, EstadoMantenimiento FROM MANTENIMIENTO"
+    miConn = Conn()
+    comando = "SELECT folio, razon, fechaProgramada, comentarios, tipo_mantenimiento, vehiculo, edo_mantenimiento FROM MANTENIMIENTO"
     listado = miConn.lista(comando)
     
     if listado == 0:
@@ -23,10 +24,12 @@ def lista():
     
     if len(listado) > 0:
         print("\n*** Listado de Mantenimientos ***")
+        objs = []
         for fila in listado:
-            objMantenimiento = Mantenimiento(fila[1], fila[2], fila[3], str(fila[4]), fila[5], fila[6], fila[7], fila[8], fila[0])
+            objMantenimiento = Mantenimiento(fila[1], 0, 0, str(fila[2]), fila[3], fila[4], fila[5], fila[6], fila[0])
+            objs.append(objMantenimiento)
             print(objMantenimiento)
-        return True
+        return objs
     else:
         print("No hay mantenimientos registrados.")
         

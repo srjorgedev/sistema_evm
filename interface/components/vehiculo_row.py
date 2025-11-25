@@ -31,14 +31,17 @@ class VehiculoCardWidget(QFrame):
 
         archivar.clicked.connect(self.emit_archivar)
 
+        lbl_serie.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+        lbl_serie.setContentsMargins(8, 0, 0, 0)
+        lbl_matricula.setContentsMargins(0, 0, 0, 0)
         acciones_layout.addWidget(modificar)
         acciones_layout.addWidget(archivar)
         acciones_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        layout.setContentsMargins(8, 0, 8, 0)
+        layout.setContentsMargins(16, 0, 0, 0)
 
         # Estilos
-        lbl_style = "font-size: 18px; color: #f1f1f1; background: transparent;"
-        lbl_strong = "font-size: 18px; color: #009AD3; font-weight: bold; background: transparent;"
+        lbl_style = "font-size: 14px; color: #f1f1f1; background: transparent;"
+        lbl_strong = "font-size: 14px; color: #009AD3; font-weight: bold; background: transparent;"
 
         self.setStyleSheet("VehiculoCardWidget {background-color: transparent;} VehiculoCardWidget:hover {background-color: #162229;}")
         # lbl_id.setStyleSheet(lbl_strong)

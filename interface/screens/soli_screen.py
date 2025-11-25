@@ -12,6 +12,7 @@ from interface.components.bitacoras.salida_form import SalidaFormWidget
 from interface.components.bitacoras.entrada_form import EntradaFormWidget
 from interface.components.table import TableWidget
 from interface.components.solicitud_row import SolicitudRowWidget
+from interface.components.nuevaSoliForm import NuevaSoliForm
 
 from utils.log import log
 
@@ -40,7 +41,6 @@ class SOLIScreenWidget(QWidget):
         # Creación del QTabWidget
         self.tabs = QTabWidget()
         self.tabs.addTab(self.table, "Todas las solicitudes")
-        # self.tabs.addTab(self.archivadas, "Registros Archivados")
 
         # Instancia del objeto para realizar operaciones con la BD en segundo plano.
         self.runner = TaskRunner(self)
@@ -50,7 +50,7 @@ class SOLIScreenWidget(QWidget):
         h_spacer = QSpacerItem(128, 16, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
         
         # Botones
-        self.button_agregar = ButtonWidget("add", "Registrar solicitud", ColorKeys.CREAR)
+        self.button_agregar = ButtonWidget("add", "Crear solicitud", ColorKeys.CREAR)
         self.button_modificar = ButtonWidget("modify", "Modificar", ColorKeys.MODIFICAR)
         self.button_archivar = ButtonWidget("archive", "Eliminar", ColorKeys.ARCHIVAR)
         self.button_recargar = SquareButtonWidget("reload", "#f1f1f1")
@@ -59,14 +59,14 @@ class SOLIScreenWidget(QWidget):
         self.main_layout.setContentsMargins(48, 52, 48, 0) 
         self.main_layout.setSpacing(0)
         
-        self.modal_salida = ModalWidget(self, SalidaFormWidget(), "Crear un nuevo registro de salida")
+        self.modal_salida = ModalWidget(self, NuevaSoliForm(), "Crear un nuevo registro de salida")
         self.modal_entrada = ModalWidget(self, EntradaFormWidget(), "Crear un nuevo registro de entrada")
         
         # Asignacion de eventos en los botones cuando se hace clic        
         self.button_agregar.clicked.connect(self.modal_salida.show_modal)
         
         # Asignacion de estilos
-        label_titulo.setStyleSheet("font-size: 48px; font-weight: bold; color: white;")
+        label_titulo.setStyleSheet("font-size: 40px; font-weight: bold; color: white;")
         label_buttons.setStyleSheet("font-size: 18px; color: #c1c1c1;")
         label_subtitulo.setStyleSheet("font-size: 18px; color: #c1c1c1;")
         
@@ -150,22 +150,31 @@ class SOLIScreenWidget(QWidget):
         )
 
     def handle_data(self, data: list[tuple], parent: TableWidget):
-        log(f"[SOLICITUDES]: Datos recibidos -> {len(data)} bitácoras.")
-        
+        log(f"[SOLICITUDES]: Datos recibidos -> {len(data)} solicitudes.")
+    
         parent.clearRows()
-
+    
         if not data:
-            no_data_label = QLabel("No hay bitácoras para mostrar.")
+            no_data_label = QLabel("No hay solicitudes para mostrar.")
             no_data_label.setStyleSheet("background-color: transparent; font-size: 16px; color: #888888;")
-            no_data_label.setContentsMargins(0, 16, 0, 0)
-            
             no_data_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             parent.addRow(no_data_label)
-        else:
-            for dato in data:
-                # 0, 1, 5, 7, 9, 11
-                card = SolicitudRowWidget((dato[0], dato[1], dato[5], dato[7], dato[9], dato[11])) 
-                parent.addRow(card)
-
+            return
+    
+        for d in data:
+            numero = d[0]
+            asunto = d[1]
+            matricula = d[5]
+            estado = d[7]
+            solicitante = d[9]
+            autorizador = d[11]
+    
+            fila = SolicitudRowWidget(
+                (numero, asunto, matricula, estado, solicitante, autorizador)
+            )
+    
+            parent.addRow(fila)
+    
+    
     def handle_error(self, error_message):
         log(f"[SOLICITUDES]: Error al hacer fetch -> {error_message}")

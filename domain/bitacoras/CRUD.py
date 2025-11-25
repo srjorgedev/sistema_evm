@@ -116,12 +116,78 @@ def bitacoraSinEntrada():
 
     return bitacoras
 
-
-def existe(bitacora: Bitacora):
+def leer(id: int):
     conn = Conn()
 
-    aux = "SELECT asunto, destino, responsable, autorizador, vehiculo, gasSalida, kmSalida, fechaSalida FROM bitacora WHERE numControl = {0}"
-    query = aux.format(bitacora.get_numControl())
+    aux = """
+    SELECT 
+        CONCAT(soli.nombrePila, ' ', soli.apdPaterno, ' ', soli.apdMaterno) AS Solicitante,
+        CONCAT(aut.nombrePila, ' ', aut.apdPaterno, ' ', aut.apdMaterno) AS Autorizador,
+        bit.destino AS Destino,
+        bit.asunto AS Asunto,
+        DATE_FORMAT(bit.fechaSalida, "%d-%m-%y") AS FechaSalida,
+        DATE_FORMAT(bit.horaSalida, "%H:%i") AS HoraSalida,
+        bit.kmSalida AS KilometrajeSalida,
+        bit.gasSalida AS GasolinaSalida,
+        DATE_FORMAT(bit.fechaEntrada, "%d-%m-%Y") AS FechaEntrada,
+        DATE_FORMAT(bit.horaEntrada, "%H:%i") AS HoraEntrada,
+        bit.kmEntrada AS KilometrajeEntrada,
+        bit.gasEntrada AS GasolinaEntrada,
+        CONCAT(em.nombrePila, ' ', em.apdPaterno, ' ', em.apdMaterno) AS Empleado,
+        vehi.matricula AS Matricula,
+        mar.nombre AS Marca,
+        mol.nombre AS Modelo
+    FROM bitacora AS bit
+    INNER JOIN solicitud AS sol ON bit.solicitud = sol.numero
+    INNER JOIN empleado AS aut ON sol.autorizador = aut.numero
+    INNER JOIN empleado AS soli ON sol.solicitante = soli.numero
+    INNER JOIN vehiculo AS vehi ON bit.vehiculo = vehi.numSerie
+    LEFT JOIN marca AS mar ON vehi.marca = mar.codigo
+    LEFT JOIN modelo AS mol ON vehi.modelo = mol.codigo
+    LEFT JOIN empleado_bitacora AS eb ON eb.bitacora = bit.numero
+    LEFT JOIN empleado AS em ON eb.empleado = em.numero
+    WHERE bit.numero = {0}
+    """
+    query = aux.format(id)
+
+    lista = conn.lista(query)
+    
+    return lista
+
+
+def existe(id: int):
+    conn = Conn()
+
+    aux = """
+    SELECT 
+        CONCAT(soli.nombrePila, ' ', soli.apdPaterno, ' ', soli.apdMaterno) AS Solicitante,
+        CONCAT(aut.nombrePila, ' ', aut.apdPaterno, ' ', aut.apdMaterno) AS Autorizador,
+        bit.destino AS Destino,
+        bit.asunto AS Asunto,
+        DATE_FORMAT(bit.fechaSalida, "%d-%m-%Y") AS FechaSalida,
+        DATE_FORMAT(bit.horaSalida, "%H:%i") AS HoraSalida,
+        bit.kmSalida AS KilometrajeSalida,
+        bit.gasSalida AS GasolinaSalida,
+        DATE_FORMAT(bit.fechaEntrada, "%d-%m-%Y") AS FechaEntrada,
+        DATE_FORMAT(bit.horaEntrada, "%H:%i") AS HoraEntrada,
+        bit.kmEntrada AS KilometrajeEntrada,
+        bit.gasEntrada AS GasolinaEntrada,
+        CONCAT(em.nombrePila, ' ', em.apdPaterno, ' ', em.apdMaterno) AS Empleado,
+        vehi.matricula AS Matricula,
+        mar.nombre AS Marca,
+        mol.nombre AS Modelo
+    FROM bitacora AS bit
+    INNER JOIN solicitud AS sol ON bit.solicitud = sol.numero
+    INNER JOIN empleado AS aut ON sol.autorizador = aut.numero
+    INNER JOIN empleado AS soli ON sol.solicitante = soli.numero
+    INNER JOIN vehiculo AS vehi ON bit.vehiculo = vehi.numSerie
+    LEFT JOIN marca AS mar ON vehi.marca = mar.codigo
+    LEFT JOIN modelo AS mol ON vehi.modelo = mol.codigo
+    LEFT JOIN empleado_bitacora AS eb ON eb.bitacora = bit.numero
+    LEFT JOIN empleado AS em ON eb.empleado = em.numero
+    WHERE bit.numero = {0}
+    """
+    query = aux.format(id)
 
     lista = conn.lista(query)
 
