@@ -87,7 +87,7 @@ class BITScreenWidget(QWidget):
         self.button_recargar.clicked.connect(self.handle_refresh)
         
         # Asignacion de estilos
-        label_titulo.setStyleSheet("font-size: 48px; font-weight: bold; color: white;")
+        label_titulo.setStyleSheet("font-size: 40px; font-weight: bold; color: white;")
         label_buttons.setStyleSheet("font-size: 18px; color: #c1c1c1;")
         label_subtitulo.setStyleSheet("font-size: 18px; color: #c1c1c1;")
         
@@ -259,4 +259,4 @@ class BITScreenWidget(QWidget):
         content_widget = BitacoraInfoWidget(id_bitacora)
         
         self.modal_info = ModalWidget(self, content_widget, "Ver datos de bitácora")
-        self.modal_info.show()
+        self.modal_info.show_modal()

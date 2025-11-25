@@ -65,7 +65,7 @@ class SOLIScreenWidget(QWidget):
         self.button_agregar.clicked.connect(self.modal_salida.show_modal)
         
         # Asignacion de estilos
-        label_titulo.setStyleSheet("font-size: 48px; font-weight: bold; color: white;")
+        label_titulo.setStyleSheet("font-size: 40px; font-weight: bold; color: white;")
         label_buttons.setStyleSheet("font-size: 18px; color: #c1c1c1;")
         label_subtitulo.setStyleSheet("font-size: 18px; color: #c1c1c1;")
         

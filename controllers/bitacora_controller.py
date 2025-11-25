@@ -64,8 +64,40 @@ def buscar(id: int):
     try: 
         log("[CTRL BIT]: Iniciando...")
         r = CRUD.existe(id)
+        log(f"[CTRL BIT]: Recibido -> {r}")
+
+        header = r[0]
+        
+        resultado = {
+        "solicitante": header[0],
+        "autorizador": header[1],
+        "destino":     header[2],
+        "asunto":      header[3],
+        
+        "salida": {
+            "fecha": header[4],
+            "hora":  header[5], 
+            "km":    header[6],
+            "gas":   header[7]
+        },
+        
+        "entrada": {
+            "fecha": header[8],
+            "hora":  header[9],
+            "km":    header[10],
+            "gas":   header[11]
+        },
+
+        "vehiculo": {
+            "matricula": header[13],
+            "marca":     header[14],
+            "modelo":    header[15]
+        },
+
+        "empleados": [fila[12] for fila in r if fila[12] is not None]
+        }
         log("[CTRL BIT]: Terminado.")
-        log(f"[CTRL BIT]: Retorno -> {r}")
+        return resultado
     except Exception as e:
         log("[CTRL BIT]: Error ->")
         log(e)

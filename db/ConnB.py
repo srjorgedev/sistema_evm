@@ -8,7 +8,7 @@ class Conn:
             "host": "localhost",
             "port": 3306,
             "user": "root",
-            "password": "",
+            "password": "root",
             "db": "evm_db",
             "use_pure": True
         }
@@ -26,17 +26,12 @@ class Conn:
             return False
 
     def lista(self, query, params=None):
-        """
-        Ejecuta un SELECT y retorna resultados.
-        Soporta parámetros para evitar Inyección SQL.
-        """
         cnx = None
         cursor = None
         try:
             cnx = self.conectar()
             cursor = cnx.cursor()
             
-            # Ejecución segura con parámetros
             if params:
                 cursor.execute(query, params)
             else:
@@ -48,14 +43,12 @@ class Conn:
         except Error as error:
             log(f"[BD ERROR - LISTA]: {error.errno}")
             log(f"[BD ERROR - LISTA]: {error.msg}")
-            return [] # Retornamos lista vacía en vez de error tupla para no romper la UI
+            return []
             
         finally:
-            # ESTO ES LO QUE EVITA EL CONGELAMIENTO
-            # Se ejecuta siempre, haya error o no.
             if cursor: cursor.close()
             if cnx and cnx.is_connected(): cnx.close()
-
+            
     def registrar(self, query, params=None) -> int:
         cnx = None
         cursor = None
