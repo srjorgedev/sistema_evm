@@ -39,18 +39,22 @@ class BitacoraInfoWidget(QWidget):
         )
         
     def handle_data(self, data):
+        salida_gas = data["salida"]["gas"]
+        salida_km = data["salida"]["km"]
         salida_datos = [
             ("Fecha", data["salida"]["fecha"]),
             ("Hora", data["salida"]["hora"]),
-            ("Combustible", f"{data["salida"]["gas"]} L"),
-            ("Kilometraje", f"{data["salida"]["km"]} KM"),
+            ("Combustible", str(salida_gas)),
+            ("Kilometraje", str(salida_km)),
         ]
         
+        entrada_gas = data["entrada"]["gas"]
+        entrada_km = data["entrada"]["km"]
         entrada_datos = [
             ("Fecha", data["entrada"]["fecha"]),
             ("Hora", data["entrada"]["hora"]),
-            ("Combustible", f"{data["entrada"]["gas"]} L"),
-            ("Kilometraje", f"{data["entrada"]["km"]} KM"),
+            ("Combustible", str(entrada_gas)),
+            ("Kilometraje", str(entrada_km)),
         ]
         
         layout_x = QHBoxLayout()
