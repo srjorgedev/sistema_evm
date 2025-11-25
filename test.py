@@ -5,7 +5,7 @@ import interface.bitacoras.Menu as _Bitacoras
 from controllers import bitacora_controller
 
 import interface.vehiculos.Menu as _Vehiculos
-from controllers import fVehiculo
+ #from controllers import fVehiculo
 
 import interface.Menu as Menu
 import interface.Val as Val
@@ -40,25 +40,23 @@ while True and opc1 != 9:
                         print("   Saliendo...")
                         break
 
-        case 2:
-            opc12 = 100
+        #case 2:
+            #opc12 = 100
 
-            while opc12 != 5:
-                opc12 = Val._SelectMenu("    Opcion: ", _Vehiculos.menuVehiculos,
-                                        1, 6)
-                match opc12:
-                    case 1:
-                        fVehiculo.listarVehiculos()
-                    case 2:
-                        fVehiculo.SolicitarDatos()
-                    case 3:
-                        fVehiculo.modificarMatricula()
-                    case 4:
-                        fVehiculo.borrarVehiculo()
-                    case 5:
-                        print("   Saliendo...")
-                        break
-
+            #while opc12 != 5:
+                #opc12 = Val._SelectMenu("    Opcion: ", _Vehiculos.menuVehiculos,1, 6)
+                #match opc12:
+                    #case 1:
+                        #fVehiculo.listarVehiculos()
+                    #case 2:
+                        #fVehiculo.SolicitarDatos()
+                    #case 3:
+                     #   fVehiculo.modificarMatricula()
+                    #case 4:
+                        #fVehiculo.borrarVehiculo()
+                    #case 5:
+                       # print("   Saliendo...")
+                        #break
         case 3:
             opc13 = 100
 

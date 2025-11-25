@@ -18,7 +18,7 @@ def lista_general():
     usuarios = []
     for tupla in lista:
         usuarios.append((tupla[0], tupla[1], tupla[2], tupla[3]))
-        
+
     return usuarios
 
 def lista_tipos():
@@ -36,3 +36,30 @@ def lista_tipos():
         tipos.append((tupla[0], tupla[1]))
         
     return tipos
+
+from db.ConnB import Conn
+
+def lista_choferes():
+    conn = Conn()
+    
+    query = """
+            SELECT
+            e.numero as "N°",
+            CONCAT(e.nombrePila, ' ', e.apdPaterno, ' ', e.apdMaterno) AS Nombre,
+            l.numero as "Numero de licencia", -- "
+            tl.codigo AS "Tipo de Licencia",
+            l.fechaVencimiento AS "Fecha de Vencimiento"
+        FROM empleado AS e
+        INNER JOIN tipo_empleado AS te ON e.tipo_empleado = te.codigo
+        INNER JOIN licencia AS l ON e.numero = l.empleado
+        INNER JOIN tipo_licencia AS tl ON l.tipo_licencia = tl.numero
+        WHERE te.descripcion = 'Chofer'
+    """
+    
+    lista = conn.lista(query)
+    
+    choferes = []
+    for tupla in lista:
+        choferes.append((tupla[0], tupla[1], tupla[2], tupla[3], tupla[4]))
+
+    return choferes

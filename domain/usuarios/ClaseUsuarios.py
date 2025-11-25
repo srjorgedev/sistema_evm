@@ -1,14 +1,16 @@
 class Usuario:
-    def __init__(self, numEmpleado, nombre, tipo_empleado, activo, password, email):
+    def __init__(self, numEmpleado, nombrePila, apdPaterno, apdMaterno, tipo_empleado, activo, password, email):
         self.__numEmpleado = numEmpleado
+        self.__nombrePila = nombrePila
+        self.__apdPaterno = apdPaterno
+        self.__apdMaterno = apdMaterno
         self.__tipo_empleado = tipo_empleado
-        self.__nombre = nombre
         self.__activo = activo
         self.__password = password
         self.__email = email
 
     def __str__(self):
-        return f" Numero de Empleado: {self.__numEmpleado}\n Nombre: {self.__nombre}\n Tipo de Empleado: {self.__tipo_empleado} "
+        return f" Numero de Empleado: {self.__numEmpleado}\n Nombre: {self.__nombrePila} {self.__apdPaterno} {self.__apdMaterno}\n Tipo de Empleado: {self.__tipo_empleado} "
 
     def get_numEmpleado(self):
         return self.__numEmpleado
@@ -16,12 +18,11 @@ class Usuario:
     def set_numEmpleado(self, numEmpleado):
         self.__numEmpleado = numEmpleado
 
-    def get_nombre(self):
-        return self.__nombre
-
-    def set_nombre(self, nombre):
-        self.__nombre = nombre
-
+    def get_nombrePila(self):
+        return self.__nombrePila
+    def set_nombrePila(self, nombrePila):
+        self.__nombrePila = nombrePila
+        
     def get_tipo_empleado(self):
         return self.__tipo_empleado
 
@@ -45,6 +46,21 @@ class Usuario:
     
     def set_email(self, email):
         self.__email = email
+        
+    def get_nombrePila(self):
+        return self.__nombrePila
+    def set_nombrePila(self, nombrePila):
+        self.__nombrePila = nombrePila
+    
+    def get_apdPaterno(self):
+        return self.__apdPaterno
+    def set_apdPaterno(self, apdPaterno):
+        self.__apdPaterno = apdPaterno
+    
+    def get_apdMaterno(self):
+        return self.__apdMaterno
+    def set_apdMaterno(self, apdMaterno):
+        self.__apdMaterno = apdMaterno
 
 class Telefono:
     def __init__(self, num, numTelefono, empleado):

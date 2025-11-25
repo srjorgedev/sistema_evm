@@ -53,7 +53,7 @@ class conn:
             except Error as valError:
                 print(valError)
         return 0
-    
+
     def lista_param(self, comando, params):
         try:
             if self.conexion.is_connected():

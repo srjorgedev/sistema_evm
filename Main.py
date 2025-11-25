@@ -26,11 +26,11 @@ class DBTest(QThread):
 
 class VentanaPrincipal(QMainWindow):
     notification = pyqtSignal(object)
-    
+
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Enterprise Vehicle Manager")
-        
+
         widget_central = QWidget()
         self.layout_principal = QHBoxLayout(widget_central)
         self.layout_principal.setSpacing(0)

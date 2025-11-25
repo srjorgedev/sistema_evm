@@ -93,7 +93,7 @@ FROM bitacora
     f. Fecha de expedición
     g. Fecha de vencimiento
 '''
-SELECT e.nombre as Nombre,
+SELECT CONCAT(e.nombrePila, ' ', e.apdPaterno, ' ', e.apdMaterno) as Nombre,
 te.descripcion as "Tipo de empleado", -- "
 l.numero as "Numero de licencia", -- "
 tl.codigo as "Clase de licencia", -- "
@@ -103,12 +103,23 @@ from empleado as e
 inner join tipo_empleado as te on e.tipo_empleado = te.codigo
 inner join licencia as l on e.numero = l.empleado
 inner join tipo_licencia as tl on l.tipo_licencia = tl.numero
+where te.descripcion = 'Chofer'
 
 
 #Contactos de Empleados
 SELECT e.numero as Numero,
-e.nombre as Nombre, 
+CONCAT(e.nombrePila, ' ', e.apdPaterno, ' ', e.apdMaterno) as Nombre,
 e.email as "Correo Electronico", -- "
 t.numTelefono as "Numero Telefonico" -- "
 from empleado as e
 inner join telefono as t on t.empleado = e.numero
+
+SELECT 
+            e.numero,
+            CONCAT(e.nombrePila, ' ', e.apdPaterno, ' ', e.apdMaterno) AS nombre,
+            l.numero AS licencia,
+            l.tipo_licencia AS tipo,
+            l.fechaVencimiento
+        FROM empleado AS e
+        INNER JOIN licencia AS l ON e.numero = l.empleado
+        WHERE e.tipo_empleado = 2   
