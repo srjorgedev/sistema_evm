@@ -5,6 +5,8 @@ class COLORS(Enum):
     MODIFICAR = "mod"
     ARCHIVAR = "archivar"
     BASE = "base"
+    BASE_OSCURO = "base_oscuro"
+    BASE_CLARO = "base_claro"
     BG_OSCURO_1 = "bg_oscuro_og"
     BG_OSCURO_2 = "bg_oscuro_2"
     BG_CLARO_1 = "bg_claro_1"
@@ -15,12 +17,15 @@ class COLORS(Enum):
     MODAL_CARD = "modal_card"
     MODAL_CARD_BORDER = "modal_card_border"
     MAL = "mal"
+    ADVERTENCIA = "advertencia"
 
 COLORS_LIST = {
     COLORS.ARCHIVAR: "#EF4444",
     COLORS.CREAR: "#22C55E",
     COLORS.MODIFICAR: "#fbff85",
     COLORS.BASE: "#3498DB",
+    COLORS.BASE_OSCURO: "#277EB8",
+    COLORS.BASE_CLARO: "#9fd9ef",
     COLORS.BG_OSCURO_2: "#192c3b",
     COLORS.BG_OSCURO_1: "#0f181f",
     COLORS.BG_CLARO_1: "#fcfcfc",

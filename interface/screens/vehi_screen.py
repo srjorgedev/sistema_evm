@@ -17,6 +17,7 @@ from interface.components.bitacoras.entrada_form import EntradaFormWidget
 from interface.components.table import TableWidget
 from interface.components.user_row import UserRowWidget
 from interface.components.vehiculo_row import VehiculoCardWidget
+from interface.components.nuevoVehiculoForm import NewCarWidget
 
 from utils.log import log
 
@@ -63,7 +64,7 @@ class VEHIScreenWidget(QWidget):
         self.main_layout.setContentsMargins(48, 52, 48, 0) 
         self.main_layout.setSpacing(0)
         
-        self.modal_salida = ModalWidget(self, SalidaFormWidget(), "Crear un nuevo registro de salida")
+        self.modal_salida = ModalWidget(self, NewCarWidget(), "Crear un nuevo registro de salida")
         self.modal_entrada = ModalWidget(self, EntradaFormWidget(), "Crear un nuevo registro de entrada")
         
         # Asignacion de eventos en los botones cuando se hace clic        
@@ -149,7 +150,7 @@ class VEHIScreenWidget(QWidget):
         # Aqui no se utiliza, pero tambien esta args, para cuando se le pasen tuplas
         # tampoco se utiliza, kwargs, para cuando se le pasen objetos o clave = valor
         self.runner.run(
-            func=FVehiculo.lista_general, 
+            func=FVehiculo.obtener_lista, 
             on_success=lambda data: self.handle_data(data, self.table), 
             on_error=self.handle_error
         )

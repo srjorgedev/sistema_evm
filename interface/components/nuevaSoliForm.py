@@ -6,6 +6,8 @@ from PyQt6.QtCore import pyqtSignal
 from domain.solicitudes.ClaseSolicitudes import Solicitud
 import domain.solicitudes.crudSolicitudes as CRUD
 
+from interface.components.input import InputWidget 
+
 
 class NuevaSoliForm(QWidget):
 

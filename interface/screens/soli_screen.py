@@ -12,6 +12,7 @@ from interface.components.bitacoras.salida_form import SalidaFormWidget
 from interface.components.bitacoras.entrada_form import EntradaFormWidget
 from interface.components.table import TableWidget
 from interface.components.solicitud_row import SolicitudRowWidget
+from interface.components.nuevaSoliForm import NuevaSoliForm
 
 from utils.log import log
 
@@ -58,7 +59,7 @@ class SOLIScreenWidget(QWidget):
         self.main_layout.setContentsMargins(48, 52, 48, 0) 
         self.main_layout.setSpacing(0)
         
-        self.modal_salida = ModalWidget(self, SalidaFormWidget(), "Crear un nuevo registro de salida")
+        self.modal_salida = ModalWidget(self, NuevaSoliForm(), "Crear un nuevo registro de salida")
         self.modal_entrada = ModalWidget(self, EntradaFormWidget(), "Crear un nuevo registro de entrada")
         
         # Asignacion de eventos en los botones cuando se hace clic        
@@ -148,32 +149,32 @@ class SOLIScreenWidget(QWidget):
             on_error=self.handle_error
         )
 
-def handle_data(self, data: list[tuple], parent: TableWidget):
-    log(f"[SOLICITUDES]: Datos recibidos -> {len(data)} solicitudes.")
-
-    parent.clearRows()
-
-    if not data:
-        no_data_label = QLabel("No hay solicitudes para mostrar.")
-        no_data_label.setStyleSheet("background-color: transparent; font-size: 16px; color: #888888;")
-        no_data_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        parent.addRow(no_data_label)
-        return
-
-    for d in data:
-        numero = d[0]
-        asunto = d[1]
-        matricula = d[5]
-        estado = d[7]
-        solicitante = d[9]
-        autorizador = d[11]
-
-        fila = SolicitudRowWidget(
-            (numero, asunto, matricula, estado, solicitante, autorizador)
-        )
-
-        parent.addRow(fila)
-
-
+    def handle_data(self, data: list[tuple], parent: TableWidget):
+        log(f"[SOLICITUDES]: Datos recibidos -> {len(data)} solicitudes.")
+    
+        parent.clearRows()
+    
+        if not data:
+            no_data_label = QLabel("No hay solicitudes para mostrar.")
+            no_data_label.setStyleSheet("background-color: transparent; font-size: 16px; color: #888888;")
+            no_data_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            parent.addRow(no_data_label)
+            return
+    
+        for d in data:
+            numero = d[0]
+            asunto = d[1]
+            matricula = d[5]
+            estado = d[7]
+            solicitante = d[9]
+            autorizador = d[11]
+    
+            fila = SolicitudRowWidget(
+                (numero, asunto, matricula, estado, solicitante, autorizador)
+            )
+    
+            parent.addRow(fila)
+    
+    
     def handle_error(self, error_message):
         log(f"[SOLICITUDES]: Error al hacer fetch -> {error_message}")

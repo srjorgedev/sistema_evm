@@ -63,7 +63,7 @@ def buscar(id: int):
     log("[CTRL BIT]: Funcion -> BUSCAR")
     try: 
         log("[CTRL BIT]: Iniciando...")
-        r = CRUD.existe(id)
+        r = CRUD.leers(id)
         log(f"[CTRL BIT]: Recibido -> {r}")
 
         header = r[0]
