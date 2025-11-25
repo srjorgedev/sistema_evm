@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QSizePolicy, QWidget
 from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QCursor
+from PyQt6.QtGui import QCursor, QMouseEvent
 
 from domain.bitacoras.Clase import Bitacora
 from interface.components.square_button import SquareButtonWidget
@@ -11,6 +11,8 @@ class BitacoraRowWidget(QFrame):
     btn_modificar = pyqtSignal()
     btn_entrada = pyqtSignal()
     btn_salida = pyqtSignal()
+    
+    clic_row = pyqtSignal(object)
     
     def __init__(self, data: tuple):
         super().__init__()
@@ -70,3 +72,7 @@ class BitacoraRowWidget(QFrame):
     
     def emit_archivar(self):
         self.btn_archivo.emit(self.data[0])
+        
+    def mousePressEvent(self, event: QMouseEvent):
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.clic_row.emit(self.data[0])

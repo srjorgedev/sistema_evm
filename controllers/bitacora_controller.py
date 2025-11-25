@@ -59,6 +59,16 @@ def desarchivar(data: int):
         log("[CTRL BIT]: Error ->")
         log(e)
     
+def buscar(id: int):
+    log("[CTRL BIT]: Funcion -> BUSCAR")
+    try: 
+        log("[CTRL BIT]: Iniciando...")
+        r = CRUD.existe(id)
+        log("[CTRL BIT]: Terminado.")
+        log(f"[CTRL BIT]: Retorno -> {r}")
+    except Exception as e:
+        log("[CTRL BIT]: Error ->")
+        log(e)
 
 def registrarSalida():
     log("   \n-- Registrar salida --")

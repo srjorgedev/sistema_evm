@@ -13,11 +13,14 @@ from interface.components.modal import ModalWidget
 from interface.components.bitacoras.salida_form import SalidaFormWidget
 from interface.components.bitacoras.entrada_form import EntradaFormWidget
 from interface.components.table import TableWidget
+from interface.components.bitacoras.bitacora_info import BitacoraInfoWidget
 
 from utils.log import log
 
 class BITScreenWidget(QWidget):
     btn_archivar = pyqtSignal()
+    
+    row_click: int = 0
     
     notificar = pyqtSignal(str,str,str)
     
@@ -74,6 +77,7 @@ class BITScreenWidget(QWidget):
         # El tercer parametro, es el titulo de la modal. Es opcional, aunque preferiblemente hay que ponerlo.
         self.modal_salida = ModalWidget(self, SalidaFormWidget(), "Crear un nuevo registro de salida")
         self.modal_entrada = ModalWidget(self, EntradaFormWidget(), "Crear un nuevo registro de entrada")
+        # self.modal_into = ModalWidget(self, BitacoraInfoWidget(self.row_click), "Ver datos de bitacora")
         
         # Asignacion de eventos en los botones cuando se hace clic      
         # Le asignamos funciones a los botones cuando se les hace clic.
@@ -193,10 +197,12 @@ class BITScreenWidget(QWidget):
             for bitacora in data:
                 if bitacora[5] == True:
                     card = BitacoraRowWidget(bitacora) 
+                    card.clic_row.connect(lambda id: self.handle_clic_row(id))
                     card.btn_archivo.connect(self.handle_archivar)
                 elif bitacora[5] == False:
                     card = BitacoraArchivedRowWidget(bitacora) 
                     card.btn_archivo.connect(self.handle_desarchivar)
+                    card.clic_row.connect(lambda id: self.handle_clic_row(id))
                 parent.addRow(card)
 
     def handle_error(self, error_message):
@@ -245,3 +251,12 @@ class BITScreenWidget(QWidget):
         self.fetch_archivadas()
         
         self.notificar.emit("Recarga", "Datos recargados con exito", "#2ecc71") 
+    
+    def handle_clic_row(self, id):
+        log(f"[BITACORAS]: Clicando row -> {id}")
+        id_bitacora = int(id) 
+        
+        content_widget = BitacoraInfoWidget(id_bitacora)
+        
+        self.modal_info = ModalWidget(self, content_widget, "Ver datos de bitácora")
+        self.modal_info.show()

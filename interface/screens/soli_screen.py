@@ -40,7 +40,6 @@ class SOLIScreenWidget(QWidget):
         # Creación del QTabWidget
         self.tabs = QTabWidget()
         self.tabs.addTab(self.table, "Todas las solicitudes")
-        # self.tabs.addTab(self.archivadas, "Registros Archivados")
 
         # Instancia del objeto para realizar operaciones con la BD en segundo plano.
         self.runner = TaskRunner(self)
