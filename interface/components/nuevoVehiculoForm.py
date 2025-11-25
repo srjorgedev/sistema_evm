@@ -86,12 +86,12 @@ class NewCarWidget(QWidget):
     # ============================
     def registrar(self):
 
-        num_serie = self.num_serie.text()
-        matricula = self.matricula.text()
-        marca = self.marca.text()
-        modelo = self.modelo.text()
+        num_serie = self.num_serie.get_text()
+        matricula = self.matricula.get_text()
+        marca = self.marca.get_text()
+        modelo = self.modelo.get_text()
         tipo = self.select_tipos.getValue()
-        proposito = self.proposito.text()
+        proposito = self.proposito.get_text()
 
         ok, mensaje = Fvehiculo.registrar_vehiculo(
             num_serie, matricula, marca, modelo, tipo, proposito

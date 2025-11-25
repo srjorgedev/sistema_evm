@@ -151,6 +151,8 @@ def leer(id: int):
     query = aux.format(id)
 
     lista = conn.lista(query)
+    
+    return lista
 
 
 def existe(id: int):
