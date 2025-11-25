@@ -50,16 +50,26 @@ def createUser():
             )
             print("   Por favor, intente de nuevo.\n")
     while True:
-        apellidos = input("   Ingrese su(s) apellido(s): ")
-        if val.vNombre(apellidos):
-            print("Apellido(s) válido(s):", apellidos)
+        apdPaterno = input("   Ingrese su primer apellido(s): ")
+        if val.vNombre(apdPaterno):
+            print("Apellido válido:", apdPaterno)
             break
         else:
             print(
                 "   Nombre inválido. Solo se permiten letras y espacios (sin números ni símbolos)."
             )
             print("   Por favor, intente de nuevo.\n")
-    nombre = nombrePila + " " + apellidos
+    while True:
+        apdMaterno = input("   Ingrese su segundo apellido: ")
+        if val.vNombre(apdMaterno):
+            print("Apellido válido:", apdMaterno)
+            break
+        else:
+            print(
+                "   Nombre inválido. Solo se permiten letras y espacios (sin números ni símbolos)."
+            )
+            print("   Por favor, intente de nuevo.\n")
+    nombre = nombrePila + " " + apdPaterno + " " + " " + apdMaterno
     print("Nombre: " + nombre)
     print()
     telefono = val.valTelefono()
@@ -85,9 +95,9 @@ def createUser():
                     print(" 4. Incluir al menos un número (0-9).")
             email = val.vEmail("Ingrese su Correo Electronico: ")
             newTipo = TipoEmpleado(codigo, descripcion)
-            newUser = Usuario(None, nombre, newTipo.get_codigo(), 1, hashed, email)
+            newUser = Usuario(None, nombrePila, apdPaterno, apdMaterno, newTipo.get_codigo(), 1, hashed, email)
             newTel = Telefono(None, telefono ,None)
-            crudUsers.Create(newUser, newTipo, newTel)
+            crudUsers.Create2(newUser, newTipo, newTel)
         case 2:
             codigo = str(random.randint(10000, 99999))
             descripcion = "Chofer"
@@ -142,7 +152,7 @@ def createUser():
                     print(" 4. Incluir al menos un número (0-9).")
             email = val.vEmail("Ingrese su Correo Electronico: ")
             newTipo = TipoEmpleado(codigo, descripcion)
-            newUser = Usuario(None, nombre, newTipo.get_codigo(), 1, hashed, email)
+            newUser = Usuario(None, nombrePila, apdPaterno, apdMaterno, newTipo.get_codigo(), 1, hashed, email)
             newTel = Telefono(None, telefono ,None)
             newTLic = TipoLicencia(None, codigoLic, descripcionLic)
             newLic = Licencia(numeroLicencia, exp, ven, None, newTLic.get_codigoLic())
@@ -166,7 +176,7 @@ def createUser():
                     print(" 4. Incluir al menos un número (0-9).")
             email = val.vEmail("Ingrese su Correo Electronico: ")
             newTipo = TipoEmpleado(codigo, descripcion)
-            newUser = Usuario(None, nombre, newTipo.get_codigo(), 1, hashed, email)
+            newUser = Usuario(None, nombrePila, apdPaterno, apdMaterno, newTipo.get_codigo(), 1, hashed, email)
             newTel = Telefono(None, telefono ,None)
             crudUsers.Create2(newUser, newTipo, newTel)
         case 4:
@@ -188,7 +198,7 @@ def createUser():
                     print(" 4. Incluir al menos un número (0-9).")
             email = val.vEmail("Ingrese su Correo Electronico: ")
             newTipo = TipoEmpleado(codigo, descripcion)
-            newUser = Usuario(None, nombre, newTipo.get_codigo(), 1, hashed, email)
+            newUser = Usuario(None, nombrePila, apdPaterno, apdMaterno, newTipo.get_codigo(), 1, hashed, email)
             newTel = Telefono(None, telefono ,None)
             crudUsers.Create2(newUser, newTipo, newTel)
 
@@ -200,7 +210,7 @@ def selectChofer():
         updateUser()
     else:
         print("   Saliendo del Menu de Choferes...")
-    
+
 def empleados_contactos():
     crudUsers.empleados_contactos(conexion)
     desMod2 = input(" Desea modificar algun contacto? (s/n): ").strip().lower()
@@ -219,12 +229,15 @@ def updateUser():
     opcMod = int(input("   Seleccione el dato del usuario que desea modificar: "))
     match opcMod:
         case 1:
-            nombrePila = input("Ingrese su nombre(s) de pila: ")
-            apellidos = input("Ingrese su(s) apellido(s): ")
+            nombrePila = input("Ingrese su nombre de pila: ")
+            apdPaterno = input("Ingrese su apellido paterno: ")
+            apdMaterno = input("Ingrese su apellido materno: ")
             val.vNombre(nombrePila)
-            val.vNombre(apellidos)
-            nombre = nombrePila + " " + apellidos
-            oldUser.set_nombre(nombre)
+            val.vNombre(apdPaterno)
+            val.vNombre(apdMaterno)
+            oldUser.set_nombrePila(nombrePila)
+            oldUser.set_apdPaterno(apdPaterno)
+            oldUser.set_apdMaterno(apdMaterno)
             crudUsers.UpdateNombre(oldUser)
         case 2:
             telefono = val.valTelefono()
@@ -261,7 +274,7 @@ def deleteUser():
 
     numEmpleado = val.vInt("   Ingrese el número de empleado que desea inhabilitar: ")
 
-    oldUser = Usuario(numEmpleado, "", "", 0, "", "")
+    oldUser = Usuario(numEmpleado, "", "", "", "", 0, "", "")
 
     existe = crudUsers.Deactive(oldUser)  
 

@@ -49,11 +49,13 @@ def Create(newUser, newTipo, newTel, newTLic, newLic):
 
     # INSERT empleado
     comando = """
-    INSERT INTO empleado (nombre, tipo_empleado, activo, password_hash, email)
-    VALUES (%s, %s, %s, %s, %s)
+    INSERT INTO empleado (nombrePila, apdPaterno, apdMaterno, tipo_empleado, activo, password_hash, email)
+    VALUES (%s, %s, %s, %s, %s, %s, %s)
     """
     cursor.execute(comando, (
-        newUser.get_nombre(),
+        newUser.get_nombrePila(),
+        newUser.get_apdPaterno(),
+        newUser.get_apdMaterno(),
         newTipo.get_codigo(),
         newUser.get_activo(),
         newUser.get_password(),
@@ -120,13 +122,15 @@ def Create2(newUser, newTipo, newTel):
         newTipo.get_descripcion()
     ))
 
-    # INSERT empleado
+   # INSERT empleado
     comando = """
-    INSERT INTO empleado (nombre, tipo_empleado, activo, password_hash, email)
-    VALUES (%s, %s, %s, %s, %s)
+    INSERT INTO empleado (nombrePila, apdPaterno, apdMaterno, tipo_empleado, activo, password_hash, email)
+    VALUES (%s, %s, %s, %s, %s, %s, %s)
     """
     cursor.execute(comando, (
-        newUser.get_nombre(),
+        newUser.get_nombrePila(),
+        newUser.get_apdPaterno(),
+        newUser.get_apdMaterno(),
         newTipo.get_codigo(),
         newUser.get_activo(),
         newUser.get_password(),
@@ -178,7 +182,7 @@ def Select():
 
 
 def selectInd(oldUser):
-    objUser = Usuario("", "", "", "", "", 0, "")
+    objUser = Usuario("", "", "", "", "", 0, "", "")
     objUser = oldUser
     miConn = conn()
     aux = "select * from usuario where numEmpleado = {0}"
@@ -195,7 +199,8 @@ def selectInd(oldUser):
                 fila[3],  # last_name
                 fila[4],  # email
                 fila[5],  # addressID
-                fila[6])
+                fila[6],
+                fila[7])
             print(obj)
 
         return True
@@ -205,11 +210,11 @@ def selectInd(oldUser):
 #def __init__(self, numEmpleado, nombre, tipo_empleado, activo, password, email):
 #Update
 def UpdateNombre(oldUser):
-    objUser = Usuario("", "", "", 0, "", "")
+    objUser = Usuario("", "", "", "", "", 0, "", "")
     objUser = oldUser
     miConn = conn()
-    aux = "UPDATE empleado SET nombre = '{0}' WHERE numero = {1}"
-    comando = aux.format(objUser.get_nombre(), objUser.get_numEmpleado())
+    aux = "UPDATE empleado SET nombrePila = '{0}', apdPaterno = '{1}', apdMaterno = '{2}' WHERE numero = {3}"
+    comando = aux.format(objUser.get_nombrePila(), objUser.get_apdPaterno(), objUser.get_apdMaterno(), objUser.get_numEmpleado())
     miConn.actualizar(comando)
 
 #class Telefono:
@@ -232,7 +237,7 @@ def UpdateTipoEmpleado(oldTipo):
     miConn.actualizar(comando)
 
 def UpdateEmail(oldUser):
-    objUser = Usuario("", "", "", 0, "", "")
+    objUser = Usuario("", "", "", "", "", 0, "", "")
     objUser = oldUser
     miConn = conn()
     aux = "UPDATE empleado SET email = '{0}' WHERE numero = {1}"
@@ -242,7 +247,7 @@ def UpdateEmail(oldUser):
 
 #Delete
 def Delete(oldUser):
-    objUser = Usuario("", "", "", 0, "", "")
+    objUser = Usuario("", "", "", "", "", 0, "", "")
     objUser = oldUser
     try:
         miConn = conn()
@@ -282,7 +287,9 @@ def Deactive(oldUser):
             fila[2],  # apellido
             fila[3],  # tipoEmpleado
             fila[4],  # email
-            fila[5]   # activo
+            fila[5],  # activo
+            fila[6],
+            fila[7]
         )
 
         print("\n   Datos a Inhabilitar: ")
@@ -296,7 +303,7 @@ def Deactive(oldUser):
 
 #Buscar
 def buscar(oldUser):
-    objUser = Usuario("", "", "", 0, "", "")
+    objUser = Usuario("", "", "", "", "", 0, "", "")
     objUser = oldUser
     miConn = conn()
     aux = "select * from empleado where numero = {0}"
@@ -311,7 +318,9 @@ def buscar(oldUser):
                 fila[2],  # first_name
                 fila[3],  # last_name
                 fila[4],  # email
-                fila[5])  # addressID
+                fila[5],
+                fila[6],
+                fila[7])  # addressID
             print(obj)
         return True
     else:
@@ -362,7 +371,9 @@ def buscar3():
                 fila[2],
                 fila[3],
                 fila[4],
-                fila[5]
+                fila[5],
+                fila[6],
+                fila[7]
             )
 
             print(obj)
@@ -374,7 +385,7 @@ def registrarLicencia(numEmpleado):
     miConn = conn()
     cursor = miConn.conexion.cursor()
 
-    print("\n   >>> Registro de Licencia de Chofer <<<")
+    print("\n  Registro de Licencia de Chofer ")
 
     licencias()
     opcLic = val._IntRange("   Ingrese una opción de Licencia: ", 1, 5)
@@ -432,7 +443,7 @@ def registrarLicencia(numEmpleado):
         exp,
         ven,
         numEmpleado,
-        id_tipoLic     
+        id_tipoLic
     ))
 
     miConn.conexion.commit()
@@ -446,7 +457,7 @@ def mostrar_choferes(conexion):
     cursor = conexion.cursor()
 
     query = """
-   SELECT e.nombre as Nombre,
+    SELECT CONCAT(e.nombrePila, ' ', e.apdPaterno, ' ', e.apdMaterno) as Nombre,
     te.descripcion as "Tipo de empleado", -- "
     l.numero as "Numero de licencia", -- "
     tl.codigo as "Clase de licencia", -- "
@@ -456,7 +467,6 @@ def mostrar_choferes(conexion):
     inner join tipo_empleado as te on e.tipo_empleado = te.codigo
     inner join licencia as l on e.numero = l.empleado
     inner join tipo_licencia as tl on l.tipo_licencia = tl.numero
-    where te.descripcion = 'Chofer'
     """
 
     cursor.execute(query)
@@ -485,7 +495,7 @@ def empleados_contactos(conexion):
 
     query = """
     SELECT e.numero as Numero,
-    e.nombre as Nombre,
+    CONCAT(e.nombrePila, ' ', e.apdPaterno, ' ', e.apdMaterno) as Nombre, 
     e.email as "Correo Electronico", -- "
     t.numTelefono as "Numero Telefonico" -- "
     from empleado as e

@@ -31,6 +31,7 @@ class USERScreenWidget(QWidget):
         
         table_headers = ["N°", "Nombre", "Rol", "Acciones"]
         tipo_headers = ["Codigo", "Descripcion", "Acciones"]
+        chofer_headers = ["N°", "Nombre",  "Numero de Licencia", "Tipo de Licencia", "Fecha de Vencimiento", "Acciones"]
         
         # Creacion de elementos
         self.main_layout = QVBoxLayout(self) 
@@ -42,12 +43,13 @@ class USERScreenWidget(QWidget):
         # Las tablas ahora estarán dentro de las pestañas
         self.table = TableWidget(table_headers)
         self.tipos_table = TableWidget(tipo_headers)
-        
+        self.choferes_table = TableWidget(chofer_headers)
         # Creación del QTabWidget
         self.tabs = QTabWidget()
         self.tabs.addTab(self.table, "Empleados registrados")
         self.tabs.addTab(self.tipos_table, "Tipos de empleados")
         # self.tabs.addTab(self.archivadas, "Registros Archivados")
+        self.tabs.addTab(self.choferes_table, "Choferes")
 
         # Instancia del objeto para realizar operaciones con la BD en segundo plano.
         self.runner = TaskRunner(self)
@@ -57,7 +59,7 @@ class USERScreenWidget(QWidget):
         h_spacer = QSpacerItem(128, 16, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
         
         # Botones
-        self.button_agregar = ButtonWidget("add", "Registrar salida", ColorKeys.CREAR)
+        self.button_agregar = ButtonWidget("add", "Registrar empleados", ColorKeys.CREAR)
         self.button_modificar = ButtonWidget("modify", "Modificar", ColorKeys.MODIFICAR)
         self.button_archivar = ButtonWidget("archive", "Eliminar", ColorKeys.ARCHIVAR)
         self.button_recargar = SquareButtonWidget("reload", "#f1f1f1")
@@ -68,7 +70,7 @@ class USERScreenWidget(QWidget):
         
         self.modal_salida = ModalWidget(self, NewUserFormWidget(), "Registrar un nuevo usuario.")
         
-        # Asignacion de eventos en los botones cuando se hace clic        
+        # Asignacion de eventos en los botones cuando se hace clic
         self.button_agregar.clicked.connect(self.modal_salida.show_modal)
         
         # Asignacion de estilos
@@ -105,6 +107,7 @@ class USERScreenWidget(QWidget):
         # Llamamos a la funcion que pide los datos.
         self.fetch_usuarios()
         self.fetch_tipos_empleado()
+        self.fetch_choferes()
 
     def apply_tab_styles(self):
         style = """
@@ -162,6 +165,15 @@ class USERScreenWidget(QWidget):
             on_success=lambda data: self.handle_data(data, self.table), 
             on_error=self.handle_error
         )
+    
+    def fetch_choferes(self):
+        log("[USUARIOS]: Fetch de choferes...")
+        self.runner.run(
+            func=FUsuario.lista_choferes,
+            on_success=lambda data: self.handle_choferes(data, self.choferes_table),
+            on_error=lambda e: log(f"[USUARIOS]: Error choferes -> {e}")
+        )
+
 
     def handle_data(self, data: list[tuple], parent: TableWidget):
         log(f"[USUARIOS]: Datos recibidos -> {len(data)} bitácoras.")
@@ -198,6 +210,22 @@ class USERScreenWidget(QWidget):
                 card = TypeRowWidget(bitacora) 
                 card.btn_archivo.connect(lambda: print("HI"))
                 parent.addRow(card)
+    
+    def handle_choferes(self, data: list[tuple], parent: TableWidget):
+        log(f"[USUARIOS]: Choferes recibidos -> {len(data)}")
+
+        parent.clearRows()
+
+        if not data:
+            no_data_label = QLabel("No hay choferes para mostrar.")
+            no_data_label.setStyleSheet("background-color: transparent; font-size: 16px; color: #888888;")
+            no_data_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            parent.addRow(no_data_label)
+        else:
+            for chofer in data:
+                card = UserRowWidget(chofer)  # O crea un widget especial si quieres
+                parent.addRow(card)
+
 
     def handle_error(self, error_message):
         log(f"[USUARIOS]: Error al hacer fetch -> {error_message}")
