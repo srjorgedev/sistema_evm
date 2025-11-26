@@ -96,3 +96,7 @@ class Conn:
         finally:
             if cursor: cursor.close()
             if cnx and cnx.is_connected(): cnx.close()
+            
+    def cerrar(self):
+        if self.conexion and self.conexion.is_connected():
+            self.conexion.close()

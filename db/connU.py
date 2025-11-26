@@ -82,3 +82,35 @@ class conn:
                 contador = -1
         return contador
 
+import mysql.connector
+from mysql.connector import Error
+from utils.log import log
+
+import mysql.connector
+from mysql.connector import Error
+
+class Conn:
+    def __init__(self):
+        try:
+            self.conn = mysql.connector.connect(
+                host="localhost",
+                user="root",
+                password="",
+                database="sistema_evm"
+            )
+        except Error as e:
+            print("Error al conectar:", e)
+            self.conn = None
+
+    def cursor(self):
+        if self.conn:
+            return self.conn.cursor()
+        return None
+
+    def commit(self):
+        if self.conn:
+            self.conn.commit()
+
+    def close(self):
+        if self.conn:
+            self.conn.close()

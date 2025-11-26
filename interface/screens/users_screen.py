@@ -4,6 +4,7 @@ from PyQt6.QtCore import Qt, pyqtSignal
 import controllers.bitacora_controller as FBitacora
 import controllers.user_controller as FUsuario
 
+from domain.usuarios.CRUD import registrar_empleado
 from interface.components.bitacoras.bitacora_row import BitacoraRowWidget
 from interface.components.bitacoras.bitacora_row_archive import BitacoraArchivedRowWidget
 from interface.components.button import ButtonWidget
@@ -235,27 +236,21 @@ class USERScreenWidget(QWidget):
                 parent.addRow(card)
 
     # --- Métodos para el Registro de Nuevo Empleado ---
-
     def register_new_user(self, data: dict):
-        """
-        Recibe los datos del formulario (data) y llama al controlador (FUsuario)
-        para ejecutar el registro de forma asíncrona.
-        """
-        log(f"[USUARIOS]: Solicitando registro de nuevo usuario: {data['correo']}")
-        
-        self.runner.run(
-            func=FUsuario.registrar_general, 
-            kwargs=data, 
-            on_success=self.handle_registration_success,
-            on_error=lambda e: self.notificar.emit("Error", f"Error al registrar: {e}", "ARCHIVAR")
-        )
+        try:
+            registrar_empleado(data)
+            self.handle_registration_success()
+        except Exception as e:
+            self.notificar.emit("Error", f"Error al registrar: {e}", "ARCHIVAR")
+
+
 
     def handle_registration_success(self, result):
         """
         Se ejecuta después de que FUsuario.registrar_general regresa sin error.
         """
         log("[USUARIOS]: Registro de empleado exitoso.")
-        self.modal_salida.close_modal() # Cierra el modal de registro
+        self.modal_salida.hide_modal() # Cierra el modal de registro
         
         # Notifica al usuario del éxito
         self.notificar.emit("Éxito", "Empleado registrado correctamente.", "CREAR")

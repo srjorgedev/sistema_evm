@@ -1,4 +1,6 @@
 import sys
+import hashlib
+import os
 from PyQt6.QtWidgets import (
     QFrame, QHBoxLayout, QVBoxLayout, QLabel, QSizePolicy, QWidget, QScrollArea, QSpacerItem
 )
@@ -90,36 +92,58 @@ class NewUserFormWidget(QWidget):
     #     self.select_tipos.addItems(items) 
         
     # --- FUNCIONALIDAD CLAVE DE ENVÍO ---
+    # Dentro de la clase NewUserFormWidget
     def submit_registration(self):
         log("[NEW USER FORM]: Solicitud de registro iniciada.")
         
-        # 🚨 CÓDIGO CORREGIDO Y LIMPIO (eliminando la duplicación de user_data) 🚨
-        
+        # 1. Obtener datos
         nombre = self.nombre_input.get_text()
         apellido_paterno = self.prim_apd.get_text()
         apellido_materno = self.seg_apd.get_text()
         correo = self.correo.get_text()
-        contrasena = self.contrasena.get_text()
+        contrasena_plana = self.contrasena.get_text() # <-- Contraseña en texto plano
         
         # Obtiene el código corto (ADM, CHOF, etc.)
         tipo_empleado_codigo = self.select_tipos.obtenerID()
         
         # 2. Validación básica
-        if not nombre or not apellido_paterno or not correo or not contrasena or not tipo_empleado_codigo:
+        if not nombre or not apellido_paterno or not correo or not contrasena_plana or not tipo_empleado_codigo:
             log("[NEW USER FORM]: Error de validación: Faltan campos obligatorios.")
-            # **NOTA:** Si necesitas notificar este error al usuario, debes emitir una señal aquí
+            # NOTA: Aquí puedes añadir una notificación de error si lo deseas.
             return
             
-        # 3. Preparar el diccionario
+        # 3. 🚨 HASHING DE CONTRASEÑA 🚨
+        
+        # Generar un salt aleatorio (16 bytes = 32 caracteres hexadecimales)
+        salt = os.urandom(16).hex() 
+        
+        # Aplicar el hashing
+        password_hash = self.generate_hash(contrasena_plana, salt) 
+        
+        # 4. Preparar el diccionario
         user_data = {
             "nombrePila": nombre,
             "apdPaterno": apellido_paterno,
             "apdMaterno": apellido_materno,
             "correo": correo, 
-            "contrasena": contrasena, 
+            "contrasena": password_hash, # ⬅️ AHORA ENVIAMOS EL HASH (salt:hash)
             "tipo_empleado": tipo_empleado_codigo
         }
         
-        # 4. Emitir la señal
+        # 5. Emitir la señal
         self.registro_solicitado.emit(user_data)
-        log("[NEW USER FORM]: Datos de registro emitidos correctamente.")
+        log("[NEW USER FORM]: Datos de registro emitidos correctamente (Contraseña hasheada).")
+
+    def generate_hash(self, password, salt):
+        """Hashea la contraseña con el salt usando SHA-256."""
+        # 1. Concatenar la contraseña y el salt y codificar a bytes
+        salted_password = (password + salt).encode('utf-8')
+        
+        # 2. Crear el hash SHA-256
+        hashed_password = hashlib.sha256(salted_password).hexdigest()
+        
+        # 3. Devolver el salt combinado con el hash para su almacenamiento (salt:hash)
+        return f"{salt}:{hashed_password}" 
+
+    # --- FUNCIONALIDAD CLAVE DE ENVÍO (submit_registration) ---
+# ...
