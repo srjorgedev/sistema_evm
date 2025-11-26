@@ -46,20 +46,29 @@ class VentanaPrincipal(QMainWindow):
         self.notification_container = NotificationContainerWidget(self)
 
         self.pantalla_bitacora.notificar.connect(self.notification_container.nueva_notificacion)
-        
+
         self.stack.setStyleSheet(f"background-color: {COLORS_LIST[COLORS.BG_OSCURO_1]};")
-        
+
         # self.stack.addWidget(ScreenWidget("VISTA DASHBOARD", "#2c3e50"))
-        self.stack.addWidget(self.pantalla_bitacora)
-        self.stack.addWidget(SOLIScreenWidget())
-        self.stack.addWidget(USERScreenWidget())
-        self.stack.addWidget(VEHIScreenWidget())
-        self.stack.addWidget(MANTEScreenWidget())
-        
+        # Agregar widgets AL STACK primero
+        self.stack.addWidget(self.pantalla_bitacora)     # index 0
+        self.stack.addWidget(SOLIScreenWidget())         # index 1
+
+        self.user_screen = USERScreenWidget()
+        self.user_screen.notificar.connect(self.notification_container.nueva_notificacion)
+        self.stack.addWidget(self.user_screen)           # index 2
+
+        self.stack.addWidget(VEHIScreenWidget())         # index 3
+        self.stack.addWidget(MANTEScreenWidget())        # index 4
+
+        # Ahora sí puedes seleccionar la pantalla inicial
+        self.stack.setCurrentWidget(self.user_screen)    # index 2
+
+
         self.sidemenu.current_page.connect(self.stack.setCurrentIndex)
 
         self.layout_principal.addWidget(self.sidemenu)
-        self.layout_principal.addWidget(self.stack, 1) 
+        self.layout_principal.addWidget(self.stack, 1)
 
         self.setCentralWidget(widget_central)
         

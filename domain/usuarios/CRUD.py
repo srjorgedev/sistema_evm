@@ -1,5 +1,5 @@
 from db.connU import Conn
-
+from db.ConnB import Conn as ConnB
 def lista_general():
     conn = Conn()
 
@@ -37,10 +37,9 @@ def lista_tipos():
         
     return tipos
 
-from db.ConnB import Conn
 
 def lista_choferes():
-    conn = Conn()
+    conn = ConnB()
     
     query = """
             SELECT
