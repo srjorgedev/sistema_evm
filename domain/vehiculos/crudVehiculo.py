@@ -31,7 +31,65 @@ def listarVehiculos():
                 
             log("[CRUD VEHICULO]: Retornando datos...")
             return datos
+def obtener_marcas():
+    log("[CRUD VEHICULO]: Funcion -> Listar marcas")
+    miConn = Conn()
+    comando="select * from marca"
+    log("[CRUD VEHICULO]: Obteniendo datos...")
+    lista = miConn.lista(comando)
+    if not lista:
+        log("[CRUD VEHICULO]: No hay vehiculos.")
+        return []
+    else:
+        if len(lista)>0:
+            log("[CRUD VEHICULO]: Si hay vehiculos.")
+            datos = []
+            for item in lista:
+                datos.append(item)
                 
+            log("[CRUD VEHICULO]: Retornando datos...")
+            return datos
+
+def obtener_modelos():
+    log("[CRUD VEHICULO]: Funcion -> Listar marcas")
+    miConn = Conn()
+    comando="select * from modelo"
+    log("[CRUD VEHICULO]: Obteniendo datos...")
+    lista = miConn.lista(comando)
+    if not lista:
+        log("[CRUD VEHICULO]: No hay vehiculos.")
+        return []
+    else:
+        if len(lista)>0:
+            log("[CRUD VEHICULO]: Si hay vehiculos.")
+            datos = []
+            for item in lista:
+                datos.append(item)
+                
+            log("[CRUD VEHICULO]: Retornando datos...")
+            return datos
+        
+def obtener_licencias():
+    log("[CRUD VEHICULO]: Funcion -> Listar marcas")
+    miConn = Conn()
+    comando="select * from tipo_licencia"
+    log("[CRUD VEHICULO]: Obteniendo datos...")
+    lista = miConn.lista(comando)
+    if not lista:
+        log("[CRUD VEHICULO]: No hay vehiculos.")
+        return []
+    else:
+        if len(lista)>0:
+            log("[CRUD VEHICULO]: Si hay vehiculos.")
+            datos = []
+            for item in lista:
+                datos.append(item)
+                
+            log("[CRUD VEHICULO]: Retornando datos...")
+            return datos
+        
+
+                 
                 
 def listaCorta():
     miConn = conn()
@@ -112,3 +170,20 @@ def modificarVehiculo(existeVehiculo):
         print("Datos del vehículo no encontrados")
     else:
         print("Error al modificar el vehículo")
+        
+
+def actualizar_matricula_por_serie(num_serie, nueva_matricula):
+    """Actualiza la matrícula de un vehículo identificado por su número de serie."""
+    miConn = conn()
+    # Escapar valores básicos; la conexión debe manejar parámetros si está disponible.
+    comando = "UPDATE vehiculo SET matricula = '{0}' WHERE numSerie = '{1}'".format(
+        str(nueva_matricula).replace("'", "''"),
+        str(num_serie).replace("'", "''")
+    )
+    try:
+        contador = miConn.actualizar(comando)
+        return contador
+    except Exception as e:
+        log(f"[CRUD VEHICULO]: Error al actualizar matricula -> {e}")
+        return 0
+    
