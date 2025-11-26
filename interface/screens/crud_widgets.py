@@ -116,7 +116,7 @@ class MantenimientoWidget(QWidget):
         style_table(self.table)
         self.crud_layout.addWidget(self.table)
 
-        self.tabs.addTab(self.crud_tab, "CRUD Mantenimientos")
+        self.tabs.addTab(self.crud_tab, "Listado General")
 
         # ---------------- Pestañas de Consultas ----------------
         self.consulta1_tab = QWidget()
@@ -405,7 +405,7 @@ class ObservacionWidget(QWidget):
         self.table.setHorizontalHeaderLabels(["Número", "Descripción", "Tipo", "Bitácora"])
         style_table(self.table)
         self.crud_layout.addWidget(self.table)
-        self.tabs.addTab(self.crud_tab, "CRUD Observaciones")
+        self.tabs.addTab(self.crud_tab, "Listado General")
 
         # Pestaña Consulta Observaciones por Bitácora
         self.consulta_tab = QWidget()
