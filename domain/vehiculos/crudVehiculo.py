@@ -187,3 +187,20 @@ def actualizar_matricula_por_serie(num_serie, nueva_matricula):
         log(f"[CRUD VEHICULO]: Error al actualizar matricula -> {e}")
         return 0
     
+
+def borrar_por_num_serie(num_serie):
+    """Elimina un vehículo de la tabla `vehiculo` por su número de serie.
+
+    Retorna el número de filas afectadas (int) o 0 en error.
+    """
+    miConn = conn()
+    comando = "DELETE FROM vehiculo WHERE numSerie = '{0}'".format(
+        str(num_serie).replace("'", "''")
+    )
+    try:
+        contador = miConn.actualizar(comando)
+        return contador
+    except Exception as e:
+        log(f"[CRUD VEHICULO]: Error al borrar por numSerie -> {e}")
+        return 0
+    
