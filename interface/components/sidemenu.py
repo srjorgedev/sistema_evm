@@ -19,7 +19,8 @@ datos_menu = [
     ("Solicitudes", "request"),
     ("Empleados", "employees"),
     ("Vehiculos", "car"),
-    ("Mantenimientos", "maintenance")
+    ("Mantenimientos", "maintenance"),
+    ("Observaciones", "notes")
 ]
 
 class SidemenuWidget(QWidget):
