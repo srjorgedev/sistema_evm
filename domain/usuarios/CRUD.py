@@ -38,8 +38,10 @@ def lista_tipos():
         
     return tipos
 
+from db.ConnB import Conn
+
 def lista_choferes():
-    conn = Conn()
+    conn = ConnB()
     
     query = """
             SELECT

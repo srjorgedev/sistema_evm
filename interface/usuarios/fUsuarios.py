@@ -217,7 +217,7 @@ def empleados_contactos():
     if desMod2 == "s":
         updateUser()
     else:
-        print("   Saliendo del Menu de Contactos...") 
+        print("   Saliendo del Menu de Contactos...")
 
 def updateUser():
     print("   Actualizar Usuario: ")

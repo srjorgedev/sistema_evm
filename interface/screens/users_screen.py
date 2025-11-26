@@ -1,3 +1,4 @@
+import sys
 from PyQt6.QtWidgets import QWidget, QLabel, QScrollArea, QVBoxLayout, QHBoxLayout, QSizePolicy, QSpacerItem, QTabWidget
 from PyQt6.QtCore import Qt, pyqtSignal
 
@@ -28,6 +29,7 @@ from utils.log import log
 
 class USERScreenWidget(QWidget):
     btn_archivar = pyqtSignal()
+  
     
     notificar = pyqtSignal(str,str,str)
     
@@ -211,11 +213,13 @@ class USERScreenWidget(QWidget):
 
     # --- Métodos para el Registro de Nuevo Empleado ---
     def register_new_user(self, data: dict):
-        self.runner.run(
-            func=lambda: registrar_empleado(data),
-            on_error= lambda e: self.notificar.emit("Error", f"Error al registrar: {e}", "ARCHIVAR"),
-            on_success=self.handle_registration_success
-        )
+        try:
+            registrar_empleado(data)
+            self.handle_registration_success()
+        except Exception as e:
+            self.notificar.emit("Error", f"Error al registrar: {e}", "ARCHIVAR")
+
+
 
     def handle_registration_success(self):
         """
@@ -260,3 +264,5 @@ class USERScreenWidget(QWidget):
                 # contacto es la tupla (Numero, Nombre, Email, Telefono)
                 card = ContactosRowWidget(contacto)
                 parent.addRow(card)
+                
+
