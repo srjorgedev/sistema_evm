@@ -1,6 +1,6 @@
 import sys
 from PyQt6.QtWidgets import (
-    QHBoxLayout, QVBoxLayout, QLabel, QWidget, QMessageBox
+    QHBoxLayout, QVBoxLayout, QLabel, QWidget, QMessageBox, QPushButton
 )
 from interface.components.input import InputWidget
 from interface.components.select import SelectWidget
@@ -21,17 +21,24 @@ class NewCarWidget(QWidget):
 
         # Widgets de entrada
         self.select_tipos = SelectWidget("Tipo de vehiculo*", "Seleccione un tipo...")
+        self.select_tipos.setFixedWidth(700)  
+        self.select_tipos.setFixedHeight(60)   
         self.num_serie = InputWidget("Número de serie")
         self.matricula = InputWidget("Matrícula")
         self.proposito = InputWidget("Propósito del vehículo")
         self.fechaAd = InputWidget("Fecha de adquisición")
         self.marca = SelectWidget("Marca*", "Marca del vehiculo:")
+        self.marca.setFixedWidth(700)  
+        self.marca.setFixedHeight(60) 
         self.modelo = SelectWidget("Modelo*", "Modelo:")
+        self.modelo.setFixedWidth(700)  
+        self.modelo.setFixedHeight(60) 
         self.licencia = SelectWidget("Licencia requerida*", "Licencia requerida..")
+        self.licencia.setFixedWidth(700)  
+        self.licencia.setFixedHeight(60) 
 
-        # Botón
-        crear_boton = ButtonWidget(None, "Registrar Vehículo", ColorKeys.CREAR)
-        crear_boton.clicked.connect(self.registrar)
+        
+
 
         # Layouts auxiliares
         layout_apd = QHBoxLayout()
@@ -50,9 +57,29 @@ class NewCarWidget(QWidget):
         self.main_layout.addWidget(self.licencia)
         self.main_layout.addWidget(self.select_tipos)
         self.main_layout.addStretch()
-        self.main_layout.addWidget(crear_boton)
-        self.main_layout.addStretch()
 
+# Botón
+        btn_guardar = QPushButton("Generar Solicitud")
+        btn_guardar.setStyleSheet("""
+            QPushButton {
+                background-color: #2D89EF;
+                color: white;
+                padding: 10px 15px;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #1E5FBB;
+            }
+            QPushButton:pressed {
+                background-color: #164A94;
+            }
+        """)
+        btn_guardar.clicked.connect(self.registrar)  # conectamos al método correcto
+        self.main_layout.addSpacing(10)
+        self.main_layout.addWidget(btn_guardar)
+        
         # Ahora sí: cargar datos dinámicos
         self.fetch_tipos()
         self.fetch_marcas()
