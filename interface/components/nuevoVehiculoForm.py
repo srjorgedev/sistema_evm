@@ -93,7 +93,6 @@ class NewCarWidget(QWidget):
                 items.append((str(tupla), str(tupla)))
 
         log(f"{tag} Agregando {len(items)} elementos al combobox...")
-        combobox.clear()
         combobox.addItems(items)
         log(f"{tag} Datos agregados.")
 
