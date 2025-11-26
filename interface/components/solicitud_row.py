@@ -6,6 +6,8 @@ from domain.bitacoras.Clase import Bitacora
 from interface.components.square_button import SquareButtonWidget
 from interface.components.button import ButtonWidget
 
+from interface.components.styles.general import COLORS,COLORS_LIST
+
 class SolicitudRowWidget(QFrame):
     btn_aceptar = pyqtSignal(object)
     btn_rechazar = pyqtSignal(object)
@@ -40,10 +42,10 @@ class SolicitudRowWidget(QFrame):
         layout.setContentsMargins(0, 0, 0, 0)
         
         self.setFixedHeight(56) 
-        self.setStyleSheet("SolicitudRowWidget {background-color: transparent;} SolicitudRowWidget:hover {background-color: #162229;}")
+        self.setStyleSheet(f"SolicitudRowWidget {{background-color: transparent;}} SolicitudRowWidget:hover {{background-color: {COLORS_LIST[COLORS.BG_CLARO_2]};}}")
         
         lbl_strong_style = "font-size: 14px; color: #009AD3; font-weight: bold; background: transparent;"
-        lbl_normal_style = "font-size: 14px; color: #f1f1f1; font-weight: normal; background: transparent;"
+        lbl_normal_style = "font-size: 14px; color: #242424; font-weight: normal; background: transparent;"
         
         lbl_1.setFixedWidth(80) 
         lbl_1.setStyleSheet(lbl_strong_style)

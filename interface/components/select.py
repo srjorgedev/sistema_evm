@@ -1,6 +1,8 @@
 from PyQt6.QtWidgets import (QWidget, QLabel, QVBoxLayout, QComboBox)
 from PyQt6.QtCore import pyqtSignal
 
+from interface.components.styles.general import COLORS, COLORS_LIST
+
 class SelectWidget(QWidget):
     change = pyqtSignal(object)
     
@@ -14,9 +16,9 @@ class SelectWidget(QWidget):
         if placeholder: self.combobox.setPlaceholderText(placeholder)
         self.main_layout.setContentsMargins(0,0,0,0)
         
-        self.label.setStyleSheet("color: #f1f1f1; font-size: 16px;")
-        self.combobox.setStyleSheet("""
-            QComboBox {
+        self.label.setStyleSheet(f"color: {COLORS_LIST[COLORS.TEXTO_OSCURO]}; font-size: 16px;")
+        self.combobox.setStyleSheet(f"""
+            QComboBox {{
                 background-color: #0f172a; 
                 border: 1px solid #334155;
                 border-radius: 4px;
@@ -24,18 +26,18 @@ class SelectWidget(QWidget):
                 color: white;
                 font-size: 14px;
                 padding-right: 30px;
-            }
-            QComboBox:focus {
+            }}
+            QComboBox:focus {{
                 border: 1px solid #3b82f6;
-            }
-            QComboBox::drop-down {
+            }}
+            QComboBox::drop-down {{
                 subcontrol-origin: padding;
                 subcontrol-position: top right;
                 width: 30px; /* Un poco más ancho para centrar mejor */
                 border: none;
                 background: transparent;
-            }
-            QComboBox::down-arrow {
+            }}
+            QComboBox::down-arrow {{
                 image: none; 
                 width: 0px; 
                 height: 0px; 
@@ -46,14 +48,14 @@ class SelectWidget(QWidget):
 
                 subcontrol-position: center;
                 margin-right: 5px;
-            }
-            QComboBox QAbstractItemView {
+            }}
+            QComboBox QAbstractItemView {{
                 background-color: #2b2b2b; 
                 color: #c1c1c1;           
                 selection-background-color: #3b82f6; 
                 selection-color: #f1f1f1;  
                 outline: 0px;          
-            }
+            }}
         """)
         
         self.main_layout.addWidget(self.label)

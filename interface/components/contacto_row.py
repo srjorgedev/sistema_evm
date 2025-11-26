@@ -1,6 +1,8 @@
 from PyQt6.QtWidgets import QWidget, QLabel, QHBoxLayout, QSizePolicy
 from PyQt6.QtCore import Qt
-from interface.components.button import ButtonWidget, ColorKeys
+from interface.components.button import ButtonWidget
+
+from interface.components.styles.general import COLORS, COLORS_LIST
 
 class ContactosRowWidget(QWidget):
     def __init__(self, data):
@@ -64,11 +66,11 @@ class ContactosRowWidget(QWidget):
         
         # Botón Modificar (Lápiz)
         # Pasamos texto vacio "" para activar el modo "solo ícono/delineado"
-        self.btn_edit = ButtonWidget("pencil", "", ColorKeys.MODIFICAR)
+        self.btn_edit = ButtonWidget("pencil", "", COLORS_LIST[COLORS.MODIFICAR])
         self.btn_edit.setFixedSize(30, 30) # Tamaño pequeño y cuadrado
         
         # Botón Eliminar (Basura)
-        self.btn_delete = ButtonWidget("trash", "", ColorKeys.ARCHIVAR)
+        self.btn_delete = ButtonWidget("trash", "", COLORS_LIST[COLORS.ARCHIVAR])
         self.btn_delete.setFixedSize(30, 30) # Tamaño pequeño y cuadrado
 
         # Añadimos los botones al layout de acciones

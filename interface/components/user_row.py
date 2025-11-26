@@ -4,6 +4,8 @@ from PyQt6.QtGui import QCursor
 
 from interface.components.square_button import SquareButtonWidget
 
+from interface.components.styles.general import COLORS,COLORS_LIST
+
 class UserRowWidget(QFrame):
     btn_archivo = pyqtSignal(object)
     btn_modificar = pyqtSignal()
@@ -36,10 +38,10 @@ class UserRowWidget(QFrame):
         layout.setContentsMargins(0, 0, 0, 0)
         
         self.setFixedHeight(56) 
-        self.setStyleSheet("UserRowWidget {background-color: transparent;} UserRowWidget:hover {background-color: #162229;}")
+        self.setStyleSheet(f"UserRowWidget{{background-color: transparent;}} UserRowWidget:hover {{background-color: {COLORS_LIST[COLORS.BG_CLARO_2]};}}")
         
         lbl_strong_style = "font-size: 14px; color: #009AD3; font-weight: bold; background: transparent;"
-        lbl_normal_style = "font-size: 14px; color: #f1f1f1; font-weight: normal; background: transparent;"
+        lbl_normal_style = "font-size: 14px; color: #242424; font-weight: normal; background: transparent;"
         
         lbl_id.setFixedWidth(80) 
         lbl_id.setStyleSheet(lbl_strong_style)

@@ -23,12 +23,13 @@ class COLORS(Enum):
     TABLA_CLARO = "tabla_claro"
     TABLA_OSCURO = "tabla_oscuro"
     BG_CLARO_2 = "bg_claro_2"
+    BG_CLARO_3 = "bg_claro_3"
     BG_CLARO_4 = "bg_claro_4"
 
 COLORS_LIST = {
     COLORS.ARCHIVAR: "#EF4444",
-    COLORS.CREAR: "#22C55E",
-    COLORS.MODIFICAR: "#ffd335",
+    COLORS.CREAR: "#149744",
+    COLORS.MODIFICAR: "#dab222",
     COLORS.BASE: "#3498DB",
     COLORS.BASE_OSCURO: "#277EB8",
     COLORS.BASE_CLARO: "#9fd9ef",
@@ -36,6 +37,7 @@ COLORS_LIST = {
     COLORS.BG_OSCURO_1: "#0f181f",
     COLORS.BG_CLARO_1: "#f0f6fa",
     COLORS.BG_CLARO_2: "#f2f2f2",
+    COLORS.BG_CLARO_3: "#e3e3e3",
     COLORS.BG_CLARO_4: "#c1c1c1",
     COLORS.SIDE_OSCURO_1: "#131e24",
     COLORS.SIDE_OSCURO_2: "#1d323d",

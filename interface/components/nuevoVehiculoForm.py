@@ -8,7 +8,7 @@ from interface.components.data_fetch import TaskRunner
 from interface.components.button import ButtonWidget
 from interface.components.square_button import SquareButtonWidget
 
-from interface.components.button import ButtonWidget, ColorKeys
+from interface.components.button import ButtonWidget
 from controllers import vehiculo_controller as Fvehiculo
 
 from interface.components.styles.general import COLORS, COLORS_LIST
@@ -42,9 +42,6 @@ class NewCarWidget(QWidget):
         self.licencia = SelectWidget("Licencia requerida*", "Licencia requerida..")
         self.licencia.setFixedWidth(700)  
         self.licencia.setFixedHeight(60) 
-
-        
-
 
         # Layouts auxiliares
         layout_apd = QHBoxLayout()
@@ -148,9 +145,9 @@ class NewCarWidget(QWidget):
     def registrar(self):
         num_serie = self.num_serie.get_text()
         matricula = self.matricula.get_text()
-        marca = self.marca.get_text()
-        modelo = self.modelo.get_text()
-        tipo = self.select_tipos.getValue()
+        marca = self.marca.obtenerTexto()
+        modelo = self.modelo.obtenerTexto()
+        tipo = self.select_tipos.obtenerTexto()
         proposito = self.proposito.get_text()
 
         ok, mensaje = Fvehiculo.registrar_vehiculo(

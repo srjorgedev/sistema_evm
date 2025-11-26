@@ -79,6 +79,8 @@ class USERScreenWidget(QWidget):
         self.user_form = NewUserFormWidget()
         self.modal_salida = ModalWidget(self, self.user_form, "Registrar un nuevo usuario.")
         
+        self.user_form.registro_solicitado.connect(self.register_new_user)
+        
         # Asignacion de eventos en los botones cuando se hace clic
         self.button_agregar.clicked.connect(self.modal_salida.show_modal)
         
@@ -209,15 +211,13 @@ class USERScreenWidget(QWidget):
 
     # --- Métodos para el Registro de Nuevo Empleado ---
     def register_new_user(self, data: dict):
-        try:
-            registrar_empleado(data)
-            self.handle_registration_success()
-        except Exception as e:
-            self.notificar.emit("Error", f"Error al registrar: {e}", "ARCHIVAR")
+        self.runner.run(
+            func=lambda: registrar_empleado(data),
+            on_error= lambda e: self.notificar.emit("Error", f"Error al registrar: {e}", "ARCHIVAR"),
+            on_success=self.handle_registration_success
+        )
 
-
-
-    def handle_registration_success(self, result):
+    def handle_registration_success(self):
         """
         Se ejecuta después de que FUsuario.registrar_general regresa sin error.
         """

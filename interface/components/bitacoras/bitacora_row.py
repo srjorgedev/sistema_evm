@@ -38,8 +38,8 @@ class BitacoraRowWidget(QFrame):
         dot_layout_2 = QHBoxLayout(dot_widget_2)
         
         # Botones 
-        modificar = SquareButtonWidget("modify", "#1f4355", 32)
-        archivar = SquareButtonWidget("archive", "#1f4355", 32)
+        modificar = SquareButtonWidget("modify", COLORS_LIST[COLORS.BG_CLARO_4], 32)
+        archivar = SquareButtonWidget("archive", COLORS_LIST[COLORS.BG_CLARO_4], 32)
         
         # Funciones de botones
         archivar.clicked.connect(self.emit_archivar)

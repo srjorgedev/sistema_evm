@@ -1,6 +1,8 @@
 from PyQt6.QtWidgets import QWidget, QLabel, QHBoxLayout, QSizePolicy
 from PyQt6.QtCore import Qt
-from interface.components.button import ButtonWidget, ColorKeys
+from interface.components.button import ButtonWidget
+
+from interface.components.styles.general import COLORS, COLORS_LIST
 
 class ChoferRowWidget(QWidget):
     def __init__(self, data):
@@ -49,8 +51,8 @@ class ChoferRowWidget(QWidget):
             
         # --- 2. Botones de Acción (Fijos) ---
         
-        self.btn_edit = ButtonWidget("pencil", "", ColorKeys.MODIFICAR) 
-        self.btn_delete = ButtonWidget("trash", "", ColorKeys.ARCHIVAR)
+        self.btn_edit = ButtonWidget("pencil", "", COLORS_LIST[COLORS.MODIFICAR]) 
+        self.btn_delete = ButtonWidget("trash", "", COLORS_LIST[COLORS.ARCHIVAR])
         
         # 🚨 CLAVE DE ALINEACIÓN 2: Fijar el tamaño del botón a 30x30
         BUTTON_SIZE = 30 

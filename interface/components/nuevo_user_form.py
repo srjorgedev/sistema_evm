@@ -2,7 +2,7 @@ import sys
 import hashlib
 import os
 from PyQt6.QtWidgets import (
-    QFrame, QHBoxLayout, QVBoxLayout, QLabel, QSizePolicy, QWidget, QScrollArea, QSpacerItem
+    QFrame, QHBoxLayout, QVBoxLayout, QLabel, QSizePolicy, QWidget, QScrollArea, QSpacerItem, QMessageBox
 )
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QResizeEvent, QColor, QPalette, QCursor
@@ -63,14 +63,18 @@ class NewUserFormWidget(QWidget):
         
     def agregar_tipos_fijos(self):
         log("[NEW USER FORM]: Cargando tipos de empleado fijos.")
-        items_fijos = [
-            ("Administrador", "ADM"),
-            ("Chofer", "CHOF"),
-            ("Vigilante", "VIG"),
-            ("Empleado-Usuario", "USER")
-        ]
+        self.runner.run(
+            func=FUser.lista_tipos,
+            on_success= lambda a: self.handle_tipos(a),
+            on_error=lambda e: log(f"[USUARIOS]: Error -> {e}")
+            )
         
-        self.select_tipos.addItems(items_fijos)
+    def handle_tipos(self, data): 
+        items = []
+        for dato in data: 
+            items.append((dato[0] + " - " + dato[1], dato[0]))
+            
+        self.select_tipos.addItems(items)
 
     def submit_registration(self):
         log("[NEW USER FORM]: Solicitud de registro iniciada.")
@@ -84,6 +88,7 @@ class NewUserFormWidget(QWidget):
         tipo_empleado_codigo = self.select_tipos.obtenerID()
         
         if not nombre or not apellido_paterno or not correo or not contrasena_plana or not tipo_empleado_codigo:
+            QMessageBox.warning(self, "Error", f"Debes llenar todos los campos")
             log("[NEW USER FORM]: Error de validación: Faltan campos obligatorios.")
             return
             
@@ -95,11 +100,12 @@ class NewUserFormWidget(QWidget):
             "nombrePila": nombre,
             "apdPaterno": apellido_paterno,
             "apdMaterno": apellido_materno,
-            "correo": correo, 
-            "contrasena": password_hash,
+            "email": correo, 
+            "password_hash": password_hash,
             "tipo_empleado": tipo_empleado_codigo
         }
         
+        print(user_data)
         self.registro_solicitado.emit(user_data)
         log("[NEW USER FORM]: Datos de registro emitidos correctamente (Contraseña hasheada).")
 
