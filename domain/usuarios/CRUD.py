@@ -1,4 +1,4 @@
-from db.ConnB import Conn
+from db.connU import Conn
 
 def lista_general():
     conn = Conn()
@@ -64,58 +64,34 @@ def lista_choferes():
 
     return choferes
 
+import sys 
 
-# Continúa en CRUD.py (después de lista_choferes)
+def registrar_empleado(data: dict):
+    miConn = Conn()
+    cursor = miConn.cursor()
 
-# Asegúrate de que la clase Conn esté importada al inicio: from db.ConnB import Conn
-
-def registrar_general(user_data: dict):
-    conn = Conn()
-
-    # --- 1. Insertar Empleado (nombrePila, apdPaterno, apdMaterno, tipo_empleado) ---
-    query_empleado = """
-        INSERT INTO empleado (nombrePila, apdPaterno, apdMaterno, tipo_empleado)
-        VALUES (%s, %s, %s, %s)
+    comando = """
+        INSERT INTO empleado
+        (nombrePila, apdPaterno, apdMaterno, tipo_empleado, password_hash, email)
+        VALUES (%s, %s, %s, %s, %s, %s)
     """
-    params_empleado = (
-        user_data['nombrePila'],
-        user_data['apdPaterno'],
-        user_data['apdMaterno'],
-        user_data['tipo_empleado']
+
+    valores = (
+        data["nombrePila"],
+        data["apdPaterno"],
+        data["apdMaterno"],
+        data["tipo_empleado"],
+        data["password_hash"],
+        data["email"]
     )
 
-    # Ejecutar la inserción y obtener el ID del nuevo empleado (e.numero)
-    # **IMPORTANTE:** Esto asume que tu objeto Conn tiene un método que devuelve el último ID insertado.
-    # Si no tienes ese método, tendrás que usar una consulta SELECT LAST_INSERT_ID() después de ejecutar_commit.
-    try:
-        # Usando el método que devuelve el ID:
-        empleado_id = conn.ejecutar_commit_and_return_id(query_empleado, params_empleado) 
-    except AttributeError:
-        # Si conn.ejecutar_commit_and_return_id no existe, usa la que sí tienes:
-        conn.ejecutar_commit(query_empleado, params_empleado)
-        empleado_id = conn.get_last_insert_id() # Asumiendo que existe un método para obtener el ID
+    cursor.execute(comando, valores)
+    miConn.commit()
+    miConn.close()
 
-    if empleado_id:
-        # --- 2. Insertar Credenciales (correo, contrasena, empleado_numero) ---
-        query_login = """
-            INSERT INTO login (correo, contrasena, empleado_numero)
-            VALUES (%s, %s, %s)
-        """
-        params_login = (
-            user_data['correo'], 
-            user_data['contrasena'], 
-            empleado_id # Usamos el ID del empleado
-        )
-        
-        conn.ejecutar_commit(query_login, params_login)
-        
-        return f"Registro exitoso. Empleado N° {empleado_id}"
-        
-    else:
-        return "Error: No se pudo obtener el ID del nuevo empleado para registrar el login."
-    
+    return True
 
-# En domain/usuarios/CRUD.py
+
 
 def lista_contactos():
     conn = Conn()

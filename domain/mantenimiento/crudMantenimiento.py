@@ -15,23 +15,34 @@ def alta(objMantenimiento):
 # READ
 def lista():
     miConn = Conn()
-    comando = "SELECT folio, razon, fechaProgramada, comentarios, tipo_mantenimiento, vehiculo, edo_mantenimiento FROM MANTENIMIENTO"
+    comando = """
+        SELECT folio, razon, fechaProgramada, comentarios, tipo_mantenimiento, vehiculo, edo_mantenimiento
+        FROM mantenimiento
+    """
+    
     listado = miConn.lista(comando)
-    
-    if listado == 0:
-        print("Error: No se puede mostrar el listado o la conexión falló.")
-        return 0
-    
-    if len(listado) > 0:
-        print("\n*** Listado de Mantenimientos ***")
-        objs = []
-        for fila in listado:
-            objMantenimiento = Mantenimiento(fila[1], 0, 0, str(fila[2]), fila[3], fila[4], fila[5], fila[6], fila[0])
-            objs.append(objMantenimiento)
-            print(objMantenimiento)
-        return objs
-    else:
-        print("No hay mantenimientos registrados.")
+
+    # Si la conexión falló o no hay datos, regresar lista vacía para evitar errores en PyQt
+    if not listado:
+        print("No hay mantenimientos registrados o la consulta falló.")
+        return []
+
+    objs = []
+
+    for fila in listado:
+        obj = Mantenimiento(
+            razon=fila[1],
+            fechaProgramada=str(fila[2]),
+            comentarios=fila[3],
+            tipoMantenimiento=fila[4],
+            vehiculo=fila[5],
+            edoMantenimiento=fila[6],
+            folio=fila[0]
+        )
+        objs.append(obj)
+
+    return objs
+
         
 # UPDATE
 def actualizar(objMantenimiento):

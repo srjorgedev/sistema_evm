@@ -87,7 +87,7 @@ while True and opc1 != 9:
                         fUsuarios.deleteUser()
                     case 6:
                         print("   Saliendo del Menu de Usuarios...")
-                        
+
         case 4: # MANTENIMIENTO
             opc1=0
             while (opc1!=9):
