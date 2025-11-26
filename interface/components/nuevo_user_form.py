@@ -9,12 +9,14 @@ from PyQt6.QtSvgWidgets import QSvgWidget
 from interface.components.input import InputWidget
 from interface.components.select import SelectWidget
 from interface.components.data_fetch import TaskRunner
-from interface.components.button import ButtonWidget, ColorKeys
+from interface.components.button import ButtonWidget
 from interface.components.square_button import SquareButtonWidget
 
 import controllers.bitacora_controller as FBitacora
 import controllers.observaciones_controller as FObservaciones
 import controllers.user_controller as FUser
+
+from interface.components.styles.general import  COLORS, COLORS_LIST
 
 from utils.log import log
 
@@ -31,7 +33,7 @@ class NewUserFormWidget(QWidget):
         seg_apd = InputWidget("Segundo apellido")
         correo = InputWidget("Correo electronico *")
         contraseña = InputWidget("Contraseña *", None, True)
-        crear_boton = ButtonWidget(None, "Registrar empleado", ColorKeys.CREAR)
+        crear_boton = ButtonWidget(None, "Registrar empleado", COLORS_LIST[COLORS.CREAR])
         
         layout_apd = QHBoxLayout()
         layout_cred = QHBoxLayout()

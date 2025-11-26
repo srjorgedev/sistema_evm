@@ -13,10 +13,10 @@ from interface.components.data_fetch import TaskRunner
 from interface.components.square_button import SquareButtonWidget
 from interface.components.button import ButtonWidget
 
-from interface.components.button import ColorKeys
-
 import controllers.bitacora_controller as FBitacora
 import controllers.observaciones_controller as FObservaciones
+
+from interface.components.styles.general import COLORS, COLORS_LIST
 
 from utils.log import log
 
@@ -34,14 +34,14 @@ class EntradaFormWidget(QWidget):
         self.layout_v = QVBoxLayout(self.content_widget)
         self.select_ = SelectWidget("La entrada pertenece a la bitacora *", "Seleccione una bitacora...")
         self.observaciones = QVBoxLayout()
-        self.btn_add_obs = ButtonWidget("add", "Agregar Observación", ColorKeys.BASE)
+        self.btn_add_obs = ButtonWidget("add", "Agregar Observación", COLORS_LIST[COLORS.BASE])
         layout_h = QHBoxLayout()
         desc = QLabel("Completa los detalles del nuevo registro. \n* campo es obligatorio.")
         km_entrada = InputWidget("Kilometraje al entrar *", r"^[0-9]+.?[0-9]*$")
         gas_entrada = InputWidget("Litros de gasolina al entrar *", r"^[0-9]+.?[0-9]*$")
         v_spacer = QSpacerItem(20, 16, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
         observaciones_label = QLabel("Registrar observaciones (opcional)")
-        crear_button = ButtonWidget("ok", "Continuar", ColorKeys.CREAR)
+        crear_button = ButtonWidget("ok", "Continuar", COLORS_LIST[COLORS.CREAR])
     
         self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setFrameShape(QFrame.Shape.NoFrame)

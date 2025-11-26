@@ -10,10 +10,12 @@ from PyQt6.QtSvgWidgets import QSvgWidget
 from interface.components.input import InputWidget
 from interface.components.select import SelectWidget
 from interface.components.data_fetch import TaskRunner
-from interface.components.button import ButtonWidget, ColorKeys
+from interface.components.button import ButtonWidget
 from interface.components.square_button import SquareButtonWidget
 
 from controllers import vehiculo_controller as Fvehiculo
+
+from interface.components.styles.general import COLORS, COLORS_LIST
 
 from utils.log import log
 
@@ -35,7 +37,7 @@ class NewCarWidget(QWidget):
         self.modelo = InputWidget("Modelo*")
         self.licencia = InputWidget("Licencia requerida*")
 
-        crear_boton = ButtonWidget(None, "Registrar Vehículo", ColorKeys.CREAR)
+        crear_boton = ButtonWidget(None, "Registrar Vehículo", COLORS_LIST[COLORS.CREAR])
         crear_boton.clicked.connect(self.registrar)
 
         layout_apd = QHBoxLayout()

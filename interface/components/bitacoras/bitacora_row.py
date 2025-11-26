@@ -49,10 +49,10 @@ class BitacoraRowWidget(QFrame):
         layout.setContentsMargins(0, 0, 0, 0)
         
         self.setFixedHeight(56) 
-        self.setStyleSheet("BitacoraRowWidget {background-color: transparent;} BitacoraRowWidget:hover {background-color: #162229;}")
+        self.setStyleSheet(f"BitacoraRowWidget {{background-color: transparent;}} BitacoraRowWidget:hover {{background-color: {COLORS_LIST[COLORS.BG_CLARO_2]};}}")
         
         lbl_strong_style = "font-size: 14px; color: #009AD3; font-weight: bold; background: transparent;"
-        lbl_normal_style = "font-size: 14px; color: #ebebeb; font-weight: normal; background: transparent;"
+        lbl_normal_style = f"font-size: 14px; color: {COLORS_LIST[COLORS.TEXTO_OSCURO]}; font-weight: normal; background: transparent;"
         
         dot_widget_1.setStyleSheet("background-color: transparent;")
         dot_widget_2.setStyleSheet("background-color: transparent;")

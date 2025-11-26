@@ -7,13 +7,15 @@ from interface.components.bitacoras.bitacora_row import BitacoraRowWidget
 from interface.components.bitacoras.bitacora_row_archive import BitacoraArchivedRowWidget
 from interface.components.button import ButtonWidget
 from interface.components.square_button import SquareButtonWidget
-from interface.components.button import ColorKeys
 from interface.components.data_fetch import TaskRunner
 from interface.components.modal import ModalWidget
 from interface.components.bitacoras.salida_form import SalidaFormWidget
 from interface.components.bitacoras.entrada_form import EntradaFormWidget
 from interface.components.table import TableWidget
 from interface.components.bitacoras.bitacora_info import BitacoraInfoWidget
+
+from interface.components.styles.general import COLORS, COLORS_LIST
+from interface.components.styles.table_style import tab_style
 
 from utils.log import log
 
@@ -57,10 +59,10 @@ class BITScreenWidget(QWidget):
         # El primer parametro es el icono, es obligatorio, por ejemplo -> ""out"
         # El segundo parametro es el texto, es obligorio, por ejemplo -> "Registrar salida"
         # El tercer parametro es el color, es opcional, por ejemplo -> ColorKeys.ARCHIVAR
-        self.button_salida = ButtonWidget("out", "Registrar salida", ColorKeys.CREAR) 
-        self.button_entrada = ButtonWidget("in", "Registrar entrada", ColorKeys.CREAR) 
-        self.button_modificar = ButtonWidget("modify", "Modificar", ColorKeys.MODIFICAR) 
-        self.button_archivar = ButtonWidget("archive", "Archivar", ColorKeys.ARCHIVAR)
+        self.button_salida = ButtonWidget("out", "Registrar salida", COLORS_LIST[COLORS.CREAR]) 
+        self.button_entrada = ButtonWidget("in", "Registrar entrada", COLORS_LIST[COLORS.CREAR]) 
+        self.button_modificar = ButtonWidget("modify", "Modificar", COLORS_LIST[COLORS.MODIFICAR]) 
+        self.button_archivar = ButtonWidget("archive", "Archivar", COLORS_LIST[COLORS.ARCHIVAR])
         # En SquareButtonWidget
         # El primer parametro es el icono, es obligatorio.
         # El segundo parametro es el color, es obligatorio.  
@@ -87,9 +89,9 @@ class BITScreenWidget(QWidget):
         self.button_recargar.clicked.connect(self.handle_refresh)
         
         # Asignacion de estilos
-        label_titulo.setStyleSheet("font-size: 40px; font-weight: bold; color: white;")
-        label_buttons.setStyleSheet("font-size: 18px; color: #c1c1c1;")
-        label_subtitulo.setStyleSheet("font-size: 18px; color: #c1c1c1;")
+        label_titulo.setStyleSheet(f"font-size: 40px; font-weight: bold; color:{COLORS_LIST[COLORS.TEXTO_OSCURO]};")
+        label_buttons.setStyleSheet(f"font-size: 18px; color: {COLORS_LIST[COLORS.TEXTO_OSCURO]};")
+        label_subtitulo.setStyleSheet(f"font-size: 18px; color: {COLORS_LIST[COLORS.TEXTO_OSCURO]};")
         
         # Alineamos la posicion de elementos 
         label_subtitulo.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
@@ -124,37 +126,8 @@ class BITScreenWidget(QWidget):
         self.fetch_archivadas()
 
     def apply_tab_styles(self):
-        style = """
-            QTabWidget::pane {
-                background-color: #f1f1f1;
-            }
-            QTabBar::tab {
-                background: transparent;
-                color: #f1f1f1;
-                border: 2px solid #17272f;
-                border-bottom: none;
-                padding: 8px 24px;
-                font-size: 14px;
-                border-top-left-radius: 8px; /* Redondeado en la esquina superior izquierda */
-                border-top-right-radius: 8px; /* Redondeado en la esquina superior derecha */
-                margin-right: 4px; /* Pequeño espacio entre pestañas */
-            }
-            QTabBar::tab:selected {
-                background: #17272f; /* Verde vibrante para la pestaña seleccionada */
-                color: #f1f1f1;
-                border-color: #17272f; /* Borde del mismo color para coherencia */
-                border-bottom-color: #0f181f; /* Para que parezca un botón "flotante" */
-            }
-            QTabBar::tab:hover:!selected {
-                background: #283a45; /* Un tono un poco más claro al pasar el ratón por encima */
-                color: #c1c1c1;
-            }
-            QTabBar::tab:!selected {
-                margin-top: 2px; /* Ligeramente más bajo que el seleccionado para el efecto flotante */
-                color: #c1c1c1;
-            }
-        """
-        self.tabs.setStyleSheet(style)
+        
+        self.tabs.setStyleSheet(tab_style)
         
     # Funcion para pedir los datos 
     def fetch_bitacoras(self):
