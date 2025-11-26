@@ -27,10 +27,6 @@ from domain.mantenimiento.Mantenimiento import Mantenimiento
 from utils.log import log
 
 class MANTEScreenWidget(QWidget):
-    btn_archivar = pyqtSignal()
-    
-    notificar = pyqtSignal(str,str,str)
-    
     def __init__(self):
         super().__init__()
         
