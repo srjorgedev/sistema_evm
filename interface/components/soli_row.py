@@ -1,9 +1,11 @@
 from PyQt6.QtWidgets import QWidget, QLabel, QHBoxLayout
 from PyQt6.QtCore import pyqtSignal
-from interface.components.button import ButtonWidget, ColorKeys
+from interface.components.button import ButtonWidget
 
 import domain.solicitudes.crudSolicitudes as CRUD
 from domain.solicitudes.ClaseSolicitudes import Solicitud
+
+from interface.components.styles.general import COLORS, COLORS_LIST
 
 
 class SolicitudRowWidget(QWidget):
@@ -33,9 +35,9 @@ class SolicitudRowWidget(QWidget):
         layout.addWidget(QLabel(self.autorizador))
 
         # Botones
-        btn_ok = ButtonWidget("done", "", ColorKeys.CREAR)
-        btn_cancel = ButtonWidget("close", "", ColorKeys.ARCHIVAR)
-        btn_delete = ButtonWidget("trash", "", ColorKeys.ARCHIVAR)
+        btn_ok = ButtonWidget("done", "", COLORS_LIST[COLORS.CREAR])
+        btn_cancel = ButtonWidget("close", "", COLORS_LIST[COLORS.ARCHIVAR])
+        btn_delete = ButtonWidget("trash", "", COLORS_LIST[COLORS.ARCHIVAR])
 
         layout.addWidget(btn_ok)
         layout.addWidget(btn_cancel)

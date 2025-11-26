@@ -50,8 +50,11 @@ class VentanaPrincipal(QMainWindow):
         self.stack = QStackedWidget()
         self.notification_container = NotificationContainerWidget(self)
 
-        # Agregar pantallas
-        self.pantalla_bitacora = BITScreenWidget()
+        self.pantalla_bitacora.notificar.connect(self.notification_container.nueva_notificacion)
+        
+        self.stack.setStyleSheet(f"background-color: {COLORS_LIST[COLORS.BG_CLARO_1]};")
+        
+        # self.stack.addWidget(ScreenWidget("VISTA DASHBOARD", "#2c3e50"))
         self.stack.addWidget(self.pantalla_bitacora)
         self.stack.addWidget(SOLIScreenWidget())
         self.stack.addWidget(USERScreenWidget())

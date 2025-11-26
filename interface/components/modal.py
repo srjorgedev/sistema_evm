@@ -6,6 +6,8 @@ from PyQt6.QtGui import QColor
 from interface.components.square_button import SquareButtonWidget
 from interface.components.button import ButtonWidget
 
+from interface.components.styles.general import COLORS, COLORS_LIST
+
 class ModalWidget(QWidget):
     close = pyqtSignal()
     save = pyqtSignal()
@@ -20,12 +22,11 @@ class ModalWidget(QWidget):
         self.setStyleSheet("background-color: rgba(0, 0, 0, 150);")
         
         self.contenedor = QFrame(self) 
-        self.contenedor.setStyleSheet("""
-            QFrame {
-                background-color: #1e293b; 
+        self.contenedor.setStyleSheet(f"""
+            QFrame {{
+                background-color: {COLORS_LIST[COLORS.BG_CLARO_3]}; 
                 border-radius: 10px;
-            }
-            QLabel { background: transparent; color: white; }
+            }}
         """)
         
         sombra = QGraphicsDropShadowEffect()
@@ -41,7 +42,7 @@ class ModalWidget(QWidget):
         self.header = QHBoxLayout()
         
         title = QLabel(titulo)
-        title.setStyleSheet("font-size: 24px; font-weight: bold; color: white;")
+        title.setStyleSheet(f"font-size: 24px; font-weight: bold; color:  {COLORS_LIST[COLORS.TEXTO_OSCURO]};")
         
         self.btn_cerrar = SquareButtonWidget("close", "#cc1c11", 36)
         self.btn_cerrar.clicked.connect(self.hide_modal)

@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QLabel, QScrollArea, QVBoxLayout, QHBoxLayout, QSizePolicy, QSpacerItem, QTabWidget
+from PyQt6.QtWidgets import QWidget, QLabel, QScrollArea,QPushButton, QVBoxLayout, QHBoxLayout, QSizePolicy, QSpacerItem, QTabWidget
 from PyQt6.QtCore import Qt, pyqtSignal
 
 import controllers.bitacora_controller as FBitacora
@@ -9,7 +9,6 @@ from interface.components.bitacoras.bitacora_row import BitacoraRowWidget
 from interface.components.bitacoras.bitacora_row_archive import BitacoraArchivedRowWidget
 from interface.components.button import ButtonWidget
 from interface.components.square_button import SquareButtonWidget
-from interface.components.button import ColorKeys
 from interface.components.data_fetch import TaskRunner
 from interface.components.modal import ModalWidget
 from interface.components.bitacoras.salida_form import SalidaFormWidget
@@ -19,18 +18,24 @@ from interface.components.user_row import UserRowWidget
 from interface.components.vehiculo_row import VehiculoCardWidget
 from interface.components.nuevoVehiculoForm import NewCarWidget
 
+from interface.components.styles.general import COLORS_LIST, COLORS
+from interface.components.styles.table_style import tab_style
+
+from interface.components.modificar_matricula import ModificarMatriculaWidget  # tu archivo nuevo
+from interface.components.baja_vehicuo import BajaVehiculoWidget 
 from utils.log import log
 
 class VEHIScreenWidget(QWidget):
     btn_archivar = pyqtSignal()
     
     notificar = pyqtSignal(str,str,str)
-    
+        
     def __init__(self):
         super().__init__()
         
         table_headers = ["N° Serie", "Matricula", "Marca", "Acciones"]
-        
+
+    
         # Creacion de elementos
         self.main_layout = QVBoxLayout(self) 
         label_titulo = QLabel("VEHICULOS")
@@ -55,9 +60,11 @@ class VEHIScreenWidget(QWidget):
         h_spacer = QSpacerItem(128, 16, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
         
         # Botones
-        self.button_agregar = ButtonWidget("add", "Registrar vehiculo", ColorKeys.CREAR)
-        self.button_modificar = ButtonWidget("modify", "Modificar", ColorKeys.MODIFICAR)
-        self.button_archivar = ButtonWidget("archive", "Eliminar", ColorKeys.ARCHIVAR)
+        self.button_agregar = ButtonWidget("add", "Registrar vehiculo", COLORS_LIST[COLORS.CREAR])
+        self.button_modificar = ButtonWidget("modify", "Modificar", COLORS_LIST[COLORS.MODIFICAR])
+        self.main_layout.addWidget(self.button_modificar)
+        self.button_archivar = ButtonWidget("archive", "Eliminar", COLORS_LIST[COLORS.ARCHIVAR])
+        self.main_layout.addWidget(self.button_archivar)
         self.button_recargar = SquareButtonWidget("reload", "#f1f1f1")
         
         # Asignacion de atributos 
@@ -72,9 +79,9 @@ class VEHIScreenWidget(QWidget):
         # self.button_recargar.clicked.connect(self.handle_refresh)
         
         # Asignacion de estilos
-        label_titulo.setStyleSheet("font-size: 40px; font-weight: bold; color: white;")
-        label_buttons.setStyleSheet("font-size: 18px; color: #c1c1c1;")
-        label_subtitulo.setStyleSheet("font-size: 18px; color: #c1c1c1;")
+        label_titulo.setStyleSheet(f"font-size: 40px; font-weight: bold; color: {COLORS_LIST[COLORS.TEXTO_OSCURO]};")
+        label_buttons.setStyleSheet(f"font-size: 18px; color: {COLORS_LIST[COLORS.TEXTO_OSCURO]};")
+        label_subtitulo.setStyleSheet(f"font-size: 18px; color: {COLORS_LIST[COLORS.TEXTO_OSCURO]};")
         
         # Alineamos la posicion de elementos 
         label_subtitulo.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
@@ -99,6 +106,10 @@ class VEHIScreenWidget(QWidget):
         self.main_layout.addSpacerItem(v_spacer)
         self.main_layout.addWidget(self.tabs)
         self.main_layout.addSpacerItem(v_spacer)
+        self.modal_modificar = ModificarMatriculaWidget(refrescar_tabla_callback=self.refrescar_tabla)
+        self.button_modificar.clicked.connect(self.modal_modificar.show)
+        self.modal_baja = BajaVehiculoWidget(refrescar_tabla_callback=self.refrescar_tabla)
+        self.button_archivar.clicked.connect(self.modal_baja.show)
 
         # Aplicamos los estilos a las pestañas
         self.apply_tab_styles()
@@ -106,38 +117,13 @@ class VEHIScreenWidget(QWidget):
         # Llamamos a la funcion que pide los datos.
         self.fetch_vehiculos()
 
+
     def apply_tab_styles(self):
-        style = """
-            QTabWidget::pane {
-                background-color: #f1f1f1;
-            }
-            QTabBar::tab {
-                background: transparent;
-                color: #f1f1f1;
-                border: 2px solid #17272f;
-                border-bottom: none;
-                padding: 8px 24px;
-                font-size: 14px;
-                border-top-left-radius: 8px; /* Redondeado en la esquina superior izquierda */
-                border-top-right-radius: 8px; /* Redondeado en la esquina superior derecha */
-                margin-right: 4px; /* Pequeño espacio entre pestañas */
-            }
-            QTabBar::tab:selected {
-                background: #17272f; /* Verde vibrante para la pestaña seleccionada */
-                color: #f1f1f1;
-                border-color: #17272f; /* Borde del mismo color para coherencia */
-                border-bottom-color: #0f181f; /* Para que parezca un botón "flotante" */
-            }
-            QTabBar::tab:hover:!selected {
-                background: #283a45; /* Un tono un poco más claro al pasar el ratón por encima */
-                color: #c1c1c1;
-            }
-            QTabBar::tab:!selected {
-                margin-top: 2px; /* Ligeramente más bajo que el seleccionado para el efecto flotante */
-                color: #c1c1c1;
-            }
-        """
-        self.tabs.setStyleSheet(style)
+        self.tabs.setStyleSheet(tab_style)
+        
+    def refrescar_tabla(self):
+        # Aquí refrescas tu tabla de vehículos
+        print("Tabla de vehículos refrescada")
         
     # Funcion para pedir los datos 
     def fetch_vehiculos(self):

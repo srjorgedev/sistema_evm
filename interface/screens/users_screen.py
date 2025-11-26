@@ -4,20 +4,25 @@ from PyQt6.QtCore import Qt, pyqtSignal
 import controllers.bitacora_controller as FBitacora
 import controllers.user_controller as FUsuario
 
+from domain.usuarios.CRUD import registrar_empleado
 from interface.components.bitacoras.bitacora_row import BitacoraRowWidget
 from interface.components.bitacoras.bitacora_row_archive import BitacoraArchivedRowWidget
 from interface.components.button import ButtonWidget
 from interface.components.square_button import SquareButtonWidget
-from interface.components.button import ColorKeys
 from interface.components.data_fetch import TaskRunner
 from interface.components.modal import ModalWidget
 from interface.components.bitacoras.salida_form import SalidaFormWidget
 from interface.components.bitacoras.entrada_form import EntradaFormWidget
-from interface.components.table import TableWidget
+from interface.components.table2 import TableWidget2
 from interface.components.user_row import UserRowWidget
 from interface.components.tipo_row import TypeRowWidget
 from interface.components.nuevo_user_form import NewUserFormWidget
+from interface.components.choferes_row import ChoferRowWidget
+from interface.components.contacto_row import ContactosRowWidget
 import controllers.user_controller as FUser
+
+from interface.components.styles.table_style import tab_style
+from interface.components.styles.general import COLORS, COLORS_LIST
 
 from utils.log import log
 
@@ -31,25 +36,27 @@ class USERScreenWidget(QWidget):
         
         table_headers = ["N°", "Nombre", "Rol", "Acciones"]
         tipo_headers = ["Codigo", "Descripcion", "Acciones"]
-        chofer_headers = ["N°", "Nombre",  "Numero de Licencia", "Tipo de Licencia", "Fecha de Vencimiento", "Acciones"]
+        chofer_headers = ["N°", "Nombre", "Numero de Licencia", "Tipo de Licencia", "Fecha de Vencimiento", "Acciones"]
+        contactos_headers = ["N°", "Nombre", "Correo Electrónico", "Teléfono", "Acciones"]
         
         # Creacion de elementos
-        self.main_layout = QVBoxLayout(self) 
+        self.main_layout = QVBoxLayout(self)
         label_titulo = QLabel("EMPLEADOS")
         button_layout = QHBoxLayout()
         label_subtitulo = QLabel("Panel de Control")
         label_buttons = QLabel("Acciones rapidas")
         
         # Las tablas ahora estarán dentro de las pestañas
-        self.table = TableWidget(table_headers)
-        self.tipos_table = TableWidget(tipo_headers)
-        self.choferes_table = TableWidget(chofer_headers)
+        self.table = TableWidget2(table_headers)
+        self.tipos_table = TableWidget2(tipo_headers)
+        self.choferes_table = TableWidget2(chofer_headers)
+        self.contactos_table = TableWidget2(contactos_headers)
         # Creación del QTabWidget
         self.tabs = QTabWidget()
         self.tabs.addTab(self.table, "Empleados registrados")
         self.tabs.addTab(self.tipos_table, "Tipos de empleados")
-        # self.tabs.addTab(self.archivadas, "Registros Archivados")
         self.tabs.addTab(self.choferes_table, "Choferes")
+        self.tabs.addTab(self.contactos_table, "Contactos")
 
         # Instancia del objeto para realizar operaciones con la BD en segundo plano.
         self.runner = TaskRunner(self)
@@ -58,25 +65,38 @@ class USERScreenWidget(QWidget):
         v_spacer = QSpacerItem(20, 24, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
         h_spacer = QSpacerItem(128, 16, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
         
+        # ----------------------------------------------------
+        # 🚨 SECCIÓN CORREGIDA: Creación de Botones (debe ir antes de la conexión)
         # Botones
-        self.button_agregar = ButtonWidget("add", "Registrar empleados", ColorKeys.CREAR)
-        self.button_modificar = ButtonWidget("modify", "Modificar", ColorKeys.MODIFICAR)
-        self.button_archivar = ButtonWidget("archive", "Eliminar", ColorKeys.ARCHIVAR)
+        self.button_agregar = ButtonWidget("add", "Registrar empleados", COLORS_LIST[COLORS.CREAR])
+        self.button_modificar = ButtonWidget("modify", "Modificar", COLORS_LIST[COLORS.CREAR])
+        self.button_archivar = ButtonWidget("archive", "Eliminar", COLORS_LIST[COLORS.CREAR])
         self.button_recargar = SquareButtonWidget("reload", "#f1f1f1")
+        # ----------------------------------------------------
+
+        # ----------------------------------------------------
+        # 🚨 SECCIÓN CORREGIDA: Creación y Conexión del Modal (sin duplicados)
+        self.user_form = NewUserFormWidget()
+        self.modal_salida = ModalWidget(self, self.user_form, "Registrar un nuevo usuario.")
+        
+        self.user_form.registro_solicitado.connect(self.register_new_user)
+        
+        # Asignacion de eventos en los botones cuando se hace clic
+        self.button_agregar.clicked.connect(self.modal_salida.show_modal)
+        
+        # CONEXIÓN CLAVE: Conectar la señal de registro del formulario al método
+        self.user_form.registro_solicitado.connect(self.register_new_user)
+        # ----------------------------------------------------
+        
         
         # Asignacion de atributos 
         self.main_layout.setContentsMargins(48, 52, 48, 0) 
         self.main_layout.setSpacing(0)
         
-        self.modal_salida = ModalWidget(self, NewUserFormWidget(), "Registrar un nuevo usuario.")
-        
-        # Asignacion de eventos en los botones cuando se hace clic
-        self.button_agregar.clicked.connect(self.modal_salida.show_modal)
-        
         # Asignacion de estilos
-        label_titulo.setStyleSheet("font-size: 40px; font-weight: bold; color: white;")
-        label_buttons.setStyleSheet("font-size: 18px; color: #c1c1c1;")
-        label_subtitulo.setStyleSheet("font-size: 18px; color: #c1c1c1;")
+        label_titulo.setStyleSheet(f"font-size: 40px; font-weight: bold; color:{COLORS_LIST[COLORS.TEXTO_OSCURO]};")
+        label_buttons.setStyleSheet(f"font-size: 18px; color: {COLORS_LIST[COLORS.TEXTO_OSCURO]};")
+        label_subtitulo.setStyleSheet(f"font-size: 18px; color: {COLORS_LIST[COLORS.TEXTO_OSCURO]};")
         
         # Alineamos la posicion de elementos 
         label_subtitulo.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
@@ -108,39 +128,10 @@ class USERScreenWidget(QWidget):
         self.fetch_usuarios()
         self.fetch_tipos_empleado()
         self.fetch_choferes()
+        self.fetch_contactos()
 
     def apply_tab_styles(self):
-        style = """
-            QTabWidget::pane {
-                background-color: #f1f1f1;
-            }
-            QTabBar::tab {
-                background: transparent;
-                color: #f1f1f1;
-                border: 2px solid #17272f;
-                border-bottom: none;
-                padding: 8px 24px;
-                font-size: 14px;
-                border-top-left-radius: 8px; /* Redondeado en la esquina superior izquierda */
-                border-top-right-radius: 8px; /* Redondeado en la esquina superior derecha */
-                margin-right: 4px; /* Pequeño espacio entre pestañas */
-            }
-            QTabBar::tab:selected {
-                background: #17272f; /* Verde vibrante para la pestaña seleccionada */
-                color: #f1f1f1;
-                border-color: #17272f; /* Borde del mismo color para coherencia */
-                border-bottom-color: #0f181f; /* Para que parezca un botón "flotante" */
-            }
-            QTabBar::tab:hover:!selected {
-                background: #283a45; /* Un tono un poco más claro al pasar el ratón por encima */
-                color: #c1c1c1;
-            }
-            QTabBar::tab:!selected {
-                margin-top: 2px; /* Ligeramente más bajo que el seleccionado para el efecto flotante */
-                color: #c1c1c1;
-            }
-        """
-        self.tabs.setStyleSheet(style)
+        self.tabs.setStyleSheet(tab_style)
         
     def fetch_tipos_empleado(self):
         log("[USUARIOS]: Iniciando fetch de tipos...")
@@ -153,13 +144,6 @@ class USERScreenWidget(QWidget):
     # Funcion para pedir los datos 
     def fetch_usuarios(self):
         log("[USUARIOS]: Iniciando fetch general...")
-        # Llamar al objeto para hacer peticiones en segundo plano.
-        # Esta funcion nos pide...
-        # La funcion a ejecutar: func
-        # Lo que se debe hacer si todo sale bien: on_success
-        # Lo que se debe hacer si hay un error: on_error
-        # Aqui no se utiliza, pero tambien esta args, para cuando se le pasen tuplas
-        # tampoco se utiliza, kwargs, para cuando se le pasen objetos o clave = valor
         self.runner.run(
             func=FUsuario.lista_general, 
             on_success=lambda data: self.handle_data(data, self.table), 
@@ -174,8 +158,7 @@ class USERScreenWidget(QWidget):
             on_error=lambda e: log(f"[USUARIOS]: Error choferes -> {e}")
         )
 
-
-    def handle_data(self, data: list[tuple], parent: TableWidget):
+    def handle_data(self, data: list[tuple], parent: TableWidget2):
         log(f"[USUARIOS]: Datos recibidos -> {len(data)} bitácoras.")
         
         parent.clearRows()
@@ -193,7 +176,7 @@ class USERScreenWidget(QWidget):
                 card.btn_archivo.connect(lambda: print("HI"))
                 parent.addRow(card)
     
-    def handle_tipos(self, data: list[tuple], parent: TableWidget):
+    def handle_tipos(self, data: list[tuple], parent: TableWidget2):
         log(f"[USUARIOS]: Datos recibidos -> {len(data)} bitácoras.")
         
         parent.clearRows()
@@ -211,7 +194,7 @@ class USERScreenWidget(QWidget):
                 card.btn_archivo.connect(lambda: print("HI"))
                 parent.addRow(card)
     
-    def handle_choferes(self, data: list[tuple], parent: TableWidget):
+    def handle_choferes(self, data: list[tuple], parent: TableWidget2):
         log(f"[USUARIOS]: Choferes recibidos -> {len(data)}")
 
         parent.clearRows()
@@ -223,9 +206,57 @@ class USERScreenWidget(QWidget):
             parent.addRow(no_data_label)
         else:
             for chofer in data:
-                card = UserRowWidget(chofer)  # O crea un widget especial si quieres
+                card = ChoferRowWidget(chofer) 
                 parent.addRow(card)
 
+    # --- Métodos para el Registro de Nuevo Empleado ---
+    def register_new_user(self, data: dict):
+        self.runner.run(
+            func=lambda: registrar_empleado(data),
+            on_error= lambda e: self.notificar.emit("Error", f"Error al registrar: {e}", "ARCHIVAR"),
+            on_success=self.handle_registration_success
+        )
 
+    def handle_registration_success(self):
+        """
+        Se ejecuta después de que FUsuario.registrar_general regresa sin error.
+        """
+        log("[USUARIOS]: Registro de empleado exitoso.")
+        self.modal_salida.hide_modal() # Cierra el modal de registro
+        
+        # Notifica al usuario del éxito
+        self.notificar.emit("Éxito", "Empleado registrado correctamente.", "CREAR")
+        
+        # Recarga la tabla para mostrar el nuevo empleado
+        self.fetch_usuarios()
+        
     def handle_error(self, error_message):
         log(f"[USUARIOS]: Error al hacer fetch -> {error_message}")
+        
+   # No olvides importar el nuevo componente
+
+    # ... dentro de USERScreenWidget ...
+
+    def fetch_contactos(self):
+        log("[USUARIOS]: Fetch de contactos...")
+        self.runner.run(
+            func=FUser.lista_contactos, # Asegúrate de haber agregado esto en el controller
+            on_success=lambda data: self.handle_contactos(data, self.contactos_table),
+            on_error=lambda e: log(f"[USUARIOS]: Error contactos -> {e}")
+        )
+
+    def handle_contactos(self, data: list[tuple], parent: TableWidget2):
+        log(f"[USUARIOS]: Contactos recibidos -> {len(data)}")
+        
+        parent.clearRows()
+
+        if not data:
+            no_data_label = QLabel("No hay información de contacto.")
+            no_data_label.setStyleSheet("background-color: transparent; font-size: 16px; color: #888888;")
+            no_data_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            parent.addRow(no_data_label)
+        else:
+            for contacto in data:
+                # contacto es la tupla (Numero, Nombre, Email, Telefono)
+                card = ContactosRowWidget(contacto)
+                parent.addRow(card)

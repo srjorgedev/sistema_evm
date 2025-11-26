@@ -4,6 +4,8 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QCursor
 
+from interface.components.styles.general import COLORS, COLORS_LIST
+
 class TableHeadWidget(QFrame):
     def __init__(self, text):
         super().__init__()
@@ -20,7 +22,7 @@ class TableHeadWidget(QFrame):
         if text.upper() == "N° SERIE":
             label.setContentsMargins(16,0,0,0)
         
-        label.setStyleSheet("font-size: 16px; font-weight: bold; color: #f1f1f1;")
+        label.setStyleSheet(f"font-size: 16px; font-weight: bold; color:{COLORS_LIST[COLORS.TEXTO_OSCURO]};")
         self.setStyleSheet("background-color: transparent;")
         
         self.main_layout.addWidget(label)

@@ -34,32 +34,29 @@ def alta(objMantenimiento):
 # ----- READ -----
 def lista():
     miConn = Conn()
-    comando = "SELECT folio, razon, fechaProgramada, comentarios, tipo_mantenimiento, vehiculo, edo_mantenimiento FROM MANTENIMIENTO"
-    listado = miConn.lista(comando)
     
     try:
-        cursor = miConn.conexion.cursor()
-        cursor.execute(comando)
-        resultados = cursor.fetchall()
-        listado = []
-        for fila in resultados:
+        comando = "SELECT folio, razon, fechaProgramada, comentarios, tipo_mantenimiento, vehiculo, edo_mantenimiento FROM MANTENIMIENTO"
+        listado = miConn.lista(comando)
+        lista = []
+        for fila in listado:
             m = Mantenimiento(
                 fila[1],  # Razon
-                fila[2],  # Estatus
-                fila[3],  # Importancia
-                str(fila[4]),  # FechaProgramada
-                fila[5],  # Comentarios
-                fila[6],  # TipoMantenimiento (ID)
-                fila[7],  # Vehiculo
-                fila[8],  # EstadoMantenimiento (ID)
+                0,  # Estatus
+                0,  # Importancia
+                str(fila[2]),  # FechaProgramada
+                fila[3],  # Comentarios
+                fila[4],  # TipoMantenimiento (ID)
+                fila[5],  # Vehiculo
+                fila[6],  # EstadoMantenimiento (ID)
                 fila[0]   # Folio
             )
-            listado.append(m)
-        return listado
+            lista.append(m)
+        return lista
     except Exception as e:
         print("Error al listar:")
         print(e)
-        return 0
+        return []
 
 
 # ----- UPDATE -----
