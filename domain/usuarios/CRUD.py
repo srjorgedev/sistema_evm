@@ -1,5 +1,5 @@
-from db.connU import Conn
-from db.ConnB import Conn as ConnB
+from db.ConnB import Conn
+
 def lista_general():
     conn = Conn()
 
@@ -11,6 +11,7 @@ def lista_general():
             tp.codigo as rol_codigo
         FROM empleado AS e
         INNER JOIN tipo_empleado AS tp ON e.tipo_empleado = tp.codigo
+        ORDER BY e.numero
     """
 
     lista = conn.lista(query)
@@ -37,6 +38,7 @@ def lista_tipos():
         
     return tipos
 
+from db.ConnB import Conn
 
 def lista_choferes():
     conn = ConnB()
@@ -67,13 +69,14 @@ import sys
 
 def registrar_empleado(data: dict):
     miConn = Conn()
-    cursor = miConn.cursor()
 
     comando = """
         INSERT INTO empleado
         (nombrePila, apdPaterno, apdMaterno, tipo_empleado, password_hash, email)
         VALUES (%s, %s, %s, %s, %s, %s)
     """
+    
+    
 
     valores = (
         data["nombrePila"],
@@ -84,9 +87,7 @@ def registrar_empleado(data: dict):
         data["email"]
     )
 
-    cursor.execute(comando, valores)
-    miConn.commit()
-    miConn.close()
+    miConn.registrar(comando, valores)
 
     return True
 

@@ -6,6 +6,9 @@ from domain.bitacoras.Clase import Bitacora
 from interface.components.square_button import SquareButtonWidget
 from interface.components.button import ButtonWidget
 
+from interface.components.styles.general import COLORS,COLORS_LIST
+
+
 class TypeRowWidget(QFrame):
     btn_archivo = pyqtSignal(object)
     btn_modificar = pyqtSignal()
@@ -37,10 +40,10 @@ class TypeRowWidget(QFrame):
         layout.setContentsMargins(0, 0, 0, 0)
         
         self.setFixedHeight(56) 
-        self.setStyleSheet("TypeRowWidget {background-color: transparent;} TypeRowWidget:hover {background-color: #162229;}")
+        self.setStyleSheet(f"TypeRowWidget {{background-color: transparent;}} TypeRowWidget:hover {{background-color: {COLORS_LIST[COLORS.BG_CLARO_2]};}}")
         
         lbl_strong_style = "font-size: 14px; color: #009AD3; font-weight: bold; background: transparent;"
-        lbl_normal_style = "font-size: 14px; color: #f1f1f1; font-weight: normal; background: transparent;"
+        lbl_normal_style = "font-size: 14px; color: #242424; font-weight: normal; background: transparent;"
         
         if len(self.data[0]) < 5: 
             lbl_id.setFixedWidth(80)

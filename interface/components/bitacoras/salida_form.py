@@ -9,11 +9,13 @@ from PyQt6.QtSvgWidgets import QSvgWidget
 from interface.components.input import InputWidget
 from interface.components.select import SelectWidget
 from interface.components.data_fetch import TaskRunner
-from interface.components.button import ButtonWidget, ColorKeys
+from interface.components.button import ButtonWidget
 from interface.components.square_button import SquareButtonWidget
 
 import controllers.bitacora_controller as FBitacora
 import controllers.observaciones_controller as FObservaciones
+
+from interface.components.styles.general import COLORS, COLORS_LIST
 
 from utils.log import log
 
@@ -30,7 +32,7 @@ class SalidaFormWidget(QWidget):
         self.content_widget = QWidget()
         self.layout_v = QVBoxLayout(self.content_widget)
         self.observaciones = QVBoxLayout()
-        self.btn_add_obs = ButtonWidget("add", "Agregar Observación", ColorKeys.BASE)
+        self.btn_add_obs = ButtonWidget("add", "Agregar Observación", COLORS_LIST[COLORS.BASE])
         asunto = InputWidget("Asunto *")
         destino = InputWidget("Destino *")
         layout_h = QHBoxLayout()
@@ -39,7 +41,7 @@ class SalidaFormWidget(QWidget):
         gas_entrada = InputWidget("Litros de gasolina al entrar *", r"^[0-9]+.?[0-9]*$")
         v_spacer = QSpacerItem(20, 16, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
         observaciones_label = QLabel("Registrar observaciones (opcional)")
-        crear_button = ButtonWidget("ok", "Continuar", ColorKeys.CREAR)
+        crear_button = ButtonWidget("ok", "Continuar", COLORS_LIST[COLORS.CREAR])
     
         self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setFrameShape(QFrame.Shape.NoFrame)

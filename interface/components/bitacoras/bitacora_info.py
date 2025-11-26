@@ -7,7 +7,6 @@ from interface.components.bitacoras.bitacora_row import BitacoraRowWidget
 from interface.components.bitacoras.bitacora_row_archive import BitacoraArchivedRowWidget
 from interface.components.button import ButtonWidget
 from interface.components.square_button import SquareButtonWidget
-from interface.components.button import ColorKeys
 from interface.components.data_fetch import TaskRunner
 from interface.components.modal import ModalWidget
 from interface.components.bitacoras.salida_form import SalidaFormWidget

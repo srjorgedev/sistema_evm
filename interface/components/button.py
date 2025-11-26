@@ -4,28 +4,14 @@ from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtSvgWidgets import QSvgWidget
 from PyQt6.QtGui import QCursor, QColor
 from pathlib import Path
-from enum import Enum
 
 direction = Path(__file__)
 folder = direction.parent.parent
 
-class ColorKeys(Enum):
-    CREAR = "crear"
-    MODIFICAR = "mod"
-    ARCHIVAR = "archivar"
-    BASE = "base"
-
-colors = {
-    ColorKeys.ARCHIVAR: "#EF4444",
-    ColorKeys.CREAR: "#22C55E",
-    ColorKeys.MODIFICAR: "#fbff85",
-    ColorKeys.BASE: "#3498DB"
-}
-
 class ButtonWidget(QWidget):
     clicked = pyqtSignal()
 
-    def __init__(self, icono=None, texto="", color: ColorKeys = ColorKeys.BASE):
+    def __init__(self, icono=None, texto="", color=""):
         super().__init__()
         
         # Asignacion de atributos
@@ -73,7 +59,7 @@ class ButtonWidget(QWidget):
         # Acomodar el layout horizontal en el layout vertical
         self.main_layout.addWidget(self.button_frame)
 
-        c = QColor(colors[color])
+        c = QColor(color)
         r, g, b = c.red(), c.green(), c.blue()
 
         alpha_normal = 0.15  

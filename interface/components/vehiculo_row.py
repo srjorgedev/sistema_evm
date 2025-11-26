@@ -4,6 +4,8 @@ from PyQt6.QtGui import QCursor
 
 from interface.components.square_button import SquareButtonWidget
 
+from interface.components.styles.general import COLORS,COLORS_LIST
+
 class VehiculoCardWidget(QFrame):
     btn_archivo = pyqtSignal(object)
     btn_modificar = pyqtSignal()
@@ -40,10 +42,10 @@ class VehiculoCardWidget(QFrame):
         layout.setContentsMargins(16, 0, 0, 0)
 
         # Estilos
-        lbl_style = "font-size: 14px; color: #f1f1f1; background: transparent;"
+        lbl_style = "font-size: 14px; color: #242424; background: transparent;"
         lbl_strong = "font-size: 14px; color: #009AD3; font-weight: bold; background: transparent;"
 
-        self.setStyleSheet("VehiculoCardWidget {background-color: transparent;} VehiculoCardWidget:hover {background-color: #162229;}")
+        self.setStyleSheet(f"VehiculoCardWidget {{background-color: transparent;}} VehiculoCardWidget:hover {{background-color: {COLORS_LIST[COLORS.BG_CLARO_2]};}}")
         # lbl_id.setStyleSheet(lbl_strong)
         lbl_serie.setStyleSheet(lbl_strong)
         lbl_matricula.setStyleSheet(lbl_style)

@@ -72,7 +72,7 @@ class MenuButtonWidget(QFrame):
 
             MenuButtonWidget #InnerButton {{
                 background-color: none;
-                border: 1px solid #5A5F6B;
+                border: 1px solid {COLORS_LIST[COLORS.TEXTO_OSCURO]};
                 border-radius: 2px;
             }}
             
@@ -89,11 +89,11 @@ class MenuButtonWidget(QFrame):
             }}
 
             MenuButtonWidget #InnerButton QLabel {{
-                color: #f1f1f1;
+                color: {COLORS_LIST[COLORS.TEXTO_OSCURO]};
             }}
             
             MenuButtonWidget[active="true"] #InnerButton QLabel {{
-                color: #f1f1f1;
+                color: {COLORS_LIST[COLORS.TEXTO_OSCURO]};
             }}
         """)
 

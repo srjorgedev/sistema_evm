@@ -44,7 +44,7 @@ class SidemenuWidget(QWidget):
         self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
         self.setAutoFillBackground(True)
         paleta = self.palette()
-        paleta.setColor(QPalette.ColorRole.Window, QColor(COLORS_LIST[COLORS.SIDE_OSCURO_1]))
+        paleta.setColor(QPalette.ColorRole.Window, QColor(COLORS_LIST[COLORS.SIDE_CLARO_1]))
         self.setPalette(paleta)
 
         self.layout_vertical.setContentsMargins(0, 24, 0, 12)

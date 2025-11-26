@@ -30,123 +30,131 @@ class NuevaSoliForm(QWidget):
         self.setWindowTitle("Nueva Solicitud")
 
     
-        lbl_asunto = QLabel("Asunto:")
-        self.txt_asunto = QLineEdit()
+        self.txtasunto = InputWidget("Asunto:")
+        self.main_layout.addWidget(self.txtasunto)
 
-    
-        lbl_fecha = QLabel("Fecha:")
+        lbl_fecha = QLabel("Fecha y hora:")
+        self.main_layout.addWidget(lbl_fecha)
+        fecha_hora_layout = QHBoxLayout()
 
         self.comboDia = QComboBox()
         self.comboDia.addItems([str(d) for d in range(1, 32)])
-        self.comboDia.setFixedSize(100, 40)
 
         self.comboMes = QComboBox()
-        meses = [
-            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-        ]
-        self.comboMes.addItems(meses)
-        self.comboMes.setFixedSize(100, 40)
+        self.comboMes.addItems([
+            "Enero","Febrero","Marzo","Abril","Mayo","Junio",
+            "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
+        ])
 
         self.comboAnio = QComboBox()
-        self.comboAnio.addItems([str(a) for a in range(2025, 2035)])
-        self.comboAnio.setFixedSize(100, 40)
+        self.comboAnio.addItems(["2025", "2026", "2027"])
 
-        fecha_layout = QHBoxLayout()
-        fecha_layout.setSpacing(8)
-        fecha_layout.addWidget(self.comboDia)
-        fecha_layout.addWidget(self.comboMes)
-        fecha_layout.addWidget(self.comboAnio)
+        fecha_hora_layout.addWidget(self.comboDia)
+        fecha_hora_layout.addSpacing(5)
+        fecha_hora_layout.addWidget(self.comboMes)
+        fecha_hora_layout.addSpacing(5)
+        fecha_hora_layout.addWidget(self.comboAnio)
 
-    
-        lbl_hora = QLabel("Hora:")
+        fecha_hora_layout.addSpacing(25)
 
         self.comboHora = QComboBox()
         self.comboHora.addItems([f"{h:02d}" for h in range(0, 24)])
-        self.comboHora.setFixedWidth(55)
 
         self.comboMin = QComboBox()
         self.comboMin.addItems([f"{m:02d}" for m in range(0, 60)])
-        self.comboMin.setFixedWidth(55)
 
-        hora_layout = QHBoxLayout()
-        hora_layout.setSpacing(8)
-        hora_layout.addWidget(self.comboHora)
-        hora_layout.addWidget(self.comboMin)
+        fecha_hora_layout.addWidget(self.comboHora)
+        fecha_hora_layout.addSpacing(5)
+        fecha_hora_layout.addWidget(self.comboMin)
 
-        
-        self.select_tipos = SelectWidget("Vehiculo*", "Seleccione un Vehiculo...")
-        self.select_solicitante = SelectWidget("Empleados*:", "Seleccione al solicitante")
+        self.main_layout.addLayout(fecha_hora_layout)
 
-        btn_guardar = QPushButton("Guardar Solicitud")
-        btn_guardar.clicked.connect(self.guardar)
-
-    
-        self.main_layout.addWidget(lbl_asunto)
-        self.main_layout.addWidget(self.txt_asunto)
-
-        self.main_layout.addWidget(lbl_fecha)
-        self.main_layout.addLayout(fecha_layout)
-
-        self.main_layout.addWidget(lbl_hora)
-        self.main_layout.addLayout(hora_layout)
+        self.select_tipos = SelectWidget("Vehiculo:", "Seleccione un Vehiculo...")
+        self.select_solicitante = SelectWidget("Empleados:", "Seleccione al solicitante")
 
         self.main_layout.addWidget(self.select_tipos)
         self.main_layout.addWidget(self.select_solicitante)
-
+        
+        btn_guardar = QPushButton("Generar Solicitud")
+        btn_guardar.setStyleSheet("""
+            QPushButton {
+                background-color: #2D89EF;
+                color: white;
+                padding: 10px 15px;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #1E5FBB;
+            }
+            QPushButton:pressed {
+                background-color: #164A94;
+            }
+        """)
+        btn_guardar.clicked.connect(self.guardar)  
         self.main_layout.addSpacing(10)
         self.main_layout.addWidget(btn_guardar)
-        
+
+
+
+
         self.fetch_datoscars()
         self.fetch_datosuser()
 
 
     def guardar(self):
-        asunto = self.txt_asunto.text()
+        asunto = self.txtasunto.get_text()
         solicitante = self.select_solicitante.obtenerID()
         tipo = self.select_tipos.obtenerID()
-        
 
         # Validaciones
-        if asunto.strip() == "" or len(asunto) < 3:
+        if not asunto or len(asunto) < 3:
             QMessageBox.warning(self, "Error", "El asunto debe tener al menos 3 caracteres.")
             return
 
-       
+        if solicitante is None or tipo is None:
+            QMessageBox.warning(self, "Error", "Debe seleccionar vehículo y solicitante.")
+            return
+
+        try:
+            solicitante_id = int(solicitante)
+        except (ValueError, TypeError):
+            QMessageBox.warning(self, "Error", "El ID del solicitante debe ser numérico.")
+            return
+
+        # Construir fecha y hora
         dia = int(self.comboDia.currentText())
         mes = self.comboMes.currentIndex() + 1
         anio = int(self.comboAnio.currentText())
-
         fecha = f"{anio}-{mes:02d}-{dia:02d}"
 
         hora = self.comboHora.currentText()
         minuto = self.comboMin.currentText()
         hora_completa = f"{hora}:{minuto}:00"
 
-        try:
-            solicitante_id = int(solicitante)
-        except ValueError:
-            QMessageBox.warning(self, "Error", "IDs deben ser numéricos.")
-            return
-
-
+        # Crear objeto Solicitud con los 8 parámetros requeridos
+        # Orden: numero, asunto, horaSolicitud, fechaSolicitud, vehiculo, edoSolicitud, solicitante, autorizador
         nueva = Solicitud(
-            "",                   # numero
+            "",                   # numero (se asigna en BD)
             asunto,               # asunto
             hora_completa,        # horaSolicitud
             fecha,                # fechaSolicitud
             tipo if tipo else "", # vehiculo
-            solicitante_id        # solicitante
+            "1",                  # edoSolicitud (1 = Pendiente por defecto)
+            solicitante_id,       # solicitante
+            ""                    # autorizador (puede dejarse vacío por ahora)
         )
 
-        CRUD.agregarSolicitud(nueva)
+        try:
+            CRUD.agregarSolicitud(nueva)
+            QMessageBox.information(self, "Éxito", "Solicitud creada correctamente.")
 
-        QMessageBox.information(self, "Éxito", "Solicitud creada correctamente.")
-
-        self.txt_asunto.clear()
-        self.select_solicitante.clear()
-
-        self.solicitud_creada.emit()
+            self.txtasunto.clear()
+            self.select_solicitante.clear()
+            self.solicitud_creada.emit()
+        except Exception as e:
+            QMessageBox.warning(self, "Error", f"No se pudo crear la solicitud: {str(e)}")
 
     def fetch_datoscars(self):
         self.datos.run(
@@ -191,3 +199,85 @@ class NuevaSoliForm(QWidget):
         combobox.addItems(datos)
         
         print("[SOLI FORM]: Datos agregados.")
+        
+class ModificarSoliForm(QWidget):
+
+    solicitud_modificada = pyqtSignal()  # Señal para actualizar la tabla después de modificar
+
+    def __init__(self, solicitud: Solicitud):
+        super().__init__()
+        self.setWindowTitle("Modificar")
+
+        self.setWindowTitle(f"Modificar Solicitud #{solicitud.numero}")
+        self.main_layout = QVBoxLayout(self)
+        self.main_layout.setContentsMargins(20, 20, 20, 20)
+
+        lbl_fecha = QLabel("Fecha y hora:")
+        self.main_layout.addWidget(lbl_fecha)
+
+        fecha_layout = QHBoxLayout()
+        self.comboDia = QComboBox()
+        self.comboDia.addItems([str(d) for d in range(1, 32)])
+
+        self.comboMes = QComboBox()
+        self.comboMes.addItems([
+            "Enero","Febrero","Marzo","Abril","Mayo","Junio",
+            "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
+        ])
+
+        self.comboAnio = QComboBox()
+        self.comboAnio.addItems(["2025", "2026", "2027"])
+
+        fecha_layout.addWidget(self.comboDia)
+        fecha_layout.addWidget(self.comboMes)
+        fecha_layout.addWidget(self.comboAnio)
+
+        self.main_layout.addLayout(fecha_layout)
+
+        # Botón Guardar
+        btn_guardar = QPushButton("Guardar Fecha")
+        btn_guardar.setStyleSheet("""
+            QPushButton {
+                background-color: #2D89EF;
+                color: white;
+                padding: 10px 15px;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #1E5FBB;
+            }
+            QPushButton:pressed {
+                background-color: #164A94;
+            }
+        """)
+        btn_guardar.clicked.connect(self.guardar_fecha)
+        self.main_layout.addWidget(btn_guardar)
+
+        self.cargar_fecha_actual()
+
+    def cargar_fecha_actual(self):
+        """Cargar la fecha actual de la solicitud en los combos"""
+        fecha = self.solicitud.fechaSolicitud  # Formato: 'YYYY-MM-DD'
+        anio, mes, dia = map(int, fecha.split('-'))
+        self.comboDia.setCurrentText(str(dia))
+        self.comboMes.setCurrentIndex(mes - 1)
+        self.comboAnio.setCurrentText(str(anio))
+
+    def guardar_fecha(self):
+        """Actualizar la fecha de la solicitud"""
+        dia = int(self.comboDia.currentText())
+        mes = self.comboMes.currentIndex() + 1
+        anio = int(self.comboAnio.currentText())
+        nueva_fecha = f"{anio}-{mes:02d}-{dia:02d}"
+
+        # Actualizamos solo la fecha
+        self.solicitud.fechaSolicitud = nueva_fecha
+        try:
+            CRUD.actualizarSolicitud(self.solicitud)  # Método que actualiza en BD
+            QMessageBox.information(self, "Éxito", "Fecha actualizada correctamente.")
+            self.solicitud_modificada.emit()
+            self.close()
+        except Exception as e:
+            QMessageBox.warning(self, "Error", f"No se pudo actualizar la fecha: {e}")

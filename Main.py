@@ -46,9 +46,9 @@ class VentanaPrincipal(QMainWindow):
         self.notification_container = NotificationContainerWidget(self)
 
         self.pantalla_bitacora.notificar.connect(self.notification_container.nueva_notificacion)
-
-        self.stack.setStyleSheet(f"background-color: {COLORS_LIST[COLORS.BG_OSCURO_1]};")
-
+        
+        self.stack.setStyleSheet(f"background-color: {COLORS_LIST[COLORS.BG_CLARO_1]};")
+        
         # self.stack.addWidget(ScreenWidget("VISTA DASHBOARD", "#2c3e50"))
         # Agregar widgets AL STACK primero
         self.stack.addWidget(self.pantalla_bitacora)     # index 0
