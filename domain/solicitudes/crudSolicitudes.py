@@ -45,15 +45,13 @@ def agregarSolicitud(nuevaSolicitud):
 
     comando = f"""
     INSERT INTO solicitud 
-    (asunto, horaSolicitada, fechaSolicitada, vehiculo, edo_solicitud, solicitante, autorizador)
+    (asunto, fechaSolicitada, horaSolicitada, vehiculo, solicitante)
     VALUES (
         '{obj.get_asunto()}',
-        '{obj.get_horaSolicitud()}',
         '{obj.get_fechaSolicitud()}',
+        '{obj.get_horaSolicitud()}',
         '{obj.get_vehiculo()}',
-        '{obj.get_edoSolicitud()}',
         '{obj.get_solicitante()}',
-        '{obj.get_autorizador()}'
     )
     """
 
@@ -82,24 +80,9 @@ def estadoSolicitud(existeSolicitud):
         log("[CRUD SOLICITUDES]: Error modificando estado.")
 
 
-def modificarSolicitud(solicitud):
-    obj = solicitud
-    miConn = conn()
-
-    comando = f"""
-    UPDATE solicitud
-    SET asunto = '{obj.get_asunto()}'
-    WHERE numero = {obj.get_numero()};
-    """
-
-    contador = miConn.actualizar(comando)
-
-    if contador == 1:
-        log("[CRUD SOLICITUDES]: Asunto actualizado.")
-    elif contador == 0:
-        log("[CRUD SOLICITUDES]: Solicitud no encontrada.")
-    else:
-        log("[CRUD SOLICITUDES]: Error al modificar solicitud.")
+def actualizar_matricula(id_vehiculo, nueva_matricula):
+    print(f"[CRUD] Actualizando id={id_vehiculo} con matrícula={nueva_matricula}")
+    #db.execute("UPDATE vehiculos SET matricula=? WHERE id=?", (nueva_matricula, id_vehiculo))
         
 def eliminarSolicitud(numero):
     comando = f"DELETE FROM solicitud WHERE numero = {numero};"

@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QLabel, QScrollArea, QVBoxLayout, QHBoxLayout, QSizePolicy, QSpacerItem, QTabWidget
+from PyQt6.QtWidgets import QWidget, QLabel, QScrollArea,QPushButton, QVBoxLayout, QHBoxLayout, QSizePolicy, QSpacerItem, QTabWidget
 from PyQt6.QtCore import Qt, pyqtSignal
 
 import controllers.bitacora_controller as FBitacora
@@ -18,21 +18,24 @@ from interface.components.user_row import UserRowWidget
 from interface.components.vehiculo_row import VehiculoCardWidget
 from interface.components.nuevoVehiculoForm import NewCarWidget
 
-from interface.components.styles.general import COLORS, COLORS_LIST
+from interface.components.styles.general import COLORS_LIST, COLORS
 from interface.components.styles.table_style import tab_style
 
+from interface.components.modificar_matricula import ModificarMatriculaWidget  # tu archivo nuevo
+from interface.components.baja_vehicuo import BajaVehiculoWidget 
 from utils.log import log
 
 class VEHIScreenWidget(QWidget):
     btn_archivar = pyqtSignal()
     
     notificar = pyqtSignal(str,str,str)
-    
+        
     def __init__(self):
         super().__init__()
         
         table_headers = ["N° Serie", "Matricula", "Marca", "Acciones"]
-        
+
+    
         # Creacion de elementos
         self.main_layout = QVBoxLayout(self) 
         label_titulo = QLabel("VEHICULOS")
@@ -58,8 +61,10 @@ class VEHIScreenWidget(QWidget):
         
         # Botones
         self.button_agregar = ButtonWidget("add", "Registrar vehiculo", COLORS_LIST[COLORS.CREAR])
-        self.button_modificar = ButtonWidget("modify", "Modificar", COLORS_LIST[COLORS.CREAR])
-        self.button_archivar = ButtonWidget("archive", "Eliminar", COLORS_LIST[COLORS.CREAR])
+        self.button_modificar = ButtonWidget("modify", "Modificar", COLORS_LIST[COLORS.MODIFICAR])
+        self.main_layout.addWidget(self.button_modificar)
+        self.button_archivar = ButtonWidget("archive", "Eliminar", COLORS_LIST[COLORS.ARCHIVAR])
+        self.main_layout.addWidget(self.button_archivar)
         self.button_recargar = SquareButtonWidget("reload", "#f1f1f1")
         
         # Asignacion de atributos 
@@ -101,6 +106,10 @@ class VEHIScreenWidget(QWidget):
         self.main_layout.addSpacerItem(v_spacer)
         self.main_layout.addWidget(self.tabs)
         self.main_layout.addSpacerItem(v_spacer)
+        self.modal_modificar = ModificarMatriculaWidget(refrescar_tabla_callback=self.refrescar_tabla)
+        self.button_modificar.clicked.connect(self.modal_modificar.show)
+        self.modal_baja = BajaVehiculoWidget(refrescar_tabla_callback=self.refrescar_tabla)
+        self.button_archivar.clicked.connect(self.modal_baja.show)
 
         # Aplicamos los estilos a las pestañas
         self.apply_tab_styles()
@@ -108,8 +117,13 @@ class VEHIScreenWidget(QWidget):
         # Llamamos a la funcion que pide los datos.
         self.fetch_vehiculos()
 
+
     def apply_tab_styles(self):
         self.tabs.setStyleSheet(tab_style)
+        
+    def refrescar_tabla(self):
+        # Aquí refrescas tu tabla de vehículos
+        print("Tabla de vehículos refrescada")
         
     # Funcion para pedir los datos 
     def fetch_vehiculos(self):

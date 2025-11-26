@@ -98,3 +98,4 @@ class ButtonWidget(QWidget):
             event.accept()
         else:
             super().mousePressEvent(event)
+            

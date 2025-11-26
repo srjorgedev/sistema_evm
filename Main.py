@@ -44,7 +44,7 @@ class VentanaPrincipal(QMainWindow):
         self.sidemenu = SidemenuWidget()
         self.stack = QStackedWidget()
         self.notification_container = NotificationContainerWidget(self)
-        
+
         self.pantalla_bitacora.notificar.connect(self.notification_container.nueva_notificacion)
         
         self.stack.setStyleSheet(f"background-color: {COLORS_LIST[COLORS.BG_CLARO_1]};")

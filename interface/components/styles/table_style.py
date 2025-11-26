@@ -16,8 +16,8 @@ QScrollBar:vertical {
 
 QScrollBar::handle:vertical {
     background-color: #555555;   
-    min-height: 20px;            
-    border-radius: 4px;         
+    min-height: 20px;
+    border-radius: 4px;
 }
 
 QScrollBar::handle:vertical:hover {
@@ -55,7 +55,7 @@ QScrollArea QWidget#tableWidget {
     background-color: #131e24;
 }
 
-QScrollArea > QWidget {      
+QScrollArea > QWidget {
     border: none;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;

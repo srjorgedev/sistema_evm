@@ -1,10 +1,10 @@
-from db.ConnB import Conn
+from db.connU import Conn
 
 def lista_general():
     conn = Conn()
-    
+
     query = """
-        SELECT 
+        SELECT
             e.numero,
             CONCAT(e.nombrePila, ' ',  e.apdPaterno, ' ', e.apdMaterno) AS nombre,
             tp.descripcion AS rol,
@@ -12,9 +12,9 @@ def lista_general():
         FROM empleado AS e
         INNER JOIN tipo_empleado AS tp ON e.tipo_empleado = tp.codigo
     """
-    
+
     lista = conn.lista(query)
-    
+
     usuarios = []
     for tupla in lista:
         usuarios.append((tupla[0], tupla[1], tupla[2], tupla[3]))
@@ -23,12 +23,12 @@ def lista_general():
 
 def lista_tipos():
     conn = Conn()
-    
+
     query = """
         SELECT codigo, descripcion
         FROM tipo_empleado
     """
-    
+
     lista = conn.lista(query)
     
     tipos = []
@@ -63,3 +63,51 @@ def lista_choferes():
         choferes.append((tupla[0], tupla[1], tupla[2], tupla[3], tupla[4]))
 
     return choferes
+
+import sys 
+
+def registrar_empleado(data: dict):
+    miConn = Conn()
+    cursor = miConn.cursor()
+
+    comando = """
+        INSERT INTO empleado
+        (nombrePila, apdPaterno, apdMaterno, tipo_empleado, password_hash, email)
+        VALUES (%s, %s, %s, %s, %s, %s)
+    """
+
+    valores = (
+        data["nombrePila"],
+        data["apdPaterno"],
+        data["apdMaterno"],
+        data["tipo_empleado"],
+        data["password_hash"],
+        data["email"]
+    )
+
+    cursor.execute(comando, valores)
+    miConn.commit()
+    miConn.close()
+
+    return True
+
+
+
+def lista_contactos():
+    conn = Conn()
+    
+    query = """
+        SELECT 
+            e.numero,
+            CONCAT(e.nombrePila, ' ', e.apdPaterno, ' ', e.apdMaterno) as Nombre,
+            e.email, 
+            t.numTelefono
+        FROM empleado as e
+        INNER JOIN telefono as t on t.empleado = e.numero
+    """
+    
+    lista = conn.lista(query)
+    
+    # Retornamos la lista de tuplas
+    # Estructura esperada: (Numero, Nombre, Email, Telefono)
+    return lista
