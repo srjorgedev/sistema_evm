@@ -8,7 +8,7 @@ def vInt(msg):
             return int(valor)
         else:
             print("   Solo se permiten números enteros. Inténtalo de nuevo.")
-            
+
 def vInt2(numero):
     while True:
         if numero.isdigit():
@@ -120,8 +120,8 @@ def validate_password(password):
 
 
 def valLicencia(numeroLicencia):
-    regex_federal = r'^[A-Z]\d{9,10}$'
-    return re.match(regex_federal, numeroLicencia)
+    patron = r"^BC\d{9}$"
+    return bool(re.match(patron, numeroLicencia.upper()))
 
 
 def valTexto(texto):
