@@ -103,8 +103,8 @@ def Create(newUser, newTipo, newTel, newTLic, newLic):
     ))
 
     miConn.conexion.commit()
-    print("ID Telefono", idTelefono)
-    print("Registro Exitoso")
+    print("     ID Telefono", idTelefono)
+    print("     Registro Exitoso")
 
 
 def Create2(newUser, newTipo, newTel):
@@ -138,7 +138,7 @@ def Create2(newUser, newTipo, newTel):
     ))
 
     idEmpleado = cursor.lastrowid
-    print("Numero de Empleado:", idEmpleado)
+    print("     Numero de Empleado:", idEmpleado)
     newTel.set_empleado(idEmpleado)
     
     #INSERT telefono
@@ -160,8 +160,8 @@ def Create2(newUser, newTipo, newTel):
                 newTel.set_numTelefono(nuevoTel)
     idTelefono = cursor.lastrowid
     miConn.conexion.commit()
-    print("ID Telefono", idTelefono)
-    print("Registro Exitoso")
+    print("     ID Telefono", idTelefono)
+    print("     Registro Exitoso")
 
 
 #Read select
@@ -475,7 +475,7 @@ def mostrar_choferes(conexion):
     print("\n=== LISTA DE CHOFERES ===\n")
 
     if len(resultados) == 0:
-        print("No hay choferes registrados.")
+        print(" No hay choferes registrados.")
     else:
         for fila in resultados:
             print(f"Nombre: {fila[0]}")
@@ -495,7 +495,7 @@ def empleados_contactos(conexion):
 
     query = """
     SELECT e.numero as Numero,
-    CONCAT(e.nombrePila, ' ', e.apdPaterno, ' ', e.apdMaterno) as Nombre, 
+    CONCAT(e.nombrePila, ' ', e.apdPaterno, ' ', e.apdMaterno) as Nombre,
     e.email as "Correo Electronico", -- "
     t.numTelefono as "Numero Telefonico" -- "
     from empleado as e
@@ -508,7 +508,7 @@ def empleados_contactos(conexion):
     print("\n=== LISTA DE EMPLEADOS Y SUS CONTACTOS ===\n")
 
     if len(resultados) == 0:
-        print("No hay empleados registrados.")
+        print(" No hay empleados registrados.")
     else:
         for fila in resultados:
             print(f"Numero de Empleado: {fila[0]}")

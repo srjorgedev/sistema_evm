@@ -10,7 +10,6 @@ import interface.vehiculos.Menu as _Vehiculos
 #from controllers import fVehiculo
 
 from db.conn import conn
-print("prueba de conexion")
 miConn = conn()
 #from interface.observacionymantenimiento import menu
 from interface.observacionymantenimiento import fMantenimiento

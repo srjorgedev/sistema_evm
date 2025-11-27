@@ -1,10 +1,15 @@
 def _Usuarios():
     print("   - USUARIOS -")
     print("     1. Registrar usuario")
+    print()
     print("     2. Choferes")
+    print()
     print("     3. Contactos de Empleados")
+    print()
     print("     4. Actualizar Usuarios")
+    print()
     print("     5. Inhabilitar/Habilitar Usuarios")
+    print()
     print("     6. Volver")
 
 
